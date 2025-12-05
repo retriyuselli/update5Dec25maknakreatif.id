@@ -2,20 +2,15 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\BulkAction;
 use App\Models\Employee;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
-use Filament\Forms\Components\DatePicker;
+use Filament\Actions\BulkAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class EventManager extends BaseWidget
@@ -23,7 +18,7 @@ class EventManager extends BaseWidget
     use HasWidgetShield;
 
     protected static ?string $heading = 'Event Manager Performance Dashboard';
-    
+
     protected static ?int $sort = 13;
 
     protected static ?int $contentHeight = 400;
@@ -107,7 +102,7 @@ class EventManager extends BaseWidget
                 //     ->getStateUsing(fn ($record): bool =>
                 //         !$record->date_of_out && $record->date_of_join),
             ])
-            
+
             ->recordActions([
 
             ])

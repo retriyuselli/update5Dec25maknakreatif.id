@@ -6,7 +6,6 @@ use App\Models\Employee;
 use App\Models\ExpenseOps;
 use App\Models\Order;
 use App\Models\Prospect;
-use App\Models\User;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
 use Filament\Support\Enums\IconPosition;

@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\SimulasiProduks\Pages;
 
+use App\Filament\Resources\SimulasiProduks\SimulasiProdukResource;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use App\Filament\Resources\SimulasiProduks\SimulasiProdukResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Exceptions\Halt;
 

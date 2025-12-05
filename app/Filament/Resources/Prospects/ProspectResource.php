@@ -2,48 +2,45 @@
 
 namespace App\Filament\Resources\Prospects;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Grid;
+use App\Enums\OrderStatus;
+use App\Filament\Resources\Prospects\Pages\CreateProspect;
+use App\Filament\Resources\Prospects\Pages\EditProspect;
+use App\Filament\Resources\Prospects\Pages\ListProspects;
+use App\Models\Prospect;
+use Carbon\Carbon;
+use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
-use App\Enums\OrderStatus;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Exception;
-use Illuminate\Database\QueryException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\Action;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use App\Filament\Resources\Prospects\Pages\ListProspects;
-use App\Filament\Resources\Prospects\Pages\CreateProspect;
-use App\Filament\Resources\Prospects\Pages\EditProspect;
-use App\Filament\Resources\ProspectResource\Pages;
-use App\Models\Prospect;
-use Carbon\Carbon;
-use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -51,11 +48,11 @@ class ProspectResource extends Resource
 {
     protected static ?string $model = Prospect::class;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Penjualan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Penjualan';
 
     protected static ?string $navigationLabel = 'Prospek';
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     protected static ?int $navigationSort = 4;
 
@@ -312,15 +309,15 @@ class ProspectResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-            TrashedFilter::make(),
+                TrashedFilter::make(),
 
-            SelectFilter::make('user')
+                SelectFilter::make('user')
                     ->relationship('user', 'name')
                     ->label('Manajer Akun')
                     ->searchable()
                     ->preload(),
 
-            SelectFilter::make('order_status')
+                SelectFilter::make('order_status')
                     ->label('Status Pesanan')
                     ->options([
                         'has_order' => 'Memiliki Pesanan',
@@ -347,7 +344,7 @@ class ProspectResource extends Resource
                         );
                     }),
 
-            Filter::make('wedding_date')
+                Filter::make('wedding_date')
                     ->schema([
                         DatePicker::make('from_date')
                             ->label('Dari Tanggal'),
@@ -376,9 +373,9 @@ class ProspectResource extends Resource
 
                         return $indicators;
                     }),
-        ])
+            ])
             ->recordActions([
-            ActionGroup::make([
+                ActionGroup::make([
                     ViewAction::make()
                         ->icon('heroicon-m-eye')
                         ->tooltip('Lihat detail prospek'),
@@ -543,11 +540,11 @@ class ProspectResource extends Resource
                         ->modalIconColor('success')
                         ->visible(fn (?Prospect $record): bool => $record && $record->trashed()),
 
-            ])->tooltip('Aksi yang tersedia'),
-        ])
+                ])->tooltip('Aksi yang tersedia'),
+            ])
             ->toolbarActions([
-            BulkActionGroup::make([
-                DeleteBulkAction::make()
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()
                         ->icon('heroicon-m-trash')
                         ->requiresConfirmation()
                         ->modalHeading('Hapus Permanen Prospek')
@@ -658,7 +655,7 @@ class ProspectResource extends Resource
                             }
                         }),
 
-                Action::make('cannot_delete')
+                    Action::make('cannot_delete')
                         ->label('Tidak Dapat Dihapus')
                         ->icon('heroicon-m-shield-exclamation')
                         ->color('gray')
@@ -674,7 +671,7 @@ class ProspectResource extends Resource
                                 ->send();
                         }),
 
-                ForceDeleteBulkAction::make()
+                    ForceDeleteBulkAction::make()
                         ->icon('heroicon-m-trash')
                         ->requiresConfirmation()
                         ->color('danger')
@@ -682,11 +679,11 @@ class ProspectResource extends Resource
                         ->modalDescription('Apakah Anda yakin ingin menghapus prospek yang dipilih secara permanen? Tindakan ini tidak dapat dibatalkan.')
                         ->modalSubmitActionLabel('Ya, hapus permanen'),
 
-                RestoreBulkAction::make()
+                    RestoreBulkAction::make()
                         ->icon('heroicon-m-arrow-uturn-left')
                         ->color('success'),
-            ])->label('Aksi Terpilih'),
-        ])
+                ])->label('Aksi Terpilih'),
+            ])
             ->defaultSort('created_at', 'desc')
             ->persistSortInSession()
             ->striped()

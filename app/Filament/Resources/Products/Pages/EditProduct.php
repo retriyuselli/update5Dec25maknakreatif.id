@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
-use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\Products\ProductResource;
 use App\Models\Product;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
 

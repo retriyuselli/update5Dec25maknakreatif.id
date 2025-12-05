@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\Sops\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\Sops\SopResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditSop extends EditRecord

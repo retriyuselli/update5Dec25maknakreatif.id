@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\DataPribadis\Pages;
 
-use Filament\Actions\CreateAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\DataPribadis\DataPribadiResource;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListDataPribadis extends ListRecords

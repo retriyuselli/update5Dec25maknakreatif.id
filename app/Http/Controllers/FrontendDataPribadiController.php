@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use App\Models\DataPribadi;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator; // Import Validator
+use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View; // Import Validator
 
 class FrontendDataPribadiController extends Controller
 {

@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\Prospects\Pages;
 
-use Filament\Actions\Action;
-use App\Models\Prospect;
-use Exception;
-use Filament\Actions\CreateAction;
 use App\Filament\Resources\Prospects\ProspectResource;
 use App\Filament\Widgets\ProspectStatsWidget;
-use Filament\Actions;
+use App\Models\Prospect;
+use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListProspects extends ListRecords

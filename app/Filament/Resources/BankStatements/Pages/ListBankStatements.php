@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\BankStatements\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\Resources\BankStatements\BankStatementResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListBankStatements extends ListRecords

@@ -2,24 +2,22 @@
 
 namespace App\Filament\Resources\InternalMessages\Pages;
 
-use Filament\Actions\Action;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Placeholder;
-use Illuminate\Support\HtmlString;
-use App\Models\User;
-use Exception;
 use App\Filament\Resources\InternalMessages\InternalMessageResource;
 use App\Models\InternalMessage;
-use Filament\Actions;
-use Filament\Forms;
+use App\Models\User;
+use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 
 class ViewInternalMessage extends ViewRecord
 {

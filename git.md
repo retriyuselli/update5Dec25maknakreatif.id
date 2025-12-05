@@ -3,7 +3,7 @@
 ## Remote & Branch
 
 -   Branch utama: `main`
--   Remote: `origin` → `https://github.com/retriyuselli/maknakreatif.git`
+-   Remote: `origin` → `https://github.com/retriyuselli/update5Dec25maknakreatif.id.git`
 
 ```bash
 # cek branch aktif

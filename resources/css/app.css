@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
 
 /* Custom styles */
 body {
@@ -24,13 +23,6 @@ body {
     ):hover {
     background-color: rgb(126 34 206) !important;
     border-color: rgb(126 34 206) !important;
-}
-
-/* Specific for reset password modal */
-.fi-modal-footer .fi-btn:contains("Reset Password") {
-    background-color: rgb(147 51 234) !important;
-    border-color: rgb(147 51 234) !important;
-    color: white !important;
 }
 
 .dashboard-mockup {

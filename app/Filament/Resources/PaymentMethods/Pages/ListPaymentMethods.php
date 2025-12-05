@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\PaymentMethods\Pages;
 
-use Filament\Actions\CreateAction;
-use App\Filament\Resources\PaymentMethods\Widgets\PaymentMethodStatsWidget;
 use App\Filament\Resources\PaymentMethods\PaymentMethodResource;
-use Filament\Actions;
+use App\Filament\Resources\PaymentMethods\Widgets\PaymentMethodStatsWidget;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListPaymentMethods extends ListRecords

@@ -2,18 +2,16 @@
 
 namespace App\Filament\Resources\FixedAssets\Pages;
 
-use Filament\Actions\Action;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Infolists\Components\TextEntry;
-use App\Models\FixedAsset;
-use Filament\Infolists\Components\RepeatableEntry;
 use App\Filament\Resources\FixedAssets\FixedAssetResource;
-use Filament\Actions;
-use Filament\Infolists;
+use App\Models\FixedAsset;
+use Filament\Actions\Action;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class DepreciationHistory extends Page
 {

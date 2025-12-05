@@ -2,68 +2,66 @@
 
 namespace App\Filament\Resources\Orders;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Wizard;
-use Filament\Schemas\Components\Wizard\Step;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Toggle;
-use App\Models\NotaDinas;
-use App\Models\Expense;
-use App\Models\NotaDinasDetail;
-use Exception;
-use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
-use App\Models\Employee;
-use App\Models\User;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\BulkAction;
-use Filament\Actions\ExportBulkAction;
-use App\Filament\Resources\Orders\Pages\ListOrders;
+use App\Enums\OrderStatus;
 use App\Filament\Resources\Orders\Pages\CreateOrder;
-use App\Filament\Resources\Orders\Pages\ViewOrder;
 use App\Filament\Resources\Orders\Pages\EditOrder;
 use App\Filament\Resources\Orders\Pages\Invoice;
-use App\Enums\OrderStatus; // <-- Tambahkan ini
-use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Resources\Orders\Pages\ListOrders;
+use App\Filament\Resources\Orders\Pages\ViewOrder;
 use App\Filament\Resources\Orders\Widgets\OrderOverview;
 use App\Filament\Resources\Orders\Widgets\UangDiterimaOverview;
 use App\Filament\Resources\Products\ProductResource;
+use App\Models\Employee;
+use App\Models\Expense;
+use App\Models\NotaDinas;
+use App\Models\NotaDinasDetail;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Prospect;
+use App\Models\User;
 use App\Models\Vendor;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ExportBulkAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle; // <-- Tambahkan ini
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -77,13 +75,13 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Penjualan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Penjualan';
 
     protected static ?string $navigationLabel = 'Proyek Wedding';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-s-shopping-cart';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-s-shopping-cart';
 
     protected static ?int $navigationSort = 1;
 
@@ -817,7 +815,7 @@ class OrderResource extends Resource
                                         $livewire->dispatch('refreshForm');
                                     }),
                             ])->columnSpanFull(),
-                    ]),Step::make('Riwayat Modifikasi')
+                    ]), Step::make('Riwayat Modifikasi')
                     ->icon('heroicon-o-clock')
                     ->description('Catat detail modifikasi')
                     ->schema([
@@ -899,8 +897,8 @@ class OrderResource extends Resource
                     ->description(fn (Order $record): string => "No : {$record->no_kontrak}")
                     ->weight(FontWeight::Bold),
 
-                TextColumn::make('id')
-                    ->label('SKU/ID'),
+                // TextColumn::make('id')
+                //     ->label('SKU/ID'),
 
                 TextColumn::make('slug')
                     ->searchable()
@@ -1009,7 +1007,6 @@ class OrderResource extends Resource
             ])
 
             ->filters([
-                // Date Range Filters
                 Filter::make('event_dates')
                     ->schema([
                         Select::make('date_type')
@@ -1146,20 +1143,28 @@ class OrderResource extends Resource
                     })
                     ->columnSpanFull(),
 
-                // Filter baru: Order yang memiliki dokumen kontrak
                 Filter::make('has_contract_document')
                     ->label('Has Contract Document')
                     ->query(fn (Builder $query) => $query->whereNotNull('doc_kontrak'))
                     ->toggle(), // Menggunakan toggle untuk filter on/off sederhana
 
-                // Filter untuk order yang TIDAK memiliki dokumen kontrak (pending)
                 Filter::make('no_contract_document')
                     ->label('No Contract Document')
                     ->query(fn (Builder $query) => $query->whereNull('doc_kontrak'))
                     ->toggle(),
-                // Team Member Filters
                 Filter::make('team')
-                    ->schema([Select::make('employee_id')->label('Event Manager')->relationship('employee', 'name')->searchable()->preload(), Select::make('user_id')->label('Account Manager')->relationship('user', 'name')->searchable()->preload()])
+                    ->schema([
+                        Select::make('employee_id')
+                            ->label('Event Manager')
+                            ->relationship('employee', 'name')
+                            ->searchable()
+                            ->preload(),
+                        Select::make('user_id')
+                            ->label('Account Manager')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->preload(),
+                    ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when($data['employee_id'] ?? null, fn ($query, $id) => $query->where('employee_id', $id))->when($data['user_id'] ?? null, fn ($query, $id) => $query->where('user_id', $id));
                     })

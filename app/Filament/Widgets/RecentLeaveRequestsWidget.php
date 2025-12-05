@@ -2,20 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Actions\ViewAction;
-use Filament\Schemas\Components\Grid;
+use App\Models\LeaveRequest;
 use Carbon\Carbon;
 use Filament\Actions\Action;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\LeaveRequest;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class RecentLeaveRequestsWidget extends BaseWidget

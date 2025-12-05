@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Exception;
 use App\Models\DataPembayaran;
 use App\Models\Expense;
 use App\Models\Order;
 use App\Services\OrderJournalService;
+use Exception;
 use Illuminate\Console\Command;
 
 class GenerateOrderJournals extends Command

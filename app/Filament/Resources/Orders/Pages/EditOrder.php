@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Orders\Pages;
 
-use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\Orders\OrderResource;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Auth;
 

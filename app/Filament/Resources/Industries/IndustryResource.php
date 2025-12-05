@@ -2,34 +2,31 @@
 
 namespace App\Filament\Resources\Industries;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\Industries\Pages\ListIndustries;
 use App\Filament\Resources\Industries\Pages\CreateIndustry;
 use App\Filament\Resources\Industries\Pages\EditIndustry;
-use App\Filament\Resources\IndustryResource\Pages;
+use App\Filament\Resources\Industries\Pages\ListIndustries;
 use App\Models\Industry;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class IndustryResource extends Resource
 {
     protected static ?string $model = Industry::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-briefcase';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-briefcase';
 
     protected static ?string $navigationLabel = 'Industri';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Penjualan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Penjualan';
 
     public static function form(Schema $schema): Schema
     {

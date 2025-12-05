@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Piutangs\Pages;
 
-use Illuminate\Support\Facades\Auth;
 use App\Filament\Resources\Piutangs\PiutangResource;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreatePiutang extends CreateRecord
 {

@@ -2,21 +2,14 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
-use Filament\Actions\Action;
-use Filament\Actions\BulkAction;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
-use Filament\Forms\Components\DatePicker;
+use Filament\Actions\BulkAction;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
-use Filament\Tables\Filters\Filter;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -114,7 +107,7 @@ class AccountManagerWidget extends BaseWidget
             ])
             // Default sorting by join date
             ->defaultSort('am_count', 'desc') // Urutkan berdasarkan jumlah closing (am_count) terbanyak
-            
+
             // Define available actions
             ->recordActions([
             ])

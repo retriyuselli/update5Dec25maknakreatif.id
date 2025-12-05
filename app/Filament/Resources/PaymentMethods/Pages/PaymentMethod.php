@@ -2,15 +2,15 @@
 
 namespace App\Filament\Resources\PaymentMethods\Pages;
 
-use Filament\Schemas\Schema;
+use App\Filament\Resources\PaymentMethods\PaymentMethodResource;
+use Carbon\Carbon;
+use Exception;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\View;
-use Filament\Notifications\Notification;
-use Carbon\Carbon;
-use Exception;
-use App\Filament\Resources\PaymentMethods\PaymentMethodResource;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Schema;
 
 class PaymentMethod extends ViewRecord
 {

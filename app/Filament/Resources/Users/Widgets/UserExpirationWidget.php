@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Users\Widgets;
 
-use Exception;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

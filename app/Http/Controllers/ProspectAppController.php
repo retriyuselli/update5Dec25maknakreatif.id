@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use App\Models\Industry;
 use App\Models\ProspectApp;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;

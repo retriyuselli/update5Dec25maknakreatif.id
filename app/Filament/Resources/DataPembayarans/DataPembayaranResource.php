@@ -2,33 +2,30 @@
 
 namespace App\Filament\Resources\DataPembayarans;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteBulkAction;
-use Carbon\Carbon;
-use App\Filament\Resources\DataPembayarans\Pages\ListDataPembayarans;
-use App\Filament\Resources\DataPembayarans\Pages\EditDataPembayaran;
 use App\Enums\OrderStatus;
-use App\Filament\Resources\DataPembayaranResource\Pages;
+use App\Filament\Resources\DataPembayarans\Pages\EditDataPembayaran;
+use App\Filament\Resources\DataPembayarans\Pages\ListDataPembayarans;
 use App\Filament\Resources\DataPembayarans\Widgets\DataPembayaranStatsOverview;
 use App\Models\DataPembayaran;
 use App\Models\Order;
-use Filament\Forms;
+use Carbon\Carbon;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -39,13 +36,13 @@ class DataPembayaranResource extends Resource
 {
     protected static ?string $model = DataPembayaran::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-receipt-percent';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-receipt-percent';
 
     protected static ?string $recordTitleAttribute = 'keterangan';
 
     protected static ?string $navigationLabel = 'Pendapatan Wedding';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Keuangan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
 
     public static function form(Schema $schema): Schema
     {
@@ -206,15 +203,15 @@ class DataPembayaranResource extends Resource
             ->filtersFormColumns(3)
 
             ->recordActions([
-            ActionGroup::make([
+                ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
-            ]),
-        ])
+                ]),
+            ])
 
             ->toolbarActions([
-            DeleteBulkAction::make(),
-        ])
+                DeleteBulkAction::make(),
+            ])
             ->striped()
             ->defaultPaginationPageOption(10)
             ->paginationPageOptions([10, 25, 50]);

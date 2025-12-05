@@ -3,105 +3,96 @@
 @section('title', 'Login - WOFINS')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-10">
-        <div>
-            <div class="mx-auto h-23 w-auto flex items-center justify-center">
-                <img class="h-23 w-auto" src="{{ asset('images/maknawofins_logo.png') }}" alt="WOFINS Logo">
-            </div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Masuk ke akun Anda
-            </h2>
-            {{-- <p class="mt-2 text-center text-sm text-gray-600">
-                Atau 
-                <a href="{{ route('front.register') }}" class="font-medium text-blue-600 hover:text-blue-500">
-                    daftar akun baru
-                </a>
-            </p> --}}
-        </div>
-
-        <form class="mt-8 space-y-6" action="{{ route('front.login') }}" method="POST">
-            @csrf
-            <input type="hidden" name="remember" value="true">
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    <label for="email-address" class="sr-only">Email address</label>
-                    <input id="email-address" 
-                           name="email" 
-                           type="email" 
-                           autocomplete="email" 
-                           required 
-                           class="appearance-none rounded-none relative block w-full px-3 py-2 border @error('email') border-red-300 @else border-gray-300 @enderror placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
-                           placeholder="Alamat email"
-                           value="{{ old('email') }}">
-                    @error('email')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+    <div class="min-h-screen flex items-center justify-center bg-blue-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+            <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                <div class="rounded-xl overflow-hidden">
+                    <img src="{{ asset('images/team_makna.jpg') }}" alt="Illustration" class="w-full h-full object-cover">
                 </div>
-                <div>
-                    <label for="password" class="sr-only">Password</label>
-                    <input id="password" 
-                           name="password" 
-                           type="password" 
-                           autocomplete="current-password" 
-                           required 
-                           class="appearance-none rounded-none relative block w-full px-3 py-2 border @error('password') border-red-300 @else border-gray-300 @enderror placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
-                           placeholder="Password">
-                    @error('password')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <input id="remember-me" 
-                           name="remember" 
-                           type="checkbox" 
-                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="remember-me" class="ml-2 block text-sm text-gray-900">
-                        Ingat saya
-                    </label>
-                </div>
-
-                <div class="text-sm">
-                    <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
-                        Lupa password?
-                    </a>
+                    <div class="w-full max-w-md mx-auto">
+                        <h1 class="text-3xl font-bold text-gray-900">Sign In</h1>
+                        <p class="mt-1 text-sm text-gray-500">Unlock your world.</p>
+                        @if (session('status'))
+                            <p class="mt-3 text-sm text-green-600">{{ session('status') }}</p>
+                        @endif
+                        <form class="mt-8 space-y-6" action="{{ route('front.login') }}" method="POST">
+                            @csrf
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-900">Email</label>
+                                    <input id="email-address" name="email" type="email" autocomplete="username"
+                                        autofocus required
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="Enter your email" value="{{ old('email') }}">
+                                    @error('email')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div x-data="{ show: false }">
+                                    <label class="text-sm font-medium text-gray-900">Password</label>
+                                    <div class="mt-1 relative">
+                                        <input id="password" name="password" :type="show ? 'text' : 'password'"
+                                            autocomplete="current-password" required
+                                            class="block w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="Enter your password">
+                                        <button type="button" @click="show = !show"
+                                            class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
+                                            <svg x-show="!show" class="h-5 w-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M2.036 12.322a1.012 1.012 0 010-.644C3.423 7.51 7.36 4.5 12 4.5c4.64 0 8.577 3.01 9.964 7.178.07.21.07.434 0 .644C20.577 16.49 16.64 19.5 12 19.5c-4.64 0-8.577-3.01-9.964-7.178z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            <svg x-show="show" class="h-5 w-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                    d="M3.98 8.223A10.477 10.477 0 002.036 12.32c-.07.21-.07.434 0 .644C3.423 16.49 7.36 19.5 12 19.5c1.676 0 3.257-.31 4.679-.873M6.115 6.115C8.011 4.904 9.93 4.5 12 4.5c4.64 0 8.577 3.01 9.964 7.178.07.21.07.434 0 .644a10.495 10.495 0 01-1.606 2.472M3 3l18 18M9.88 9.88a3 3 0 104.24 4.24" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    @error('password')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <button type="submit"
+                                    class="w-full px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Sign
+                                    In</button>
+                                <div class="flex items-center my-2">
+                                    <div class="flex-1 h-px bg-gray-200"></div>
+                                    <span class="px-3 text-xs text-gray-500">Or</span>
+                                    <div class="flex-1 h-px bg-gray-200"></div>
+                                </div>
+                                @if (Route::has('auth.google.redirect'))
+                                    <a href="{{ route('auth.google.redirect') }}"
+                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+                                        <i class="fab fa-google text-red-500"></i>
+                                        Sign in with Google
+                                    </a>
+                                @else
+                                    <a href="#"
+                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+                                        <i class="fab fa-google text-red-500"></i>
+                                        Sign in with Google
+                                    </a>
+                                @endif
+                                @if (Route::has('front.register'))
+                                    <a href="{{ route('front.register') }}"
+                                        class="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Create
+                                        an account</a>
+                                @else
+                                    <a href="{{ route('pendaftaran') }}"
+                                        class="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Create
+                                        an account</a>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            <div>
-                <button type="submit" 
-                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                        <svg class="h-5 w-5 text-blue-500 group-hover:text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                        </svg>
-                    </span>
-                    Masuk
-                </button>
-            </div>
-
-            {{-- <div class="text-center">
-                <p class="text-sm text-gray-600">
-                    Belum punya akun? 
-                    <a href="{{ route('front.register') }}" class="font-medium text-blue-600 hover:text-blue-500">
-                        Daftar sekarang
-                    </a>
-                </p>
-            </div> --}}
-        </form>
-
-        <!-- Back to Home -->
-        <div class="text-center">
-            <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-500">
-                <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Kembali ke beranda
-            </a>
         </div>
     </div>
-</div>
 @endsection

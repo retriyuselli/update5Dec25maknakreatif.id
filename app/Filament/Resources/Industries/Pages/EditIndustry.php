@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\Industries\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\Industries\IndustryResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditIndustry extends EditRecord

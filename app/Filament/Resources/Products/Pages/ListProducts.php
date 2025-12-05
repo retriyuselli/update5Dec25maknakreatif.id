@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
-use Filament\Actions\CreateAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\Products\ProductResource;
-use App\Filament\Resources\SimulasiProduks\SimulasiProdukResource; // Pastikan namespace ini benar jika digunakan
-use Filament\Actions;
+use App\Filament\Resources\SimulasiProduks\SimulasiProdukResource;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction; // Pastikan namespace ini benar jika digunakan
 use Filament\Resources\Pages\ListRecords;
 
 class ListProducts extends ListRecords

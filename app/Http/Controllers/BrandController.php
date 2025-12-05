@@ -15,6 +15,7 @@ class BrandController extends Controller
         if ($company && $company->logo_url && Storage::disk('public')->exists($company->logo_url)) {
             $path = Storage::disk('public')->path($company->logo_url);
         }
+
         return response()->file($path, [
             'Cache-Control' => 'public, max-age=86400',
         ]);
@@ -27,6 +28,7 @@ class BrandController extends Controller
         if ($company && $company->favicon_url && Storage::disk('public')->exists($company->favicon_url)) {
             $path = Storage::disk('public')->path($company->favicon_url);
         }
+
         return response()->file($path, [
             'Cache-Control' => 'public, max-age=86400',
         ]);

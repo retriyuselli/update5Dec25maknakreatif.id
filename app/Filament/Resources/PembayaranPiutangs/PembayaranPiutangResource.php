@@ -2,39 +2,35 @@
 
 namespace App\Filament\Resources\PembayaranPiutangs;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Placeholder;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Hidden;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
+use App\Filament\Resources\PembayaranPiutangs\Pages\CreatePembayaranPiutang;
+use App\Filament\Resources\PembayaranPiutangs\Pages\EditPembayaranPiutang;
+use App\Filament\Resources\PembayaranPiutangs\Pages\ListPembayaranPiutangs;
+use App\Filament\Resources\PembayaranPiutangs\Pages\ViewPembayaranPiutang;
+use App\Models\PembayaranPiutang;
+use App\Models\Piutang;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
-use App\Filament\Resources\PembayaranPiutangs\Pages\ListPembayaranPiutangs;
-use App\Filament\Resources\PembayaranPiutangs\Pages\CreatePembayaranPiutang;
-use App\Filament\Resources\PembayaranPiutangs\Pages\ViewPembayaranPiutang;
-use App\Filament\Resources\PembayaranPiutangs\Pages\EditPembayaranPiutang;
-use App\Filament\Resources\PembayaranPiutangResource\Pages;
-use App\Models\PembayaranPiutang;
-use App\Models\Piutang;
-use Filament\Forms;
-use Filament\Infolists;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +39,7 @@ class PembayaranPiutangResource extends Resource
 {
     protected static ?string $model = PembayaranPiutang::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-banknotes';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?string $navigationLabel = 'Pembayaran Piutang';
 
@@ -51,7 +47,7 @@ class PembayaranPiutangResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Pembayaran Piutang';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Keuangan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
 
     protected static ?int $navigationSort = 4;
 

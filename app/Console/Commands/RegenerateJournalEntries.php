@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Exception;
 use App\Models\DataPembayaran;
 use App\Models\Expense;
 use App\Models\JournalBatch;
 use App\Models\JournalEntry;
 use App\Models\Order;
 use App\Services\OrderJournalService;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

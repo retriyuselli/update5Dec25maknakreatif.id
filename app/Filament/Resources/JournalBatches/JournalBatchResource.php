@@ -2,46 +2,42 @@
 
 namespace App\Filament\Resources\JournalBatches;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Placeholder;
-use Filament\Resources\Pages\CreateRecord;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\CreateAction;
-use App\Filament\Resources\JournalBatches\RelationManagers\JournalEntriesRelationManager;
-use App\Filament\Resources\JournalBatches\Pages\ListJournalBatches;
 use App\Filament\Resources\JournalBatches\Pages\CreateJournalBatch;
 use App\Filament\Resources\JournalBatches\Pages\EditJournalBatch;
-use App\Filament\Resources\JournalBatchResource\Pages;
-use App\Filament\Resources\JournalBatchResource\RelationManagers;
+use App\Filament\Resources\JournalBatches\Pages\ListJournalBatches;
+use App\Filament\Resources\JournalBatches\RelationManagers\JournalEntriesRelationManager;
 use App\Models\JournalBatch;
 use App\Models\User;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -50,11 +46,11 @@ class JournalBatchResource extends Resource
 {
     protected static ?string $model = JournalBatch::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard';
 
     protected static ?string $navigationLabel = 'Jurnal Umum';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Keuangan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
 
     protected static ?int $navigationSort = 3;
 

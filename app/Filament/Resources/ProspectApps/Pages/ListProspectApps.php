@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\ProspectApps\Pages;
 
-use Filament\Actions\CreateAction;
 use App\Filament\Resources\ProspectApps\ProspectAppResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListProspectApps extends ListRecords

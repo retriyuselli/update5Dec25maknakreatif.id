@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use Filament\Actions\Action;
 use App\Models\User;
 use Closure;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +15,7 @@ class CheckUserExpiration
     /**
      * Handle an incoming request.
      *
-     * @param Closure(Request):Response $next
+     * @param  Closure(Request):Response  $next
      */
     public function handle(Request $request, Closure $next): Response
     {

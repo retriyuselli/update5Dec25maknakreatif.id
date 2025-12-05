@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Spatie\Permission\Models\Role;
-use Exception;
 use App\Models\User;
+use Exception;
 use Illuminate\Console\Command;
+use Spatie\Permission\Models\Role;
 
 class TestMassAssignmentSecurity extends Command
 {

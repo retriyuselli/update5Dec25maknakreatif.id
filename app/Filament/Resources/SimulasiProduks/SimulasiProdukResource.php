@@ -3,34 +3,31 @@
 namespace App\Filament\Resources\SimulasiProduks;
 
 use App\Filament\Resources\Products\ProductResource;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Wizard;
-use Filament\Schemas\Components\Wizard\Step;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Actions\Action;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\SimulasiProduks\Pages\ListSimulasiProduks;
 use App\Filament\Resources\SimulasiProduks\Pages\CreateSimulasiProduk;
 use App\Filament\Resources\SimulasiProduks\Pages\EditSimulasiProduk;
+use App\Filament\Resources\SimulasiProduks\Pages\ListSimulasiProduks;
 use App\Filament\Resources\SimulasiProduks\Pages\ViewSimulasiInvoice;
-use App\Filament\Resources\SimulasiProdukResource\Pages;
 use App\Models\Product;
 use App\Models\Prospect;
 use App\Models\SimulasiProduk;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -40,9 +37,9 @@ class SimulasiProdukResource extends Resource
 {
     protected static ?string $model = SimulasiProduk::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-beaker';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-beaker';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Penjualan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Penjualan';
 
     protected static ?string $navigationLabel = 'Simulasi';
 

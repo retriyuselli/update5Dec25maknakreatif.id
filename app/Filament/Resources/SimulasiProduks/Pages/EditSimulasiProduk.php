@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\SimulasiProduks\Pages;
 
-use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\SimulasiProduks\SimulasiProdukResource;
 use App\Models\SimulasiProduk;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditSimulasiProduk extends EditRecord

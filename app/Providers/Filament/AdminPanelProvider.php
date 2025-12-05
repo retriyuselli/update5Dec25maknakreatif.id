@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Widgets\AccountWidget;
 use App\Filament\Pages\Dashboard;
 use App\Models\Company;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -14,6 +13,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -37,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
         $favicon = $company && $company->favicon_url
             ? Storage::disk('public')->url($company->favicon_url)
             : asset('images/favicon_makna.png');
-        
+
         return $panel
             ->default()
             ->id('admin')

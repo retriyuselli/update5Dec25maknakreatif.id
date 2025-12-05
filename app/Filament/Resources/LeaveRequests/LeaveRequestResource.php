@@ -2,36 +2,32 @@
 
 namespace App\Filament\Resources\LeaveRequests;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\FileUpload;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\Action;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkAction;
-use App\Filament\Resources\LeaveRequests\Widgets\LeaveRequestOverview;
-use App\Filament\Resources\LeaveRequests\Widgets\LeaveRequestChart;
-use App\Filament\Resources\LeaveRequests\Widgets\LeaveTypeStats;
-use App\Filament\Resources\LeaveRequests\Pages\ListLeaveRequests;
 use App\Filament\Resources\LeaveRequests\Pages\CreateLeaveRequest;
 use App\Filament\Resources\LeaveRequests\Pages\EditLeaveRequest;
-use App\Filament\Resources\LeaveRequestResource\Pages;
-use App\Filament\Resources\LeaveRequestResource\Widgets;
+use App\Filament\Resources\LeaveRequests\Pages\ListLeaveRequests;
+use App\Filament\Resources\LeaveRequests\Widgets\LeaveRequestChart;
+use App\Filament\Resources\LeaveRequests\Widgets\LeaveRequestOverview;
+use App\Filament\Resources\LeaveRequests\Widgets\LeaveTypeStats;
 use App\Models\LeaveRequest;
 use App\Models\User;
 use Carbon\Carbon;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -44,13 +40,13 @@ class LeaveRequestResource extends Resource
 {
     protected static ?string $model = LeaveRequest::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-calendar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar';
 
     protected static ?string $navigationLabel = 'Permohonan Cuti';
 
     protected static ?string $pluralModelLabel = 'Permohonan Cuti';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'SDM';
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
 
     protected static ?int $navigationSort = 3;
 

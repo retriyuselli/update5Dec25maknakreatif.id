@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\Piutangs\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\Piutangs\PiutangResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPiutang extends EditRecord

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Order;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -11,6 +10,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class RevenueBulananWeddingWidget extends BaseWidget
 {

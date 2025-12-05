@@ -434,6 +434,7 @@ class PayrollsTable
                                     ->body('Anda tidak memiliki izin untuk melakukan kenaikan gaji.')
                                     ->danger()
                                     ->send();
+
                                 return;
                             }
                             $currentSalary = $record->monthly_salary;
@@ -541,6 +542,7 @@ class PayrollsTable
                                     ->body('Anda tidak memiliki izin untuk menduplikasi payroll.')
                                     ->danger()
                                     ->send();
+
                                 return;
                             }
                             // Check if payroll already exists for target period
@@ -710,6 +712,7 @@ class PayrollsTable
                                     ->body('Anda tidak memiliki izin untuk melakukan duplikasi massal.')
                                     ->danger()
                                     ->send();
+
                                 return;
                             }
                             $successCount = 0;

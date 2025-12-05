@@ -2,20 +2,18 @@
 
 namespace App\Filament\Resources\FixedAssets\Pages;
 
-use Filament\Actions\EditAction;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Infolists\Components\TextEntry;
+use App\Filament\Resources\FixedAssets\FixedAssetResource;
 use App\Models\FixedAsset;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
-use App\Filament\Resources\FixedAssets\FixedAssetResource;
-use Filament\Actions;
-use Filament\Infolists;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ViewFixedAsset extends ViewRecord
 {

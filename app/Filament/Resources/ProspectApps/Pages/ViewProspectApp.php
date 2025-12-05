@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\ProspectApps\Pages;
 
-use Filament\Actions\EditAction;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
 use App\Filament\Resources\ProspectApps\ProspectAppResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ViewProspectApp extends ViewRecord
 {

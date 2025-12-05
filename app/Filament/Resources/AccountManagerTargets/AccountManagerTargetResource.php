@@ -2,37 +2,34 @@
 
 namespace App\Filament\Resources\AccountManagerTargets;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\ForceDeleteAction;
-use App\Models\Payroll;
-use App\Models\LeaveRequest;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\BulkAction;
-use App\Filament\Resources\AccountManagerTargets\Pages\ListAccountManagerTargets;
 use App\Filament\Resources\AccountManagerTargets\Pages\CreateAccountManagerTarget;
+use App\Filament\Resources\AccountManagerTargets\Pages\ListAccountManagerTargets;
 use App\Filament\Resources\AccountManagerTargets\Widgets\AmOverview;
 use App\Filament\Resources\AccountManagerTargets\Widgets\AmPerformanceChart;
 use App\Filament\Resources\AccountManagerTargets\Widgets\TopPerformersWidget;
-use App\Filament\Resources\AccountManagerTargetResource\Pages;
 use App\Filament\Resources\Orders\OrderResource;
 use App\Models\AccountManagerTarget;
+use App\Models\LeaveRequest;
 use App\Models\Order;
+use App\Models\Payroll;
 use App\Models\User;
 use Carbon\Carbon;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -44,9 +41,9 @@ class AccountManagerTargetResource extends Resource
 {
     protected static ?string $model = AccountManagerTarget::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-flag';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-flag';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Penjualan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Penjualan';
 
     protected static ?string $navigationLabel = 'Target Manajer Akun';
 

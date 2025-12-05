@@ -2,42 +2,38 @@
 
 namespace App\Filament\Resources\Piutangs;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
+use App\Enums\JenisPiutang;
+use App\Enums\StatusPiutang;
+use App\Filament\Resources\Piutangs\Pages\CreatePiutang;
+use App\Filament\Resources\Piutangs\Pages\EditPiutang;
+use App\Filament\Resources\Piutangs\Pages\ListPiutangs;
+use App\Filament\Resources\Piutangs\Pages\ViewPiutang;
+use App\Filament\Resources\Piutangs\Widgets\PiutangJatuhTempoWidget;
+use App\Filament\Resources\Piutangs\Widgets\PiutangOverviewWidget;
+use App\Filament\Resources\Piutangs\Widgets\TopDebiturWidget;
+use App\Models\Piutang;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
-use App\Filament\Resources\Piutangs\Pages\ListPiutangs;
-use App\Filament\Resources\Piutangs\Pages\CreatePiutang;
-use App\Filament\Resources\Piutangs\Pages\ViewPiutang;
-use App\Filament\Resources\Piutangs\Pages\EditPiutang;
-use App\Filament\Resources\Piutangs\Widgets\PiutangOverviewWidget;
-use App\Filament\Resources\Piutangs\Widgets\PiutangJatuhTempoWidget;
-use App\Filament\Resources\Piutangs\Widgets\TopDebiturWidget;
-use App\Enums\JenisPiutang;
-use App\Enums\StatusPiutang;
-use App\Filament\Resources\PiutangResource\Pages;
-use App\Models\Piutang;
-use Filament\Forms;
-use Filament\Infolists;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +42,7 @@ class PiutangResource extends Resource
 {
     protected static ?string $model = Piutang::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static ?string $navigationLabel = 'Piutang';
 
@@ -54,7 +50,7 @@ class PiutangResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Piutang';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Keuangan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
 
     protected static ?int $navigationSort = 3;
 

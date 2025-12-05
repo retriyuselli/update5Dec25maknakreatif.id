@@ -2,55 +2,53 @@
 
 namespace App\Filament\Resources\BankStatements;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use App\Models\PaymentMethod;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\DatePicker;
-use Filament\Schemas\Components\Actions;
-use Filament\Actions\Action;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Placeholder;
-use Illuminate\Support\HtmlString;
-use Filament\Schemas\Components\Fieldset;
-use Filament\Forms\Components\Hidden;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\BankStatements\RelationManagers\BankReconciliationItemsRelationManager;
-use App\Filament\Resources\BankStatements\Pages\ListBankStatements;
 use App\Filament\Resources\BankStatements\Pages\CreateBankStatement;
-use App\Filament\Resources\BankStatements\Pages\ViewBankStatement;
 use App\Filament\Resources\BankStatements\Pages\EditBankStatement;
+use App\Filament\Resources\BankStatements\Pages\ListBankStatements;
 use App\Filament\Resources\BankStatements\Pages\ReconciliationComparison;
+use App\Filament\Resources\BankStatements\Pages\ViewBankStatement;
+use App\Filament\Resources\BankStatements\RelationManagers\BankReconciliationItemsRelationManager;
 use App\Filament\Resources\BankStatements\Widgets\BankStatementOverview;
 use App\Models\BankStatement;
-use Filament\Forms;
+use App\Models\PaymentMethod;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class BankStatementResource extends Resource
 {
     protected static ?string $model = BankStatement::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-currency-dollar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-currency-dollar';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Keuangan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
 
     protected static ?string $navigationLabel = 'Rekening Koran';
 
@@ -804,6 +802,7 @@ class BankStatementResource extends Resource
             BankStatementOverview::class,
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();

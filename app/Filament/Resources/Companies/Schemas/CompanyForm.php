@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\Companies\Schemas;
 
+use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use App\Models\User;
-use Filament\Forms\Components\Select;
 
 class CompanyForm
 {
@@ -130,7 +130,7 @@ class CompanyForm
                                                 FileUpload::make('favicon_url')
                                                     ->disk('public')
                                                     ->directory('company/favicon')
-                                                    ->acceptedFileTypes(['image/png','image/x-icon','image/svg+xml'])
+                                                    ->acceptedFileTypes(['image/png', 'image/x-icon', 'image/svg+xml'])
                                                     ->imagePreviewHeight('64')
                                                     ->maxSize(5120),
                                                 TextInput::make('logo_url')

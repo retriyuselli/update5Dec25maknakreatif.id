@@ -2,8 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Actions\Action;
-use Exception;
 use App\Models\DataPembayaran;
 use App\Models\Expense;
 use App\Models\ExpenseOps;
@@ -12,7 +10,8 @@ use App\Models\PendapatanLain;
 use App\Models\PengeluaranLain;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
-use Filament\Actions;
+use Exception;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Http\Request;
@@ -26,11 +25,11 @@ class LaporanKeuangan extends Page
 {
     use HasPageShield;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-chart-bar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
 
     protected string $view = 'filament.pages.laporan-keuangan';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Finance';
+    protected static string|\UnitEnum|null $navigationGroup = 'Finance';
 
     public $transaksi = [];
 

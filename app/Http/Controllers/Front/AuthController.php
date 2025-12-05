@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -83,5 +84,46 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home')->with('success', 'Anda telah logout.');
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')
+            ->redirectUrl(route('auth.google.callback'))
+            ->stateless()
+            ->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')
+                ->redirectUrl(route('auth.google.callback'))
+                ->stateless()
+                ->user();
+
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if (! $user) {
+                $user = User::create([
+                    'name' => $googleUser->getName() ?: $googleUser->getNickname() ?: 'Pengguna Google',
+                    'email' => $googleUser->getEmail(),
+                    'password' => str()->random(32),
+                ]);
+
+                $user->email_verified_at = now();
+                $user->save();
+            }
+
+            if (method_exists($user, 'isExpired') && $user->isExpired()) {
+                return redirect()->route('front.login')->with('error', 'Akun Anda sudah kedaluwarsa. Hubungi admin untuk aktivasi.');
+            }
+
+            Auth::login($user, true);
+
+            return redirect()->route('home')->with('success', 'Berhasil masuk dengan Google.');
+        } catch (\Throwable $e) {
+            return redirect()->route('front.login')->with('error', 'Login Google gagal: '.$e->getMessage());
+        }
     }
 }

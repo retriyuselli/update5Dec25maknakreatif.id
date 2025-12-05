@@ -2,36 +2,33 @@
 
 namespace App\Filament\Resources\SopCategories;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Columns\ColorColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Filters\TernaryFilter;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\CreateAction;
-use App\Filament\Resources\SopCategories\Pages\ListSopCategories;
 use App\Filament\Resources\SopCategories\Pages\CreateSopCategory;
 use App\Filament\Resources\SopCategories\Pages\EditSopCategory;
-use App\Filament\Resources\SopCategoryResource\Pages;
+use App\Filament\Resources\SopCategories\Pages\ListSopCategories;
 use App\Models\SopCategory;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ColorColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -40,7 +37,7 @@ class SopCategoryResource extends Resource
 {
     protected static ?string $model = SopCategory::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-folder';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-folder';
 
     protected static ?string $navigationLabel = 'Kategori SOP';
 
@@ -48,7 +45,7 @@ class SopCategoryResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Kategori SOP';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Administrasi';
+    protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
 
     protected static ?int $navigationSort = 2;
 

@@ -2,29 +2,26 @@
 
 namespace App\Filament\Resources\LeaveTypes;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\EditAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use App\Filament\Resources\LeaveTypes\Pages\ListLeaveTypes;
 use App\Filament\Resources\LeaveTypes\Pages\CreateLeaveType;
 use App\Filament\Resources\LeaveTypes\Pages\EditLeaveType;
-use App\Filament\Resources\LeaveTypeResource\Pages;
+use App\Filament\Resources\LeaveTypes\Pages\ListLeaveTypes;
 use App\Models\LeaveType;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -33,7 +30,7 @@ class LeaveTypeResource extends Resource
 {
     protected static ?string $model = LeaveType::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static ?string $navigationLabel = 'Jenis Cuti';
 
@@ -41,7 +38,7 @@ class LeaveTypeResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Jenis Cuti';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'SDM';
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
 
     public static function form(Schema $schema): Schema
     {

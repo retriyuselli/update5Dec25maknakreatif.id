@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
-use Filament\Actions\Action;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Auth\Events\Login;
 

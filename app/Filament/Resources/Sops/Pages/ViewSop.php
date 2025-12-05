@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Sops\Pages;
 
-use Filament\Actions\EditAction;
+use App\Filament\Resources\Sops\SopResource;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
-use App\Filament\Resources\Sops\SopResource;
-use Filament\Actions;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Auth;
 

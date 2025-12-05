@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\FixedAssets\Pages;
 
-use Filament\Notifications\Notification;
 use App\Filament\Resources\FixedAssets\FixedAssetResource;
 use App\Models\FixedAsset;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateFixedAsset extends CreateRecord

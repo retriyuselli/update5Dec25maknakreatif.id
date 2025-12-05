@@ -2,33 +2,31 @@
 
 namespace App\Filament\Resources\LeaveBalances;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Placeholder;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\BulkAction;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\LeaveBalances\Pages\ListLeaveBalances;
-use App\Filament\Resources\LeaveBalances\Pages\EditLeaveBalance;
 use App\Filament\Resources\LeaveBalanceResource\Pages;
+use App\Filament\Resources\LeaveBalances\Pages\EditLeaveBalance;
+use App\Filament\Resources\LeaveBalances\Pages\ListLeaveBalances;
 use App\Models\LeaveBalance;
 use App\Models\LeaveType;
 use App\Models\User;
-use Filament\Forms;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +35,7 @@ class LeaveBalanceResource extends Resource
 {
     protected static ?string $model = LeaveBalance::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-scale';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-scale';
 
     protected static ?string $navigationLabel = 'Saldo Cuti';
 
@@ -45,7 +43,7 @@ class LeaveBalanceResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Saldo Cuti';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'SDM';
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
 
     public static function form(Schema $schema): Schema
     {

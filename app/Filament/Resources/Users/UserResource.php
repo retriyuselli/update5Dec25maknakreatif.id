@@ -2,60 +2,56 @@
 
 namespace App\Filament\Resources\Users;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Spatie\Permission\Models\Role;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\EditAction;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Radio;
-use Filament\Actions\DeleteAction;
+use App\Filament\Resources\Users\Pages\CreateUser;
+use App\Filament\Resources\Users\Pages\EditUser;
+use App\Filament\Resources\Users\Pages\ListUsers;
+use App\Filament\Resources\Users\Pages\ViewUser;
+use App\Filament\Resources\Users\Widgets\AccountManagerStats;
+use App\Models\Status;
+use App\Models\User;
 use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkAction;
-use App\Filament\Resources\Users\Pages\ListUsers;
-use App\Filament\Resources\Users\Pages\CreateUser;
-use App\Filament\Resources\Users\Pages\ViewUser;
-use App\Filament\Resources\Users\Pages\EditUser;
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\Users\Widgets\AccountManagerStats;
-use App\Models\User;
-use App\Models\Status;
-use Filament\Forms;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema as DBSchema;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-circle';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
     protected static ?string $navigationLabel = 'Pengguna';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'SDM';
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
 
     /**
      * Check if current user is super admin
@@ -959,10 +955,6 @@ class UserResource extends Resource
                             return static::isSuperAdmin();
                         }),
 
-                    
-
-                    
-
                     Action::make('manage_payroll')
                         ->label('Kelola Gaji')
                         ->icon('heroicon-o-banknotes')
@@ -1098,17 +1090,17 @@ class UserResource extends Resource
                                     if ($table === 'nota_dinas') {
                                         $approvedCount = DB::table('nota_dinas')->where('approved_by', $record->id)->count();
                                         $sentCount = DB::table('nota_dinas')->where('pengirim_id', $record->id)->count();
-                                        $details[] = '• Nota Dinas: sebagai pengirim (' . $sentCount . ') atau approver (' . $approvedCount . ')';
+                                        $details[] = '• Nota Dinas: sebagai pengirim ('.$sentCount.') atau approver ('.$approvedCount.')';
                                     } elseif ($table === 'leave_requests') {
                                         $asUser = DB::table('leave_requests')->where('user_id', $record->id)->count();
                                         $asReplacement = DB::table('leave_requests')->where('replacement_employee_id', $record->id)->count();
-                                        $details[] = '• Pengajuan Cuti: sebagai pemohon (' . $asUser . ') atau pengganti (' . $asReplacement . ')';
+                                        $details[] = '• Pengajuan Cuti: sebagai pemohon ('.$asUser.') atau pengganti ('.$asReplacement.')';
                                     } elseif ($table === 'payrolls') {
-                                        $details[] = '• Payroll: data gaji terkait (' . $tableCount . ')';
+                                        $details[] = '• Payroll: data gaji terkait ('.$tableCount.')';
                                     } elseif ($table === 'leave_balances') {
-                                        $details[] = '• Saldo Cuti: catatan saldo cuti (' . $tableCount . ')';
+                                        $details[] = '• Saldo Cuti: catatan saldo cuti ('.$tableCount.')';
                                     } elseif ($table === 'annual_summaries') {
-                                        $details[] = '• Ringkasan Tahunan: laporan tahunan terkait (' . $tableCount . ')';
+                                        $details[] = '• Ringkasan Tahunan: laporan tahunan terkait ('.$tableCount.')';
                                     }
                                 }
                             }
@@ -1117,7 +1109,7 @@ class UserResource extends Resource
                                 return 'Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan.';
                             }
 
-                            return "User tidak dapat dihapus karena masih memiliki data terkait:\n" . implode("\n", $details);
+                            return "User tidak dapat dihapus karena masih memiliki data terkait:\n".implode("\n", $details);
                         })
                         ->action(function ($record) {
                             // If account is terminated, allow deletion with safe cleanup

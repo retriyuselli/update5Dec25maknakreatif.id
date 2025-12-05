@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\ChartOfAccounts\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\ChartOfAccounts\ChartOfAccountResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditChartOfAccount extends EditRecord

@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
-use Exception;
 use App\Models\AccountManagerTarget;
 use App\Models\User;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Log;
 

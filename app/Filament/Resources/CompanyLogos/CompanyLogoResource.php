@@ -2,43 +2,39 @@
 
 namespace App\Filament\Resources\CompanyLogos;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use App\Filament\Resources\CompanyLogos\Pages\ListCompanyLogos;
 use App\Filament\Resources\CompanyLogos\Pages\CreateCompanyLogo;
 use App\Filament\Resources\CompanyLogos\Pages\EditCompanyLogo;
-use App\Filament\Resources\CompanyLogoResource\Pages;
+use App\Filament\Resources\CompanyLogos\Pages\ListCompanyLogos;
 use App\Models\CompanyLogo;
-use Filament\Forms;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class CompanyLogoResource extends Resource
 {
     protected static ?string $model = CompanyLogo::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-building-office';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
     protected static ?string $navigationLabel = 'Logo Perusahaan';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Administrasi';
+    protected static string|\UnitEnum|null $navigationGroup = 'Administrasi';
 
     protected static ?string $pluralModelLabel = 'Logo Perusahaan';
 
@@ -127,19 +123,23 @@ class CompanyLogoResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Company Name'),
-                BadgeColumn::make('category')
-                    ->colors([
-                        'primary' => 'client',
-                        'success' => 'partner',
-                        'warning' => 'vendor',
-                        'danger' => 'sponsor',
-                    ]),
-                BadgeColumn::make('partnership_type')
-                    ->colors([
-                        'secondary' => 'free',
-                        'warning' => 'premium',
-                        'success' => 'enterprise',
-                    ])
+                TextColumn::make('category')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'client' => 'primary',
+                        'partner' => 'success',
+                        'vendor' => 'warning',
+                        'sponsor' => 'danger',
+                        default => 'gray',
+                    }),
+                TextColumn::make('partnership_type')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'free' => 'secondary',
+                        'premium' => 'warning',
+                        'enterprise' => 'success',
+                        default => 'gray',
+                    })
                     ->label('Type'),
                 TextColumn::make('display_order')
                     ->numeric()

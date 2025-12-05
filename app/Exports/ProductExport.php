@@ -2,10 +2,10 @@
 
 namespace App\Exports;
 
-use Illuminate\Support\Collection;
 use App\Models\Product;
-use App\Models\ProductItem; // Pastikan model ini sesuai dengan item produk Anda (mis: ProductVendorItem)
-use App\Models\ProductVendor;
+use App\Models\ProductItem;
+use App\Models\ProductVendor; // Pastikan model ini sesuai dengan item produk Anda (mis: ProductVendorItem)
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;

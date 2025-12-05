@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Products\Pages;
 
-use Filament\Actions\EditAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\Products\ProductResource;
 use App\Models\Product;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewProduct extends ViewRecord

@@ -63,6 +63,5 @@ class PayrollResource extends Resource
         return static::getModel()::count();
     }
 
-    protected static string | \UnitEnum | null $navigationGroup = 'SDM';
-
+    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
 }

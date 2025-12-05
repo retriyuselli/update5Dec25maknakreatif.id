@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\InternalMessages\Pages;
 
-use Filament\Notifications\Notification;
-use Illuminate\Support\Str;
-use Filament\Actions\Action;
 use App\Filament\Resources\InternalMessages\InternalMessageResource;
 use App\Models\InternalMessage;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CreateInternalMessage extends CreateRecord
 {

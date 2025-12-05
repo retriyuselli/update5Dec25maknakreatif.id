@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\DataPribadis\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\DataPribadis\DataPribadiResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditDataPribadi extends EditRecord

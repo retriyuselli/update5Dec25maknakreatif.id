@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Orders\Pages;
 
-use Filament\Actions\EditAction;
-use App\Models\User;
 use App\Enums\OrderStatus;
 use App\Filament\Resources\Orders\OrderResource;
-use Filament\Actions;
+use App\Models\User;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Auth;
 

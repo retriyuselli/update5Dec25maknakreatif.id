@@ -2,35 +2,32 @@
 
 namespace App\Filament\Resources\Blogs;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use App\Filament\Resources\Blogs\Pages\CreateBlog;
+use App\Filament\Resources\Blogs\Pages\EditBlog;
+use App\Filament\Resources\Blogs\Pages\ListBlogs;
+use App\Filament\Resources\Blogs\Widgets\BlogStatsWidget;
+use App\Models\Blog;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkAction;
-use App\Filament\Resources\Blogs\Widgets\BlogStatsWidget;
-use App\Filament\Resources\Blogs\Pages\ListBlogs;
-use App\Filament\Resources\Blogs\Pages\CreateBlog;
-use App\Filament\Resources\Blogs\Pages\EditBlog;
-use App\Filament\Resources\BlogResource\Pages;
-use App\Models\Blog;
-use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -43,12 +40,14 @@ class BlogResource extends Resource
 {
     protected static ?string $model = Blog::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-newspaper';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-newspaper';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Konten';
+    protected static string|\UnitEnum|null $navigationGroup = 'Konten';
 
     protected static ?string $navigationLabel = 'Blog';
+
     protected static ?string $modelLabel = 'Artikel Blog';
+
     protected static ?string $pluralModelLabel = 'Artikel Blog';
 
     public static function form(Schema $schema): Schema

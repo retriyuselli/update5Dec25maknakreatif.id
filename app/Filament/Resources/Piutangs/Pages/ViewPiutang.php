@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Piutangs\Pages;
 
-use Filament\Actions\EditAction;
-use Filament\Actions\Action;
 use App\Filament\Resources\Piutangs\PiutangResource;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewPiutang extends ViewRecord

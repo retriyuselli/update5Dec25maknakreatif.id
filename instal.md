@@ -2,7 +2,7 @@ php artisan migrate --path=database/migrations/2025_08_30_094406_create_company_
 php artisan shield:generate --all
 lanjut blogs php artisan migrate --path=database/migrations/2025_09_01_100318_create_blogs_table.php
 php artisan migrate --path=database/migrations/
-cd /home/u380354370/domains/maknakreatif.id/public_html
+cd /home/u380354370/domains/update.maknakreatif.id/public_html
 
 # Server Deployment Commands (Run setelah git pull)
 

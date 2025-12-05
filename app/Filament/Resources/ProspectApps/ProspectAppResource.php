@@ -2,23 +2,20 @@
 
 namespace App\Filament\Resources\ProspectApps;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\Action;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use App\Filament\Resources\ProspectApps\Pages\ListProspectApps;
 use App\Filament\Resources\ProspectApps\Pages\CreateProspectApp;
-use App\Filament\Resources\ProspectApps\Pages\ViewProspectApp;
 use App\Filament\Resources\ProspectApps\Pages\EditProspectApp;
-use App\Filament\Resources\ProspectAppResource\Pages;
+use App\Filament\Resources\ProspectApps\Pages\ListProspectApps;
+use App\Filament\Resources\ProspectApps\Pages\ViewProspectApp;
 use App\Models\ProspectApp;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
@@ -26,7 +23,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -38,13 +36,15 @@ class ProspectAppResource extends Resource
 {
     protected static ?string $model = ProspectApp::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document';
 
     protected static ?string $navigationLabel = 'Aplikasi Prospek';
+
     protected static ?string $modelLabel = 'Aplikasi Prospek';
+
     protected static ?string $pluralModelLabel = 'Aplikasi Prospek';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Penjualan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Penjualan';
 
     protected static ?int $navigationSort = 2;
 

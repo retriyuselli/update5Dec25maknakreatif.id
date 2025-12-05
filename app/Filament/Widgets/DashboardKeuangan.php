@@ -13,7 +13,6 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class DashboardKeuangan extends BaseWidget
 {
     use HasWidgetShield;
-
     use InteractsWithPageFilters;
 
     protected static ?int $sort = 11;

@@ -2,20 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Actions\ViewAction;
-use Filament\Schemas\Components\Grid;
-use Filament\Actions\Action;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\InternalMessage;
 use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class InternalMessageResourceWidget extends BaseWidget

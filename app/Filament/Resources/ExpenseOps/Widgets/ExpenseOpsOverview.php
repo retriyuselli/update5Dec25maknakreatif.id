@@ -65,7 +65,7 @@ class ExpenseOpsOverview extends BaseWidget
                     'month' => Carbon::now()->month,
                 ])),
 
-            Stat::make('Total Pengeluaran Operasional (Tahun Ini)', '' . number_format($currentYearOpsExpenses, 0, ',', '.'))
+            Stat::make('Total Pengeluaran Operasional (Tahun Ini)', ''.number_format($currentYearOpsExpenses, 0, ',', '.'))
                 ->description('Total pengeluaran tahun ini')
                 ->descriptionIcon('heroicon-m-banknotes', IconPosition::Before)
                 ->color('primary'),

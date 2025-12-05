@@ -3,13 +3,7 @@
 @section('title', 'WOFINS - Portal Internal WO')
 
 @section('content')
-    <style>
-        * {
-            font-family: 'Poppins', sans-serif !important;
-        }
-    </style>
-
-    <div class="min-h-screen bg-white" style="font-family: 'Poppins', sans-serif;">
+    <div class="min-h-screen bg-white">
         <!-- Navigation Header -->
         @include('front.header')
 
@@ -20,12 +14,11 @@
                     <!-- Hero Text -->
                     <div class="lg:col-span-6">
                         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                            Tingkatkan produktivitas tim dengan
-                            <span class="text-blue-600">sistem terintegrasi</span> untuk wedding organizer
+                            Platform operasional <span class="text-blue-600">terintegrasi</span> untuk wedding organizer
+                            modern
                         </h1>
                         <p class="mt-6 text-lg text-gray-600 leading-relaxed">
-                            Kelola nota dinas, vendor, keuangan, dan tim dalam satu platform. Otomatisasi approval,
-                            real-time reporting, dan kontrol penuh atas operasional event Anda.
+                            Sederhanakan approval, kelola vendor & keuangan, dan pantau kinerja tim dalam satu tempat.
                         </p>
 
                         <!-- CTA Buttons -->
@@ -185,14 +178,12 @@
                 <div class="relative overflow-hidden">
                     <!-- Container with width that shows exactly 6 logos -->
                     <div class="w-full max-w-5xl mx-auto">
-                        <div class="animate-scroll-left flex space-x-12"
-                            style="animation: scroll-left 60s linear infinite; width: max-content;">
+                        <div class="animate-scroll-left flex space-x-12">
                             <!-- First set of all logos -->
                             <div class="flex space-x-12 flex-shrink-0">
                                 @if (isset($topRowLogos) && $topRowLogos->count() > 0)
                                     @foreach ($topRowLogos as $logo)
-                                        <img src="{{ $logo->logo_url }}"
-                                            alt="{{ $logo->alt_text ?: $logo->company_name }}"
+                                        <img src="{{ $logo->logo_url }}" alt="{{ $logo->alt_text ?: $logo->company_name }}"
                                             title="{{ $logo->company_name }}"
                                             class="h-16 w-auto opacity-60 hover:opacity-100 transition-opacity flex-shrink-0" />
                                     @endforeach
@@ -282,28 +273,7 @@
                 </div>
             </div>
 
-            <!-- Add inline styles to ensure animations work -->
-            <style>
-                @keyframes scroll-left {
-                    0% {
-                        transform: translateX(0);
-                    }
 
-                    100% {
-                        transform: translateX(-100%);
-                    }
-                }
-
-                @keyframes scroll-right {
-                    0% {
-                        transform: translateX(-100%);
-                    }
-
-                    100% {
-                        transform: translateX(0);
-                    }
-                }
-            </style>
         </section>
 
         <!-- Feature Tabs Section -->

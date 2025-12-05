@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\PendapatanLains\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\PendapatanLains\PendapatanLainResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPendapatanLain extends EditRecord

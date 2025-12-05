@@ -2,51 +2,47 @@
 
 namespace App\Filament\Resources\NotaDinasDetails;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Forms\Components\Select;
-use Filament\Actions\Action;
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Columns\TextColumn;
-use App\Models\Expense;
-use App\Models\ExpenseOps;
-use App\Models\PengeluaranLain;
-use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Columns\Summarizers\Average;
-use Filament\Tables\Columns\IconColumn;
-use Illuminate\Support\HtmlString;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\ViewAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Notifications\Notification;
-use Exception;
-use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use App\Filament\Resources\NotaDinasDetails\Pages\ListNotaDinasDetails;
-use App\Filament\Resources\NotaDinasDetails\Pages\CreateNotaDinasDetail;
-use App\Filament\Resources\NotaDinasDetails\Pages\EditNotaDinasDetail;
 use App\Enums\OrderStatus;
 use App\Enums\PengeluaranJenis;
-use App\Filament\Resources\NotaDinasDetailResource\Pages;
+use App\Filament\Resources\NotaDinasDetails\Pages\CreateNotaDinasDetail;
+use App\Filament\Resources\NotaDinasDetails\Pages\EditNotaDinasDetail;
+use App\Filament\Resources\NotaDinasDetails\Pages\ListNotaDinasDetails;
+use App\Models\Expense;
+use App\Models\ExpenseOps;
 use App\Models\NotaDinasDetail;
 use App\Models\Order;
+use App\Models\PengeluaranLain;
 use App\Models\User;
 use App\Models\Vendor;
-use Filament\Forms;
+use Exception;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Support\RawJs;
-use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\Summarizers\Average;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -54,13 +50,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class NotaDinasDetailResource extends Resource
 {
     protected static ?string $model = NotaDinasDetail::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-list-bullet';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-list-bullet';
 
     protected static ?string $navigationLabel = 'Detail Nota Dinas';
 
@@ -68,7 +65,7 @@ class NotaDinasDetailResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Detail Nota Dinas';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Keuangan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
 
     public static function form(Schema $schema): Schema
     {
