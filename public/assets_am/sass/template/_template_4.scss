@@ -1,0 +1,63 @@
+/* Template 4 ---------------------------------- */
+.table-stripe2 {
+    tr {
+        border-bottom: none;
+        th, td {
+            &:last-child {
+                text-align: left;
+            }
+        }
+        &:nth-child(odd) {
+            th, td {
+                background-color: $smoke-color;
+            }
+        }
+        &:last-child {
+            td {
+                padding: 18px 20px;
+            }
+        }
+    }
+}
+
+.header-layout4 {
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    .big-title {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+    span {
+        display: block;
+        text-align: right;
+    }
+}
+
+.company-address {
+    &.style2 {
+        background-color: transparent;
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+}
+
+.body-shape4,
+.body-shape5 {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 80px 80px 0;
+    border-color: transparent $smoke-dark transparent transparent;
+    position: absolute;
+}
+.body-shape4 {
+    top: 0;
+    right: 0;
+}
+.body-shape5 {
+    left: 0;
+    bottom: 0;
+    transform: rotate(180deg);
+}

@@ -1,0 +1,27 @@
+/* Template 11 ---------------------------------- */
+.header-layout8 {
+    .big-title {
+        font-size: 40px;
+        text-transform: uppercase;
+        margin-bottom: 0;
+    }
+    .header-bottom {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+}
+
+.header-bottom {
+    position: relative;
+    z-index: 2;
+    .shape-left {
+        height: 44px;
+        width: 50%;
+        background-color: $smoke-dark;
+        position: absolute;
+        top: -10px;
+        left: -50px;
+        z-index: -1;
+        clip-path: polygon(calc(100% - 30px) 0, 100% 50%, calc(100% - 30px) 100%, 0 100%, 0 0);
+    }
+}

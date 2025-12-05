@@ -1,0 +1,27 @@
+/* Template 3 ---------------------------------- */
+.invoice_style3 {
+    padding-bottom: 30px;
+    .big-title {
+        font-size: 40px;
+    }
+    .header-bottom {
+        border-bottom: 1px solid $border-color;
+        padding-bottom: 10px;
+        margin-top: 26px;
+    }
+}
+.footer-info {
+    background-color: $title-color;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 4px;
+    .info {
+        color: $theme-color;
+        padding: 0 40px;
+        &.left {
+            border-right: 1px solid $white-color;
+        }
+    }
+}

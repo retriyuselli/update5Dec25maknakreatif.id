@@ -1,0 +1,25 @@
+/* Template 9 ---------------------------------- */
+.invoice_style9 {
+    padding-bottom: 15px;
+}
+.header-layout7 {
+    margin-bottom: 48px;
+    .big-title {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+    span {
+        display: block;
+        text-align: right;
+    }
+}
+
+.body-shape9 {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    width: calc(100% - 50px);
+    height: 125px;
+    background-color: $smoke-color;
+    z-index: -1;
+}

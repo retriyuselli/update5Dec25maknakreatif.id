@@ -1,0 +1,106 @@
+/* Template 6 ---------------------------------- */
+.table-stripe3 {
+    &.style3 {
+        th, td {
+            text-align: center !important;
+        }
+    }
+    &.style4 {
+        th, td {
+            text-align: center !important;
+            &:first-child {
+                text-align: left !important;
+            }
+            &:last-child {
+                text-align: right !important;
+            }
+        }
+    }
+}
+
+.table-style1 {
+    border: 1px solid $smoke-color;
+    margin-top: -10px;
+    tr {
+        th, td {
+            text-align: left !important;
+            border-radius: 0 !important;
+            border-bottom: 1px solid $smoke-color;
+            width: 32.90%;
+        }
+    }
+    thead {
+        th, td {
+            border-right: 1px solid $border-color;
+            &:last-child {
+                border-right: none;
+            }
+        }
+    }
+}
+
+.table-style2 {
+    b, th {
+        font-weight: 600;
+    }
+    th, td {
+        border-radius: 0 !important;
+        border-right: 1px solid $smoke-color;
+        padding: 4px 20px;
+        &:first-child {
+            border-left: 1px solid $smoke-color;
+        }
+    }
+    td {
+        font-size: 12px;
+        &:last-child {
+            text-align: left;
+        }
+    }
+    tr {
+        border-bottom: none;
+        &:last-child {
+            border-bottom: 1px solid $smoke-color;
+            th, td {
+                padding-bottom: 15px;
+            }
+        }
+        &:first-child {
+            border-top: 1px solid $smoke-color;
+            th, td {
+                padding-top: 15px;
+            }
+        }
+    }
+}
+
+.total-table2 {
+    border: none;
+    th, td {
+        border: none;
+        padding: 5px 20px;
+        &:last-child {
+            text-align: right;
+        }
+    }
+}
+
+.body-shape6,
+.body-shape7 {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 100px 100px 0 100px;
+    border-color: $smoke-dark transparent transparent transparent;
+    margin-left: -6px;
+}
+.body-shape7 {
+    margin-left: 6px;
+    border-color: $smoke-color transparent transparent transparent;
+    z-index: -1;
+}

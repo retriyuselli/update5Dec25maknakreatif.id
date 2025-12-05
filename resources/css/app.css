@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
+
+/* Custom styles */
+body {
+    font-family: "Poppins", sans-serif;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* Filament Modal Button Styling */
+.fi-modal-footer
+    button[type="submit"]:not(.fi-btn-color-danger):not(.fi-btn-color-success) {
+    background-color: rgb(147 51 234) !important;
+    border-color: rgb(147 51 234) !important;
+    color: white !important;
+}
+
+.fi-modal-footer
+    button[type="submit"]:not(.fi-btn-color-danger):not(
+        .fi-btn-color-success
+    ):hover {
+    background-color: rgb(126 34 206) !important;
+    border-color: rgb(126 34 206) !important;
+}
+
+/* Specific for reset password modal */
+.fi-modal-footer .fi-btn:contains("Reset Password") {
+    background-color: rgb(147 51 234) !important;
+    border-color: rgb(147 51 234) !important;
+    color: white !important;
+}
+
+.dashboard-mockup {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.chart-bar {
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+    border-radius: 4px;
+}
+
+/* Logo scrolling animations */
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes scroll-right {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Animation utility classes */
+.animate-scroll-left {
+    animation: scroll-left 60s linear infinite;
+    width: max-content;
+}
+
+.animate-scroll-right {
+    animation: scroll-right 60s linear infinite;
+    width: max-content;
+}
+
+/* Pause animation on hover */
+.animate-scroll-left:hover,
+.animate-scroll-right:hover {
+    animation-play-state: paused;
+}
+
+/* Container for scrolling */
+.scroll-container {
+    overflow: hidden;
+    white-space: nowrap;
+}

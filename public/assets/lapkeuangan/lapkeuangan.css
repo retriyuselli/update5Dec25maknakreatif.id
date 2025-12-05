@@ -1,0 +1,54 @@
+@layer components {
+    /* Card component for containers */
+    .card {
+        @apply bg-white rounded-lg shadow p-4;
+    }
+
+    /* Form styling */
+    .form-label {
+        @apply block text-sm text-gray-600 mb-1;
+    }
+    .form-input {
+        @apply w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500;
+    }
+    .btn-primary {
+        @apply text-sm px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition duration-150 ease-in-out;
+    }
+
+    /* Summary card specific styling */
+    .summary-card-label {
+        @apply text-sm text-gray-500;
+    }
+    .summary-card-value {
+        @apply text-xl font-bold;
+    }
+
+    /* Table styling */
+    .table-container {
+        @apply overflow-x-auto bg-white shadow rounded-lg;
+    }
+    .data-table {
+        @apply w-full text-sm text-left;
+    }
+    .data-table thead {
+        @apply text-xs text-gray-700 uppercase bg-gray-100;
+    }
+    .data-table th,
+    .data-table td {
+        @apply px-4 py-3 whitespace-nowrap;
+    }
+    .data-table tbody {
+        @apply bg-white divide-y divide-gray-200;
+    }
+
+    /* Badge for status/type */
+    .badge {
+        @apply inline-block px-2 py-0.5 text-xs font-semibold rounded-full;
+    }
+    .badge-success {
+        @apply bg-green-100 text-green-800;
+    }
+    .badge-danger {
+        @apply bg-red-100 text-red-800;
+    }
+}

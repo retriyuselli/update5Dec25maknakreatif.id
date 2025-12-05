@@ -1,0 +1,63 @@
+/* Template 5 ---------------------------------- */
+.table-stripe3 {
+    border: 1px solid $smoke-color;
+    thead {
+        tr {
+            border-bottom: 1px solid $smoke-dark;
+        }
+    }
+    tr {
+        border-bottom: 1px solid $smoke-color;
+        th, td {
+            border-right: 1px solid $border-color;
+            &:nth-child(2) {
+                text-align: left;
+            }
+            &:last-child {  
+                border-right: none;
+            }
+        }
+        &:nth-child(even) {
+            th, td {
+                background-color: $smoke-color;
+            }
+        }
+    }
+    thead {
+        th, td {
+            background-color: $smoke-dark !important;
+            border-radius: 0 !important;
+            border-top: 1px solid #E0E0E0;
+        }
+    }
+    &.style2 {
+        tr {
+            th, td {
+                border-right: none;
+                border-left: none;
+            }
+            th, td {
+                &:last-child {
+                    text-align: right;
+                }
+            }
+        }
+    }
+    tfoot {
+        tr {
+            border-top: 1px solid $smoke-color;
+            background-color: $smoke-color;
+            td, th {
+                text-align: right;
+                &:last-child {
+                    border-left: none;
+                    text-align: right;
+                }
+                &:not(:last-child) {
+                    border-right: none;
+                    padding-right: 0;
+                }
+            }
+        }
+    }
+}

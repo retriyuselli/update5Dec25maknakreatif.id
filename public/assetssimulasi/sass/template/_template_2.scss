@@ -1,0 +1,122 @@
+/* Template 2 ---------------------------------- */
+.invoice_style2 {
+    .invoice-note {
+        padding-top: 0;
+        padding-bottom: 0;
+        border-top: none;
+        border-bottom: 1px solid $border-color;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+    .invoice-table {
+        th, td {
+            &:nth-child(2) {
+                text-align: center;
+            }
+        }
+    }
+}
+.header-bottom {
+    &_left,
+    &_right {
+        position: relative;
+        display: flex;
+        p {
+            margin-bottom: 0;
+            background-color: $smoke-color;
+            padding: 11px 20px;
+            width: 270px;
+            position: relative;
+            z-index: 2;
+        }
+        .shape {
+            display: inline-block;
+            min-height: 44px;
+            height: 100%;
+            width: 10px;
+            background-color: $smoke-dark;
+            margin-left: 6px;
+            transform: skewX(33deg);
+        }
+    }
+    &_left {
+        p {
+            clip-path: polygon(0 0, calc(100% - 30px) 0%, 100% 100%, 0% 100%);
+        }
+        .shape {
+            &:first-of-type {
+                margin-left: -9px;
+            }
+        }
+    }
+    &_right {
+        p {
+            text-align: right;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 30px 100%);
+        }
+        .shape {
+            &:last-of-type {
+                margin-right: -8px;
+            }
+        }
+    }
+}
+
+.booking-info {
+    margin-top: 5px;
+    margin-bottom: 25px;
+    position: relative;
+    &::before {
+        content: '';
+        height: 34px;
+        width: 2px;
+        position: absolute;
+        left: 5px;
+        top: 12px;
+        background-color: $smoke-dark;
+    }
+    p {
+        margin-bottom: 12px;
+        position: relative;
+        padding-left: 20px;
+        &:before {
+            content: '';
+            height: 12px;
+            width: 12px;
+            background-color: $smoke-dark;
+            border-radius: 99px;
+            position: absolute;
+            top: 5px;
+            left: 0;
+        }
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.address-box {
+    margin-bottom: 30px;
+    padding: 25px 30px;
+    border: 1px solid $border-color;
+    address {
+        margin-bottom: 0;
+    }
+}
+.address-left {
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+}
+.address-right {
+    border-radius: 0 10px 10px 0;
+}
+
+.company-address {
+    text-align: center;
+    background-color: $smoke-color;
+    padding: 13px 30px;
+    border-radius: 999px;
+    margin-top: 15px;
+    margin-bottom: 26px;
+}

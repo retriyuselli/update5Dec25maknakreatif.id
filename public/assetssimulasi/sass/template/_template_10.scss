@@ -1,0 +1,64 @@
+/* Template 10 ---------------------------------- */
+.invoice_style10 {
+    .header-layout7 {
+        padding-right: 65px;
+    }
+}
+.info-box {
+    background-color: $smoke-color;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+    border-right: 1px solid #e0e0e0;
+}
+
+.info-right {
+    border-right: none;
+}
+
+.table-style5 {
+    border: 1px solid $smoke-color;
+    thead {
+        th, td {
+            background-color: $smoke-dark;
+            &:first-child {
+                border-radius: 0;
+            }
+            &:last-child {
+                border-radius: 0;
+            }
+        }
+    }
+    th, td {
+        border-right: 1px solid $smoke-color;
+        &:first-child {
+            width: 55%;
+        }
+        &:last-child {
+            border-right: none;
+        }
+    }
+    tr {
+        border-bottom: none;
+        border-top: 1px solid $smoke-color;
+        &:last-child {
+            background-color: $smoke-color;
+            td {
+                text-align: right;
+                &:first-child {
+                    padding-right: 0;
+                }
+            }
+        }
+    }
+}
+
+.body-shape10 {
+    position: absolute;
+    top: 0;
+    right: 36px;
+    background-color: $smoke-color;
+    width: 300px;
+    height: 155px;
+    z-index: -1;
+    transform: skewX(-25deg);
+}

@@ -1,0 +1,267 @@
+/* Global Style ---------------------------------- */
+.themeholy-invoice {
+    position: relative;
+    z-index: 4;
+    background-color: $white-color;
+    .download-inner {
+        padding: 50px;
+    }
+    b {
+        color: $title-color;
+    }
+    .big-title {
+        font-size: 44px;
+        margin-bottom: 0;
+        text-align: right;
+    }
+    .header-bottom {
+        margin-top: 22px;
+        margin-bottom: 19px;
+    }
+    address {
+        margin-bottom: 0;
+    }
+}
+
+.invoice-right {
+    text-align: right;
+}
+
+.invoice-table {
+    border: none;
+    margin-bottom: 25px;
+    th {
+        color: $title-color;
+    }
+    th,
+    td {
+        padding: 11px 20px;
+        border: none;
+        &:last-child {
+            text-align: right;
+        }
+    }
+    tr {
+        border-bottom: 1px solid $border-color;
+        position: relative;
+    }
+    thead {
+        th,
+        td {
+            background-color: $smoke-dark;
+            &:first-child {
+                border-radius: 0;
+            }
+            &:last-child {
+                border-radius: 0;
+            }
+        }
+        tr {
+            border-bottom: none;
+        }
+    }
+}
+
+.table-stripe {
+    thead {
+        th,
+        td {
+            background-color: $smoke-dark;
+        }
+    }
+    tr {
+        border-bottom: none;
+        &:nth-child(2n) {
+            th,
+            td {
+                background-color: $smoke-color;
+                &:first-child {
+                    border-radius: 0;
+                }
+                &:last-child {
+                    border-radius: 0;
+                }
+            }
+        }
+    }
+}
+
+.total-table {
+    border: none;
+    margin-bottom: 0;
+    margin-top: -4px;
+    th,
+    td {
+        border: none;
+        padding: 4px 20px;
+        &:nth-child(2) {
+            text-align: right;
+        }
+    }
+    tr {
+        &:last-child {
+            th,
+            td {
+                padding: 15px 20px;
+            }
+            border-top: 1px solid $border-color;
+        }
+        &:nth-last-child(2) {
+            th,
+            td {
+                padding: 4px 20px 16px 20px;
+            }
+        }
+    }
+}
+
+hr.style1 {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    background-color: $border-color;
+    opacity: 1;
+}
+
+.table-title {
+    font-size: 16px;
+    margin-bottom: 7px;
+}
+
+.text-title {
+    color: $title-color;
+    font-weight: 500;
+}
+
+.invoice-note {
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    font-size: 9px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+    svg {
+        margin-right: 5px;
+        margin-top: -3px;
+    }
+    b {
+        margin-right: 5px;
+    }
+}
+
+.body-shape1 {
+    height: 5px;
+    width: 100%;
+    background-color: $smoke-dark;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    &:before {
+        content: "";
+        height: 16px;
+        width: 50%;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: $smoke-dark;
+        border-radius: 99px 0 0 0;
+    }
+}
+
+.body-shape2 {
+    position: absolute;
+    bottom: 65px;
+    right: 0;
+    .shape {
+        height: 20px;
+        width: 35px;
+        background-color: $smoke-color;
+        border-radius: 99px 0 0 99px;
+        margin-bottom: 10px;
+    }
+}
+.body-shape3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 117px;
+    overflow: hidden;
+    svg {
+        max-width: 100%;
+    }
+}
+
+.invoice-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 3px;
+    overflow: hidden;
+    margin-top: 12px;
+    position: relative;
+    top: -50px;
+    background-color: $white-color;
+    box-shadow: 0px 0px 15px rgba(119, 119, 119, 0.25);
+    border-radius: 10px;
+    max-width: 129px;
+    margin-left: auto;
+    margin-right: auto;
+    a,
+    button {
+        border: none;
+        height: 40px;
+        width: 60px;
+        line-height: 37px;
+        text-align: center;
+        background-color: #cfffea;
+        border-radius: 7px 0 0 7px;
+        transition: 0.3s ease-in-out;
+        svg path {
+            transition: 0.3s ease-in-out;
+        }
+        &:hover {
+            background-color: #00c764;
+            svg {
+                path {
+                    fill: #fff;
+                }
+            }
+        }
+    }
+    .download_btn {
+        background-color: #e1ecff;
+        border-radius: 0 7px 7px 0;
+        &:hover {
+            background-color: $theme-color;
+        }
+    }
+}
+
+/* For remove URL and Page Number -------*/
+@page {
+    size: auto;
+    margin: 0;
+}
+@media print {
+    @page :footer {
+        display: none;
+    }
+
+    @page :header {
+        display: none;
+    }
+}
+
+@media print {
+    .themeholy-invoice .download-inner {
+        padding: 0;
+    }
+    .invoice-container {
+        &-wrap {
+            overflow-x: hidden;
+        }
+        width: 100%;
+        max-width: 880px;
+    }
+}

@@ -1,0 +1,75 @@
+.color_blue {
+    --smoke-dark: #2d7cfe;
+    th {
+        color: $white-color;
+    }
+}
+.template_shape1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.body-shape9 {
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+
+.themeholy-header {
+    &.style_white {
+        h1,
+        .h1,
+        p,
+        span,
+        b {
+            color: $white-color;
+        }
+        b {
+            font-weight: 600;
+        }
+        .svg-shape1 {
+            left: 25px;
+            width: calc(100% - 50px);
+            transform: translate(0, 0);
+            img {
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+}
+
+/*---------- Dark Mode ----------*/
+.dark_mode {
+    --white-color: #111111;
+    --title-color: #fff;
+    --body-color: #e7e9ed;
+    --smoke-color: #1a2733;
+    --smoke-dark: #2d7cfe;
+    --border-color: #1a2733;
+    address,
+    td {
+        color: $body-color;
+    }
+    .address-box {
+        background-color: $smoke-color;
+        --border-color: #323d45;
+    }
+    .print_btn {
+        color: $theme-color;
+        &:hover {
+            background-color: $smoke-color;
+        }
+    }
+    .download_btn {
+        color: #fff;
+        &:hover {
+            background-color: $smoke-color;
+        }
+    }
+}

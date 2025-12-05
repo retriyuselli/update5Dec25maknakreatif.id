@@ -1,0 +1,53 @@
+/* Template 1 ---------------------------------- */
+.invoice_style1 {
+    padding-bottom: 1px;
+}
+.invoice-number {
+    margin-bottom: 0;
+}
+.invoice-date {
+    margin-bottom: 0;
+}
+.invoice {
+    &_style1 {
+        .invoice-note {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 0;
+            border-top: none;
+            border-bottom: none;
+            padding-top: 0;
+            padding-bottom: 0;
+            text-align: left;
+            &:before {
+                content: '';
+                height: 30px;
+                width: 77px;
+                background-color: $smoke-color;
+                position: absolute;
+                top: -4px;
+                left: -50px;
+                border-radius: 0 99px 99px 0;
+                z-index: -1;
+            }
+            svg {
+                margin-right: 24px;
+            }
+        }
+        .invoice-buttons {
+            margin-bottom: 16px;
+            margin-top: 30px;
+        }
+    }
+}
+
+.border-line {
+    opacity: 0;
+}
+
+.body-shapenew1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}

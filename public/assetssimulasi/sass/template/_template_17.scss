@@ -1,0 +1,19 @@
+/* Template 17 ---------------------------------- */
+.table-stripe3 {
+    &.style5 {
+        th, td {
+            &:last-child {
+                text-align: left;
+            }
+        }
+    }
+}
+
+.info-box2 {
+    background-color: $smoke-color;
+    border-right: 1px solid $border-color;
+    padding: 15px 20px;
+    &.text-end {
+        border-right: none;
+    }
+}

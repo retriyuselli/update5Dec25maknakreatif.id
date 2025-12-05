@@ -1,0 +1,34 @@
+/* Template 20 ---------------------------------- */
+.table-style9 {
+    border: 1px solid $smoke-color;
+    thead {
+        th, td {
+            background-color: $smoke-dark;
+            &:first-child {
+                border-radius: 0;
+            }
+            &:last-child {
+                border-radius: 0;
+            }
+        }
+    }
+    tr {
+        border-bottom: none;
+        border-top: 1px solid $smoke-color;
+    }
+    th, td {
+        border-right: 1px solid $smoke-color;
+        &:last-child {
+            border-right: none;
+        }
+    }
+    tfoot {
+        th, td {
+            background-color: $smoke-color;
+            text-align: right;
+            &:not(:last-child) {
+                padding-right: 0;
+            }
+        }
+    }
+}

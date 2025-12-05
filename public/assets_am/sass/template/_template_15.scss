@@ -1,0 +1,43 @@
+/* Template 15 ---------------------------------- */
+.invoice_style15 {
+    padding-bottom: 15px;
+}
+
+.header-layout11 {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    margin-bottom: 45px;
+    .big-title {
+        font-size: 24px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    span {
+        display: block;
+        text-align: right;
+    }
+}
+
+.svg-shape1 {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+}
+
+.table-style8 {
+    border: 1px solid #e7e9ed;
+    tr {
+        border-bottom: 1px solid #e7e9ed;
+    }
+    th,
+    td {
+        border-right: 1px solid #e7e9ed;
+        padding: 11px 15px;
+        &:last-child {
+            text-align: left;
+            border-right: none;
+        }
+    }
+}

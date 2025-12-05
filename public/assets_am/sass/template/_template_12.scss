@@ -1,0 +1,56 @@
+/* Template 12 ---------------------------------- */
+.header-layout10 {
+    .big-title {
+        font-size: 40px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+    span {
+        display: block;
+        text-align: right;
+    }
+}
+
+.border-box{
+    border: 1px solid $border-color;
+    padding: 25px 30px;
+}
+
+.table-style6 {
+    border: 1px solid $smoke-color;
+    tr {
+        border-top: 1px solid $smoke-color;
+        border-bottom: none;
+        &:nth-child(odd) {
+            background-color: $smoke-color;
+        }
+    }
+    th, td {
+        border-right: 1px solid $border-color;
+        width: 25%;
+        &:last-child {
+            text-align: left;
+            border-right: none;
+        }
+    }
+}
+
+.table-style7 {
+    border: 1px solid $smoke-color;
+    tr {
+        border-bottom: none;
+        &:nth-child(odd) {
+            td {
+                background-color: $smoke-color;
+            }
+        }
+    }
+    td {
+        border-right: 1px solid $border-color;
+        width: 50%;
+        &:last-child {
+            border-right: none;
+            text-align: left;
+        }
+    }
+}
