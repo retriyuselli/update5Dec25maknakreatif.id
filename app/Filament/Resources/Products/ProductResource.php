@@ -610,6 +610,7 @@ class ProductResource extends Resource
     protected static function getVendorRepeater()
     {
         return Repeater::make('items')
+            ->label('Vendors')
             ->relationship()
             ->schema([
                 Grid::make(4)
@@ -643,7 +644,6 @@ class ProductResource extends Resource
                             ->prefix('Rp')
                             ->numeric()
                             ->reactive()
-                            ->stripCharacters(',')
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 self::calculatePrices($get, $set);
                             }),
@@ -666,16 +666,16 @@ class ProductResource extends Resource
                             ->numeric()
                             ->reactive()
                             ->dehydrated()
-                            ->mask(RawJs::make('$money($input)'))
                             ->helperText('Published price × quantity'),
 
                         TextInput::make('harga_vendor')
                             ->label('Vendor Price')
                             ->prefix('Rp')
                             ->numeric()
-                            ->reactive()
+                            ->readOnly()
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
+                            ->reactive()
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 self::calculatePrices($get, $set);
                             }),
@@ -774,8 +774,9 @@ class ProductResource extends Resource
     {
         $vendor = static::getVendorData($vendorId);
         if ($vendor) {
-            $set('harga_publish', $vendor->harga_publish);
-            $set('harga_vendor', $vendor->harga_vendor);
+            $active = $vendor->activePrice();
+            $set('harga_publish', $active?->harga_publish ?? $vendor->harga_publish);
+            $set('harga_vendor', $active?->harga_vendor ?? $vendor->harga_vendor);
             $set('description', $vendor->description);
         }
     }
@@ -784,8 +785,9 @@ class ProductResource extends Resource
     {
         $vendor = static::getVendorData($vendorId);
         if ($vendor) {
-            $set('harga_publish', $vendor->harga_publish);
-            $set('harga_vendor', $vendor->harga_vendor);
+            $active = $vendor->activePrice();
+            $set('harga_publish', $active?->harga_publish ?? $vendor->harga_publish);
+            $set('harga_vendor', $active?->harga_vendor ?? $vendor->harga_vendor);
             $set('description', $vendor->description);
         }
     }

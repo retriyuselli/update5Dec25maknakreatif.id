@@ -13,7 +13,6 @@ use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class EditVendor extends EditRecord
 {
@@ -209,16 +208,4 @@ class EditVendor extends EditRecord
             RestoreAction::make(),
         ];
     }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        $data['slug'] = Str::slug($data['name']);
-
-        return $data;
-    }
-
-    // protected function getRedirectUrl(): string
-    // {
-    //     return $this->getResource()::getUrl('index');
-    // }
 }

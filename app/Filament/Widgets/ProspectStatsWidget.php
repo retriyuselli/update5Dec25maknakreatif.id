@@ -42,7 +42,7 @@ class ProspectStatsWidget extends BaseWidget
                     ->when($endDate, fn ($qq) => $qq->whereDate('closing_date', '<=', $endDate));
             })
             ->count();
-        $protectedProspects = $prospectsWithOrders; // Prospects that cannot be deleted
+
         $conversionRate = $totalProspects > 0 ? round(($prospectsWithOrders / $totalProspects) * 100, 1) : 0;
 
         return [

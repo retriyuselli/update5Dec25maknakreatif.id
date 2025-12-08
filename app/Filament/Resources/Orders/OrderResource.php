@@ -36,7 +36,6 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -143,11 +142,17 @@ class OrderResource extends Resource
                             ->maxLength(32)
                             ->unique(Order::class, 'number', ignoreRecord: true),
                         Select::make('prospect_id')
-                            ->relationship('prospect', 'name_event', function (Builder $query) {
-                                return $query->whereDoesntHave('orders', function ($query) {
-                                    $query->whereNotNull('status');
+                            ->options(function (Get $get) {
+                                $currentId = $get('prospect_id');
+                                $query = Prospect::query()->whereDoesntHave('orders', function ($q) {
+                                    $q->whereNotNull('status');
                                 });
+                                if ($currentId) {
+                                    $query->orWhere('id', $currentId);
+                                }
+                                return $query->pluck('name_event', 'id')->toArray();
                             })
+                            ->preload()
                             ->searchable()
                             ->required()
                             ->unique(Order::class, 'prospect_id', ignoreRecord: true)
@@ -179,14 +184,14 @@ class OrderResource extends Resource
                             ->required()
                             ->searchable()
                             ->default(Auth::user()->id)
-                            ->label('Manajer Akun'),
+                            ->label('Account Manager'),
                         TextInput::make('slug')
                             ->readOnly()->maxLength(255),
                         Select::make('employee_id')
                             ->relationship('employee', 'name')
                             ->searchable()
                             ->required()
-                            ->label('Manajer Acara')
+                            ->label('Event Manager')
                             ->helperText('Jika belum ada isi dengan makna wedding'),
                         TextInput::make('no_kontrak')
                             ->required()
@@ -736,7 +741,30 @@ class OrderResource extends Resource
                                                 DatePicker::make('date_expense')
                                                     ->label('Tanggal Pengeluaran')
                                                     ->default(now())
-                                                    ->required(),
+                                                    ->required()
+                                                    ->reactive()
+                                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                                        try {
+                                                            $vendorId = $get('vendor_id');
+                                                            if (! $vendorId) {
+                                                                return;
+                                                            }
+
+                                                            $vendor = Vendor::find($vendorId);
+                                                            if (! $vendor) {
+                                                                return;
+                                                            }
+
+                                                            $at = $state ? \Carbon\Carbon::parse($state) : now();
+                                                            $active = $vendor->activePrice($at);
+
+                                                            $currentAmount = self::safeFloatVal($get('amount'));
+                                                            if (($currentAmount ?? 0) <= 0 && $active) {
+                                                                $set('amount', $active->harga_vendor);
+                                                            }
+                                                        } catch (\Throwable $e) {
+                                                        }
+                                                    }),
                                             ]),
 
                                         Grid::make(1)

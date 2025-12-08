@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\PembayaranPiutang;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Foundation\Auth\User as AuthUser;
 
 class PembayaranPiutangPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:PembayaranPiutang');
@@ -66,4 +66,5 @@ class PembayaranPiutangPolicy
     {
         return $authUser->can('Reorder:PembayaranPiutang');
     }
+
 }

@@ -73,8 +73,7 @@ class AccountManagerWidget extends BaseWidget
                             'format' => 'svg',
                         ]);
                     })
-                    ->circular()  // Round images look more polished
-                    ->size(40),   // Good size for visibility without taking too much space
+                    ->circular(), // Round images look more polished
 
                 // Manager's name - the most important identifier
                 TextColumn::make('name')

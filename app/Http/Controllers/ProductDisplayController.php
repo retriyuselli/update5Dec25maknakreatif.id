@@ -29,20 +29,10 @@ class ProductDisplayController extends Controller
         $product->load(['category', 'items.vendor', 'pengurangans', 'penambahanHarga.vendor']);
 
         if ($action === 'preview' || $action === 'print') {
-            // Return a view for previewing/printing
-            // You might have slightly different views or logic for print vs preview
             return view('products.details-preview', compact('product', 'action'));
         } elseif ($action === 'download') {
-            // Load the PDF view
-            $pdf = Pdf::loadView('products.details-preview', compact('product', 'action')); // <-- Use the new PDF view here
-            // Generate and download a PDF
-            // Example using barryvdh/laravel-dompdf:
-            $pdf = Pdf::loadView('products.details-preview', compact('product'));
-
+            $pdf = Pdf::loadView('products.details-preview', compact('product', 'action'));
             return $pdf->download($product->slug.'-details.pdf');
-
-            // Placeholder if PDF library is not set up yet
-            return response("PDF download for '{$product->name}' not implemented yet.", 501);
         }
 
         // Handle invalid action
@@ -60,8 +50,8 @@ class ProductDisplayController extends Controller
             // Anda bisa menambahkan data lain di sini jika perlu
         ];
 
-        // Load view 'products.pdf' dengan data
-        $pdf = Pdf::loadView('products.pdf', $data);
+        // Gunakan view preview untuk PDF agar konsisten
+        $pdf = Pdf::loadView('products.details-preview', $data);
 
         // (Opsional) Konfigurasi PDF
         // $pdf->setPaper('A4', 'portrait'); // Contoh: set ukuran kertas dan orientasi

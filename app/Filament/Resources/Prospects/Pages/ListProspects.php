@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Prospects\Pages;
 
 use App\Filament\Resources\Prospects\ProspectResource;
-use App\Filament\Widgets\ProspectStatsWidget;
+use App\Filament\Resources\Prospects\Widgets\ProspectStatsWidget;
 use App\Models\Prospect;
 use Exception;
 use Filament\Actions\Action;

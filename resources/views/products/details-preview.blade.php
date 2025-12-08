@@ -33,7 +33,7 @@
                 size: A4;
                 margin-top: 2cm;
                 margin-bottom: 1cm;
-                margin-left: 1, 5cm;
+                margin-left: 1.5cm;
                 margin-right: 1cm;
             }
 
@@ -47,7 +47,7 @@
                 /* Paksa teks hitam dasar */
                 font-size: 5pt !important;
                 /* Ukuran font global untuk cetak. Catatan: 'pt' umumnya lebih konsisten untuk print. */
-                line-height: 1, 5 !important;
+                line-height: 1.5 !important;
                 /* Jarak antar baris yang sedikit lebih rapat untuk font kecil, sesuaikan */
                 font-weight: normal !important;
                 -webkit-print-color-adjust: exact !important;
@@ -128,10 +128,13 @@
                 font-size: inherit;
                 /* Mewarisi ukuran font dari body atau elemen pembungkus. Ukuran font spesifik tabel bisa diatur di sini atau di th, td. */
                 table-layout: fixed;
-                /* Aktifkan baris ini jika Anda ingin lebar kolom ditentukan oleh header atau tag <col>, bukan oleh konten sel. Berguna untuk tabel dengan banyak teks atau jika ingin kontrol lebar kolom yang presisi.
+                /* Aktifkan baris ini jika Anda ingin lebar kolom ditentukan oleh header atau tag <col>,
+                   bukan oleh konten sel. Berguna untuk tabel dengan banyak teks atau jika ingin kontrol
+                   lebar kolom yang presisi. */
             }
 
-            caption { /* Styling untuk elemen <caption> tabel jika Anda menggunakannya */
+            caption {
+                /* Styling untuk elemen <caption> tabel jika Anda menggunakannya */
                 padding: 8px !important;
                 caption-side: bottom !important;
                 /* Posisi caption (umumnya 'bottom' atau 'top') */
@@ -273,7 +276,7 @@
                 <img src="{{ $logoSrc }}" alt="Makna Kreatif Indonesia" class="max-h-10 mx-auto mb-4">
             @endif
             {{-- <h1 class="text-[16px] font-bold uppercase tracking-wide text-gray-800">{{ $product->name ?? 'Nama Produk Tidak Tersedia' }}</h1> --}}
-            <p class="text-[12px] text-gray-600 mt-1,5">Jl. Sintraman Jaya I No. 2148, 20 Ilir D II, <br>
+            <p class="text-[12px] text-gray-600 mt-1.5">Jl. Sintraman Jaya I No. 2148, 20 Ilir D II, <br>
                 Kecamatan Kemuning, Kota Palembang, Sumatera Selatan 30137</p>
             <p class="text-[12px] text-gray-600 mt-0">PT. Makna Kreatif Indonesia | maknawedding@gmail.com | +62
                 822-9796-2600</p>
@@ -320,8 +323,10 @@
                 </thead>
                 <tbody>
                     @forelse($product->items ?? [] as $item)
-                        <tr class="odd:bg-white even:bg-slate-50/70 hover:bg-indigo-50/70 transition-colors duration-150 ease-in-out">
-                            <td class="border border-slate-300 px-4 py-3 text-center align-top">{{ $loop->iteration }}</td>
+                        <tr
+                            class="odd:bg-white even:bg-slate-50/70 hover:bg-indigo-50/70 transition-colors duration-150 ease-in-out">
+                            <td class="border border-slate-300 px-4 py-3 text-center align-top">{{ $loop->iteration }}
+                            </td>
                             <td class="border border-slate-300 px-4 py-3 align-top">
                                 <div class="font-bold uppercase text-[13px]">
                                     {{ $item->vendor->name ?? 'Vendor Tidak Diketahui' }}</div>
@@ -332,7 +337,7 @@
                             <td class="border border-slate-300 px-4 text-[13px] py-3 text-right align-top">
                                 <!--{{ number_format($item->price_vendor ?? ($item->harga_vendor ?? 0), 0, ',', '.') }}</td>-->
                                 {{ number_format($item->calculate_price_vendor, 0, ',', '.') }}
-                            {{-- Menampilkan harga_publish atau harga publik yang dihitung --}}
+                                {{-- Menampilkan harga_publish atau harga publik yang dihitung --}}
                             <td class="border border-slate-300 px-4 py-3 text-[13px] text-right align-top">
                                 {{ number_format($item->price_public ?? ($item->harga_publish ?? 0), 0, ',', '.') }}
                             </td>
@@ -347,13 +352,12 @@
         </div>
 
         {{-- Detail Penambahan --}}
-        @if(($product->penambahanHarga ?? collect())->count() > 0)
+        @if (($product->penambahanHarga ?? collect())->count() > 0)
             <div class="mt-8 border border-slate-200 p-4 sm:p-5 rounded-lg bg-white shadow-sm">
                 <h3 class="text-sm font-semibold mb-5">Penambahan</h3>
                 <table class="w-full border-collapse text-sm">
                     <thead>
-                        <th
-                            class="border text-[13px] px-4 py-3 text-center bg-slate-100 font-bold uppercase tracking-wider"
+                        <th class="border text-[13px] px-4 py-3 text-center bg-slate-100 font-bold uppercase tracking-wider"
                             style="width: 6%;">No</th>
                         <th
                             class="border text-[13px] px-4 py-3 text-left bg-slate-100 font-bold uppercase tracking-wider">
@@ -364,8 +368,9 @@
                             style="width: 15%;">Public</th>
                     </thead>
                     <tbody>
-                        @foreach($product->penambahanHarga as $index => $addition)
-                            <tr class="odd:bg-white even:bg-slate-50/70 hover:bg-indigo-50/70 transition-colors duration-150 ease-in-out">
+                        @foreach ($product->penambahanHarga as $index => $addition)
+                            <tr
+                                class="odd:bg-white even:bg-slate-50/70 hover:bg-indigo-50/70 transition-colors duration-150 ease-in-out">
                                 <td class="border border-slate-300 px-4 py-3 text-center align-top text-[13px]">
                                     {{ $index + 1 }}
                                 </td>
@@ -392,13 +397,12 @@
         @endif
 
         {{-- Detail Pengurangan --}}
-        @if(($product->pengurangans ?? collect())->count() > 0)
+        @if (($product->pengurangans ?? collect())->count() > 0)
             <div class="mt-8 border border-slate-200 p-4 sm:p-5 rounded-lg bg-white shadow-sm">
                 <h3 class="text-sm font-semibold mb-5">Pengurangan</h3>
                 <table class="w-full border-collapse text-sm">
                     <thead>
-                        <th
-                            class="border text-[13px] px-4 py-3 text-center bg-slate-100 font-bold uppercase tracking-wider"
+                        <th class="border text-[13px] px-4 py-3 text-center bg-slate-100 font-bold uppercase tracking-wider"
                             style="width: 8%;">No</th>
                         <th
                             class="border text-[13px] px-4 py-3 text-left bg-slate-100 font-bold uppercase tracking-wider">
@@ -407,8 +411,9 @@
                             style="width: 15%;">Value</th>
                     </thead>
                     <tbody>
-                        @foreach($product->pengurangans as $index => $discount)
-                            <tr class="odd:bg-white even:bg-slate-50/70 hover:bg-indigo-50/70 transition-colors duration-150 ease-in-out">
+                        @foreach ($product->pengurangans as $index => $discount)
+                            <tr
+                                class="odd:bg-white even:bg-slate-50/70 hover:bg-indigo-50/70 transition-colors duration-150 ease-in-out">
                                 <td class="border border-slate-300 px-4 py-3 text-center align-top text-[13px]">
                                     {{ $index + 1 }}
                                 </td>
@@ -476,13 +481,13 @@
                 </tr>
                 <tr>
                     <td class="border border-gray-300 p-2 text-right text-xs"><strong>Total Addition Publish
-                        (Penambahan)</strong></td>
-                        <td class="border border-gray-300 p-2 text-right text-green-600 font-semibold"><strong>+
+                            (Penambahan)</strong></td>
+                    <td class="border border-gray-300 p-2 text-right text-green-600 font-semibold"><strong>+
                             {{ number_format($totalAdditionAmount, 0, ',', '.') }}</strong></td>
-                        </tr>   
+                </tr>
                 <tr>
                     <td class="border border-gray-300 p-2 text-right text-xs"><strong>Total Addition Vendor
-                        (Penambahan)</strong></td>
+                            (Penambahan)</strong></td>
                     <td class="border border-gray-300 p-2 text-right text-green-600 font-semibold"><strong>+
                             {{ number_format($totalAdditionVendorAmount, 0, ',', '.') }}</strong></td>
                 </tr>
@@ -493,12 +498,14 @@
                             {{ number_format($totalDiscountAmount, 0, ',', '.') }}</strong></td>
                 </tr>
                 <tr>
-                    <td class="border border-gray-300 p-2 text-right text-xs"><strong>Total Paket Publish (Publish + Addition Publish - Reduction)</strong></td>
+                    <td class="border border-gray-300 p-2 text-right text-xs"><strong>Total Paket Publish (Publish +
+                            Addition Publish - Reduction)</strong></td>
                     <td class="border border-gray-300 p-2 text-right font-bold text-xs"><strong>
                             {{ number_format($finalPriceAfterDiscounts, 0, ',', '.') }}</strong></td>
                 </tr>
                 <tr>
-                    <td class="border border-gray-300 p-2 text-right text-xs"><strong>Total Paket Vendor (Vendor + Addition Vendor - Reduction)</strong></td>
+                    <td class="border border-gray-300 p-2 text-right text-xs"><strong>Total Paket Vendor (Vendor +
+                            Addition Vendor - Reduction)</strong></td>
                     <td class="border border-gray-300 p-2 text-right font-bold text-xs"><strong>
                             {{ number_format($finalVendorPriceAfterDiscounts, 0, ',', '.') }}</strong></td>
                 </tr>
@@ -549,18 +556,13 @@
         {{-- Action Buttons (Download/Print) - Hidden on Print --}}
         <div class="flex flex-col md:flex-row items-center justify-center gap-4 mt-8 mb-6 print:hidden">
             {{-- Tombol Download PDF --}}
-            <x-download-pdf-button 
-                :route="route('products.downloadPdf', $product)" 
-                label="Download PDF" 
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs uppercase font-semibold rounded-md transition" 
-            />
+            <x-download-pdf-button :route="route('products.downloadPdf', $product)" label="Download PDF"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs uppercase font-semibold rounded-md transition" />
 
             {{-- Tombol Export Excel --}}
-            <x-download-pdf-button 
-                :route="route('products.exportExcelDetail', $product)"
-                label="Export to Excel"
-                class="px-4 py-2 bg-green-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs uppercase font-semibold rounded-md transition" 
-            />
+            <x-download-pdf-button :route="route('products.exportExcelDetail', $product)" label="Export to Excel"
+                class="px-4 py-2 bg-green-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs uppercase font-semibold rounded-md transition" />
         </div>
 </body>
+
 </html>

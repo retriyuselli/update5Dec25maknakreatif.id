@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -24,12 +25,50 @@ class Vendor extends Model
         'description',
         'harga_publish',
         'harga_vendor',
+        'profit_amount',
+        'profit_margin',
         'bank_name',
         'account_holder',
         'kontrak_kerjasama',
         'bank_account',
         'category_id',
     ];
+
+    protected $casts = [
+        'profit_amount' => 'decimal:2',
+        'profit_margin' => 'decimal:2',
+        'harga_publish' => 'decimal:2',
+        'harga_vendor' => 'decimal:2',
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $vendor): void {
+            $hp = (float) ($vendor->harga_publish ?? 0);
+            $hv = (float) ($vendor->harga_vendor ?? 0);
+            $vendor->calculateProfitAmount();
+            $profit = (float) ($vendor->profit_amount ?? 0);
+            $vendor->profit_margin = $hp > 0 ? round(($profit / $hp) * 100, 2) : 0;
+        });
+
+        static::retrieved(function (self $vendor): void {
+            $hp = (float) ($vendor->harga_publish ?? 0);
+            $vendor->calculateProfitAmount();
+            $profit = (float) ($vendor->profit_amount ?? 0);
+            $margin = $hp > 0 ? round(($profit / $hp) * 100, 2) : 0;
+
+            $needsUpdate = ($vendor->profit_amount === null) || ($vendor->profit_margin === null) ||
+                ((float) $vendor->profit_margin !== (float) $margin);
+
+            if ($needsUpdate) {
+                $vendor->profit_margin = $margin;
+                try {
+                    $vendor->saveQuietly();
+                } catch (\Throwable $e) {
+                }
+            }
+        });
+    }
 
     public function category()
     {
@@ -59,6 +98,27 @@ class Vendor extends Model
     public function productPenambahans(): HasMany
     {
         return $this->hasMany(ProductPenambahan::class);
+    }
+
+    public function priceHistories(): HasMany
+    {
+        return $this->hasMany(VendorPriceHistory::class);
+    }
+
+    public function activePrice(?\DateTimeInterface $at = null): ?VendorPriceHistory
+    {
+        $at = $at ?? now();
+        $query = $this->priceHistories()
+            ->where('effective_from', '<=', $at)
+            ->where(function ($q) use ($at) {
+                $q->whereNull('effective_to')->orWhere('effective_to', '>=', $at);
+            });
+
+        if (Schema::hasColumn('vendor_price_histories', 'status')) {
+            $query->where('status', 'active');
+        }
+
+        return $query->orderByDesc('effective_from')->first();
     }
 
     /**
@@ -167,5 +227,10 @@ class Vendor extends Model
         }
 
         return $slug;
+    }
+
+    public function calculateProfitAmount(): void
+    {
+        $this->profit_amount = $this->harga_publish - $this->harga_vendor;
     }
 }
