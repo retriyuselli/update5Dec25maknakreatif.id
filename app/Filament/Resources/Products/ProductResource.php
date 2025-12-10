@@ -45,6 +45,8 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\RawJs;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -449,6 +451,91 @@ class ProductResource extends Resource
                     ->color('gray'),
             ])
             ->filters([
+                SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->multiple(),
+
+                SelectFilter::make('is_active')
+                    ->label('Status')
+                    ->options([
+                        1 => 'Active',
+                        0 => 'Inactive',
+                    ]),
+
+                SelectFilter::make('is_approved')
+                    ->label('Approved')
+                    ->options([
+                        1 => 'Approved',
+                        0 => 'Not Approved',
+                    ]),
+
+                Filter::make('vendor_usage')
+                    ->label('Vendor Usage')
+                    ->schema([
+                        Select::make('usage')
+                            ->label('Filter')
+                            ->options([
+                                'with' => 'Dengan Vendor',
+                                'without' => 'Tanpa Vendor',
+                            ])
+                            ->placeholder('Semua Produk'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            ($data['usage'] ?? null) === 'with',
+                            fn (Builder $q): Builder => $q->whereHas('items'),
+                        )->when(
+                            ($data['usage'] ?? null) === 'without',
+                            fn (Builder $q): Builder => $q->whereDoesntHave('items'),
+                        );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (! empty($data['usage'])) {
+                            return 'Vendor: '.($data['usage'] === 'with' ? 'Ada' : 'Tidak Ada');
+                        }
+
+                        return null;
+                    }),
+
+                Filter::make('price_range')
+                    ->label('Rentang Harga')
+                    ->schema([
+                        TextInput::make('min')
+                            ->numeric()
+                            ->placeholder('Min'),
+                        TextInput::make('max')
+                            ->numeric()
+                            ->placeholder('Max'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        $min = $data['min'] ?? null;
+                        $max = $data['max'] ?? null;
+
+                        return $query
+                            ->when($min !== null && $min !== '', fn (Builder $q): Builder => $q->where('price', '>=', $min))
+                            ->when($max !== null && $max !== '', fn (Builder $q): Builder => $q->where('price', '<=', $max));
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        $min = $data['min'] ?? null;
+                        $max = $data['max'] ?? null;
+
+                        if ($min !== null || $max !== null) {
+                            if ($min && $max) {
+                                return 'Harga: Rp '.$min.' - Rp '.$max;
+                            }
+                            if ($min) {
+                                return 'Harga >= Rp '.$min;
+                            }
+                            if ($max) {
+                                return 'Harga <= Rp '.$max;
+                            }
+                        }
+
+                        return null;
+                    }),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([

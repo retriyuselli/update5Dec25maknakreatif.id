@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AccountManagerStats extends BaseWidget
 {
-    protected ?string $pollingInterval = null; // Nonaktifkan polling jika tidak perlu update real-time
+    // protected ?string $pollingInterval = null;
 
     // Definisikan target bulanan
     protected const MONTHLY_TARGET = 1000000000;

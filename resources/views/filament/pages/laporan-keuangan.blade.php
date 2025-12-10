@@ -9,7 +9,40 @@
                         <div class="col-span-12">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Rentang
                                 Tanggal</label>
-                            <div class="flex items-start gap-2">
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <!-- Tanggal Awal -->
+                                <div>
+                                    <label class="text-xs text-gray-500 mb-1 block" for="tanggal_awal">Awal</label>
+                                    <div class="relative">
+                                        <x-heroicon-o-calendar
+                                            class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                                        <input type="date" id="tanggal_awal" wire:model.defer="tanggal_awal"
+                                            wire:keydown.enter.prevent="filter"
+                                            class="block w-full h-10 py-2 rounded-lg border-gray-300 pl-9 pr-3 text-sm 
+                       shadow-sm placeholder:text-gray-400
+                       dark:bg-gray-700 dark:border-gray-600 dark:text-white
+                       focus:ring-primary-500 focus:border-primary-500" />
+                                    </div>
+                                </div>
+
+                                <!-- Tanggal Akhir -->
+                                <div>
+                                    <label class="text-xs text-gray-500 mb-1 block" for="tanggal_akhir">Akhir</label>
+                                    <div class="relative">
+                                        <x-heroicon-o-calendar
+                                            class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                                        <input type="date" id="tanggal_akhir" wire:model.defer="tanggal_akhir"
+                                            wire:keydown.enter.prevent="filter"
+                                            class="block w-full h-10 py-2 rounded-lg border-gray-300 pl-9 pr-3 text-sm 
+                       shadow-sm placeholder:text-gray-400
+                       dark:bg-gray-700 dark:border-gray-600 dark:text-white
+                       focus:ring-primary-500 focus:border-primary-500" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- <div class="flex items-start gap-2">
                                 <div class="flex-1">
                                     <label for="tanggal_awal" class="sr-only">Tanggal Awal</label>
                                     <div class="relative">
@@ -32,7 +65,7 @@
                                     </div>
                                     <span class="text-xs text-gray-500 mt-1 block">Akhir</span>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -285,44 +318,43 @@
     </div>
 
     {{-- Summary Cards --}}
-    {{-- <div class="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-6"> --}}
-    <div class="flex flex-col-3 sm:flex-col-2 lg:flex-col-3 gap-4 items-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {{-- Total Masuk --}}
         <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 ring-1 ring-gray-950/5 flex items-center gap-6 w-full">
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 ring-1 ring-gray-950/5 flex items-center gap-4 sm:gap-6 w-full">
             <div
-                class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-green-100 dark:bg-green-500/20">
-                <x-heroicon-o-arrow-down-tray class="w-6 h-6 text-green-600 dark:text-green-400" />
+                class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-green-100 dark:bg-green-500/20">
+                <x-heroicon-o-arrow-down-tray class="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Masuk</p>
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white">Rp
+                <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Rp
                     {{ number_format($total_masuk, 0, ',', '.') }}</p>
             </div>
         </div>
         {{-- Total Keluar --}}
         <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 ring-1 ring-gray-950/5 flex items-center gap-6 w-full">
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 ring-1 ring-gray-950/5 flex items-center gap-4 sm:gap-6 w-full">
             <div
-                class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-red-100 dark:bg-red-500/20">
-                <x-heroicon-o-arrow-up-tray class="w-6 h-6 text-red-600 dark:text-red-400" />
+                class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-red-100 dark:bg-red-500/20">
+                <x-heroicon-o-arrow-up-tray class="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" />
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Keluar</p>
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white">Rp
+                <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Rp
                     {{ number_format($total_keluar, 0, ',', '.') }}</p>
             </div>
         </div>
         {{-- Saldo Akhir --}}
         <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 ring-1 ring-gray-950/5 flex items-center gap-6 w-full">
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 ring-1 ring-gray-950/5 flex items-center gap-4 sm:gap-6 w-full">
             <div
-                class="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-blue-100 dark:bg-blue-500/20">
-                <x-heroicon-o-wallet class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-blue-100 dark:bg-blue-500/20">
+                <x-heroicon-o-wallet class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Saldo Akhir</p>
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white">Rp
+                <p class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Rp
                     {{ number_format($total_masuk - $total_keluar, 0, ',', '.') }}</p>
             </div>
         </div>

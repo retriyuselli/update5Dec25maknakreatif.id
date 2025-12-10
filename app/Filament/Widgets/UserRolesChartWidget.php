@@ -16,7 +16,6 @@ class UserRolesChartWidget extends ChartWidget
 
     protected static ?int $sort = 22; // Sesuaikan urutan widget di dashboard
 
-    protected ?string $pollingInterval = '30s'; // Opsional: refresh data setiap 30 detik
 
     public ?string $selectedAccountId = null;
 

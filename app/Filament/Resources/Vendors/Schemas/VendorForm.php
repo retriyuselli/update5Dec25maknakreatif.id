@@ -64,22 +64,26 @@ class VendorForm
                                             ->required(),
                                         Select::make('category_id')
                                             ->relationship('category', 'name')
-                                                ->searchable()
-                                                ->preload()
-                                                ->required()
-                                                ->createOptionForm([
-                                                    TextInput::make('name')
-                                                        ->required()
-                                                        ->maxLength(255)
-                                                        ->live(debounce: 500)
-                                                        ->afterStateUpdated(fn ($state, Set $set) => $set('slug', $state ? Str::slug($state) : '')),
-                                                    TextInput::make('slug')
-                                                        ->disabled()
-                                                        ->dehydrated()
-                                                        ->unique(Category::class, 'slug', ignoreRecord: true),
-                                                    Toggle::make('is_active')
-                                                        ->required(),
-                                                        ]),
+                                            ->searchable()
+                                            ->preload()
+                                            ->required()
+                                            ->createOptionForm([
+                                                TextInput::make('name')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(fn ($state, Set $set) => $set('slug', $state ? Str::slug($state) : '')),
+                                                TextInput::make('slug')
+                                                    ->disabled()
+                                                    ->dehydrated()
+                                                    ->unique(Category::class, 'slug', ignoreRecord: true),
+                                                Toggle::make('is_active')
+                                                    ->required(),
+                                            ]),
+                                        Toggle::make('is_master')
+                                            ->label('Master')
+                                            ->helperText('Tandai vendor ini sebagai data master')
+                                            ->default(false),
                                         RichEditor::make('description')
                                             ->columnSpanFull()
                                             ->minLength(10)
@@ -153,117 +157,6 @@ class VendorForm
                                     ]),
                             ]),
 
-                        Tab::make('Pricing History')
-                            ->icon('heroicon-m-clock')
-                            ->schema([
-                                Section::make('Pricing History')
-                                    ->description('Kelola riwayat harga vendor berdasarkan periode efektif')
-                                    ->schema([
-                                        Repeater::make('priceHistories')
-                                            ->relationship('priceHistories')
-                                            ->defaultItems(0)
-                                            ->collapsible()
-                                            ->grid(2)
-                                            ->schema([
-                                                DatePicker::make('effective_from')
-                                                    ->label('Effective From')
-                                                    ->required(),
-                                                DatePicker::make('effective_to')
-                                                    ->label('Effective To')
-                                                    ->helperText('Kosongkan jika berlaku sampai perubahan berikutnya'),
-                                                Select::make('status')
-                                                    ->label('Status')
-                                                    ->options([
-                                                        'active' => 'Active',
-                                                        'scheduled' => 'Scheduled',
-                                                        'archived' => 'Archived',
-                                                    ])
-                                                    ->default('active')
-                                                    ->required(),
-                                                TextInput::make('harga_publish')
-                                                    ->label('Published Price')
-                                                    ->numeric()
-                                                    ->prefix('Rp')
-                                                    ->mask(RawJs::make('$money($input)'))
-                                                    ->stripCharacters(',')
-                                                    ->required(),
-                                                TextInput::make('harga_vendor')
-                                                    ->label('Vendor Price')
-                                                    ->numeric()
-                                                    ->prefix('Rp')
-                                                    ->mask(RawJs::make('$money($input)'))
-                                                    ->stripCharacters(',')
-                                                    ->required(),
-                                                TextInput::make('profit_amount')
-                                                    ->label('Profit Amount')
-                                                    ->prefix('Rp')
-                                                    ->disabled()
-                                                    ->dehydrated(false)
-                                                    ->formatStateUsing(fn ($state) => number_format((float) ($state ?? 0), 0, ',', '.')),
-                                            TextInput::make('profit_margin')
-                                                ->label('Profit Margin')
-                                                ->suffix('%')
-                                                ->disabled()
-                                                ->dehydrated(false)
-                                                ->formatStateUsing(fn ($state) => number_format((float) ($state ?? 0), 2)),
-                                            ])
-                                            ->afterStateHydrated(function (Get $get, Set $set, $state) {
-                                                $activeCount = collect($state ?? [])->filter(function ($item) {
-                                                    return ($item['status'] ?? null) === 'active';
-                                                })->count();
-                                                if ($activeCount > 1) {
-                                                    Notification::make()
-                                                        ->title('Duplikasi Status Active')
-                                                        ->body('Hanya satu status active yang diperbolehkan pada riwayat harga.')
-                                                        ->danger()
-                                                        ->send();
-                                                }
-                                                $active = collect($state ?? [])->first(function ($item) {
-                                                    return ($item['status'] ?? null) === 'active';
-                                                });
-                                                if ($active) {
-                                                    $hp = (float) preg_replace('/[^0-9.]/', '', (string) ($active['harga_publish'] ?? 0));
-                                                    $hv = (float) preg_replace('/[^0-9.]/', '', (string) ($active['harga_vendor'] ?? 0));
-                                                    $profit = $hp - $hv;
-                                                    $margin = $hp > 0 ? round(($profit / $hp) * 100, 2) : 0;
-
-                                                    $set('harga_publish', $hp);
-                                                    $set('harga_vendor', $hv);
-                                                    $set('profit_amount', $profit);
-                                                    $set('profit_margin', $margin);
-                                                }
-                                            })
-                                            ->afterStateUpdated(function (Get $get, Set $set, $state) {
-                                                $activeCount = collect($state ?? [])->filter(function ($item) {
-                                                    return ($item['status'] ?? null) === 'active';
-                                                })->count();
-                                                if ($activeCount > 1) {
-                                                    Notification::make()
-                                                        ->title('Duplikasi Status Active')
-                                                        ->body('Hanya satu status active yang diperbolehkan pada riwayat harga.')
-                                                        ->danger()
-                                                        ->send();
-                                                }
-                                                $active = collect($state ?? [])->first(function ($item) {
-                                                    return ($item['status'] ?? null) === 'active';
-                                                });
-                                                if ($active) {
-                                                    $hp = (float) preg_replace('/[^0-9.]/', '', (string) ($active['harga_publish'] ?? 0));
-                                                    $hv = (float) preg_replace('/[^0-9.]/', '', (string) ($active['harga_vendor'] ?? 0));
-                                                    $profit = $hp - $hv;
-                                                    $margin = $hp > 0 ? round(($profit / $hp) * 100, 2) : 0;
-
-                                                    $set('harga_publish', $hp);
-                                                    $set('harga_vendor', $hv);
-                                                    $set('profit_amount', $profit);
-                                                    $set('profit_margin', $margin);
-                                                }
-                                            })
-                                            ->addActionLabel('Tambah Riwayat Harga')
-                                            ->itemLabel(fn (array $state) => 'Harga mulai '.($state['effective_from'] ?? '-')),
-                                    ])
-                                    ->collapsible(),
-                            ]),
                         
                         Tab::make('Usage Information')
                             ->icon('heroicon-m-chart-bar')

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_lengkap'); //
             $table->string('email')->unique(); //
-            $table->string('nomor_telepon'); //
+            $table->string('nomor_telepon')->nullable(); //
             $table->date('tanggal_lahir')->nullable(); //
             $table->date('tanggal_mulai_gabung')->nullable(); //
             $table->string('jenis_kelamin')->nullable(); //

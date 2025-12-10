@@ -87,22 +87,24 @@ class NotaDinasDetailSeeder extends Seeder
             $order = $orders->isNotEmpty() ? $orders->random() : null;
 
             try {
-                NotaDinasDetail::create([
-                    'nota_dinas_id' => $notaDinasItem->id,
-                    'vendor_id' => $vendor->id,
-                    'account_holder' => $vendor->account_holder,
-                    'bank_name' => $vendor->bank_name,
-                    'bank_account' => $vendor->bank_account,
-                    'keperluan' => $data['keperluan'],
-                    'jenis_pengeluaran' => PengeluaranJenis::WEDDING->value,
-                    'payment_stage' => $data['payment_stage'],
-                    'order_id' => $order?->id,
-                    'jumlah_transfer' => $data['jumlah_transfer'],
-                    'invoice_number' => 'INV-W-'.str_pad($index + 1, 3, '0', STR_PAD_LEFT),
-                    'status_invoice' => fake()->randomElement($invoiceStatuses),
-                    'created_at' => fake()->dateTimeBetween('-30 days', 'now'),
-                    'updated_at' => now(),
-                ]);
+                NotaDinasDetail::firstOrCreate(
+                    ['invoice_number' => 'INV-W-'.str_pad($index + 1, 3, '0', STR_PAD_LEFT)],
+                    [
+                        'nota_dinas_id' => $notaDinasItem->id,
+                        'vendor_id' => $vendor->id,
+                        'account_holder' => $vendor->account_holder,
+                        'bank_name' => $vendor->bank_name,
+                        'bank_account' => $vendor->bank_account,
+                        'keperluan' => $data['keperluan'],
+                        'jenis_pengeluaran' => PengeluaranJenis::WEDDING->value,
+                        'payment_stage' => $data['payment_stage'],
+                        'order_id' => $order?->id,
+                        'jumlah_transfer' => $data['jumlah_transfer'],
+                        'status_invoice' => fake()->randomElement($invoiceStatuses),
+                        'created_at' => fake()->dateTimeBetween('-30 days', 'now'),
+                        'updated_at' => now(),
+                    ]
+                );
                 $createdCount++;
             } catch (\Exception $e) {
                 $this->command->warn('Failed to create wedding detail: '.$e->getMessage());
@@ -116,21 +118,23 @@ class NotaDinasDetailSeeder extends Seeder
             $notaDinasItem = $notaDinas->random();
 
             try {
-                NotaDinasDetail::create([
-                    'nota_dinas_id' => $notaDinasItem->id,
-                    'vendor_id' => $vendor->id,
-                    'account_holder' => $vendor->account_holder,
-                    'bank_name' => $vendor->bank_name,
-                    'bank_account' => $vendor->bank_account,
-                    'keperluan' => $data['keperluan'],
-                    'jenis_pengeluaran' => PengeluaranJenis::OPERASIONAL->value,
-                    'event' => $data['event'],
-                    'jumlah_transfer' => $data['jumlah_transfer'],
-                    'invoice_number' => 'INV-O-'.str_pad($index + 1, 3, '0', STR_PAD_LEFT),
-                    'status_invoice' => fake()->randomElement($invoiceStatuses),
-                    'created_at' => fake()->dateTimeBetween('-30 days', 'now'),
-                    'updated_at' => now(),
-                ]);
+                NotaDinasDetail::firstOrCreate(
+                    ['invoice_number' => 'INV-O-'.str_pad($index + 1, 3, '0', STR_PAD_LEFT)],
+                    [
+                        'nota_dinas_id' => $notaDinasItem->id,
+                        'vendor_id' => $vendor->id,
+                        'account_holder' => $vendor->account_holder,
+                        'bank_name' => $vendor->bank_name,
+                        'bank_account' => $vendor->bank_account,
+                        'keperluan' => $data['keperluan'],
+                        'jenis_pengeluaran' => PengeluaranJenis::OPERASIONAL->value,
+                        'event' => $data['event'],
+                        'jumlah_transfer' => $data['jumlah_transfer'],
+                        'status_invoice' => fake()->randomElement($invoiceStatuses),
+                        'created_at' => fake()->dateTimeBetween('-30 days', 'now'),
+                        'updated_at' => now(),
+                    ]
+                );
                 $createdCount++;
             } catch (\Exception $e) {
                 $this->command->warn('Failed to create operasional detail: '.$e->getMessage());
@@ -144,21 +148,23 @@ class NotaDinasDetailSeeder extends Seeder
             $notaDinasItem = $notaDinas->random();
 
             try {
-                NotaDinasDetail::create([
-                    'nota_dinas_id' => $notaDinasItem->id,
-                    'vendor_id' => $vendor->id,
-                    'account_holder' => $vendor->account_holder,
-                    'bank_name' => $vendor->bank_name,
-                    'bank_account' => $vendor->bank_account,
-                    'keperluan' => $data['keperluan'],
-                    'jenis_pengeluaran' => PengeluaranJenis::LAIN_LAIN->value,
-                    'event' => $data['event'],
-                    'jumlah_transfer' => $data['jumlah_transfer'],
-                    'invoice_number' => 'INV-L-'.str_pad($index + 1, 3, '0', STR_PAD_LEFT),
-                    'status_invoice' => fake()->randomElement($invoiceStatuses),
-                    'created_at' => fake()->dateTimeBetween('-30 days', 'now'),
-                    'updated_at' => now(),
-                ]);
+                NotaDinasDetail::firstOrCreate(
+                    ['invoice_number' => 'INV-L-'.str_pad($index + 1, 3, '0', STR_PAD_LEFT)],
+                    [
+                        'nota_dinas_id' => $notaDinasItem->id,
+                        'vendor_id' => $vendor->id,
+                        'account_holder' => $vendor->account_holder,
+                        'bank_name' => $vendor->bank_name,
+                        'bank_account' => $vendor->bank_account,
+                        'keperluan' => $data['keperluan'],
+                        'jenis_pengeluaran' => PengeluaranJenis::LAIN_LAIN->value,
+                        'event' => $data['event'],
+                        'jumlah_transfer' => $data['jumlah_transfer'],
+                        'status_invoice' => fake()->randomElement($invoiceStatuses),
+                        'created_at' => fake()->dateTimeBetween('-30 days', 'now'),
+                        'updated_at' => now(),
+                    ]
+                );
                 $createdCount++;
             } catch (\Exception $e) {
                 $this->command->warn('Failed to create lain-lain detail: '.$e->getMessage());

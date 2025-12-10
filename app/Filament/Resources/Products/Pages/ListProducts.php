@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Products\Pages;
 
 use App\Filament\Resources\Products\ProductResource;
+use App\Filament\Resources\Products\Widgets\ProductOverview;
 use App\Filament\Resources\SimulasiProduks\SimulasiProdukResource;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction; // Pastikan namespace ini benar jika digunakan
@@ -30,6 +31,13 @@ class ListProducts extends ListRecords
                 ->icon('heroicon-o-eye')
                 ->url(SimulasiProdukResource::getUrl('create')) // Pastikan SimulasiProdukResource di-import atau gunakan FQCN
                 ->openUrlInNewTab(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ProductOverview::class,
         ];
     }
 }

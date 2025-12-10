@@ -20,6 +20,7 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -74,17 +75,13 @@ class VendorsTable
                     ->label('Status')
                     ->searchable()
                     ->sortable()
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'vendor' => 'primary',
-                        'product' => 'success',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'vendor' => 'Vendor',
-                        'product' => 'Product',
-                        default => ucfirst($state),
-                    }),
+                    ->badge(),
+
+                IconColumn::make('is_master')
+                    ->label('Master')
+                    ->boolean()
+                    ->tooltip(fn (bool $state): string => $state ? 'Master data' : 'Regular')
+                    ->alignCenter(),
 
                 TextColumn::make('harga_publish')
                     ->label('Published Price')
@@ -178,6 +175,27 @@ class VendorsTable
                         'product' => 'Product',
                     ])
                     ->multiple(),
+
+                SelectFilter::make('is_master')
+                    ->label('Master')
+                    ->options([
+                        1 => 'Master',
+                        0 => 'Regular',
+                    ])
+                    ->placeholder('All Vendors')
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            isset($data['value']) && $data['value'] !== null,
+                            fn (Builder $query): Builder => $query->where('is_master', $data['value']),
+                        );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (isset($data['value']) && $data['value'] !== null) {
+                            return 'Master: '.($data['value'] == 1 ? 'Yes' : 'No');
+                        }
+
+                        return null;
+                    }),
 
                 Filter::make('usage_status')
                     ->label('Usage Status')

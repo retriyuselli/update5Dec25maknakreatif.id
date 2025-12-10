@@ -117,7 +117,10 @@ class ProspectAppSeeder extends Seeder
         ];
 
         foreach ($prospectApps as $prospectApp) {
-            ProspectApp::create($prospectApp);
+            ProspectApp::updateOrCreate(
+                ['email' => $prospectApp['email']],
+                $prospectApp
+            );
         }
 
         $this->command->info('ProspectApp seeder completed successfully!');

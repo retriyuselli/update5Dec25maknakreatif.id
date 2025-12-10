@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class UserExpirationOverview extends BaseWidget
 {
-    protected ?string $pollingInterval = '30s';
+    // protected ?string $pollingInterval = '30s';
 
     protected function getStats(): array
     {

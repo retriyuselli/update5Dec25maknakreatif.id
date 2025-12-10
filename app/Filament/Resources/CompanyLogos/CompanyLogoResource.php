@@ -65,7 +65,7 @@ class CompanyLogoResource extends Resource
                             ->maxLength(255)
                             ->label('Teks Alt')
                             ->hint('Teks alternatif untuk logo'),
-                    ])->columns(2),
+                    ])->columns(1),
 
                 Section::make('Pengaturan Tampilan')
                     ->schema([
@@ -96,7 +96,7 @@ class CompanyLogoResource extends Resource
                             ->required()
                             ->default(true)
                             ->label('Aktif'),
-                    ])->columns(2),
+                    ])->columns(1),
 
                 Section::make('Informasi Tambahan')
                     ->schema([

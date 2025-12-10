@@ -219,8 +219,6 @@ class LeaveBalanceWidget extends BaseWidget
     // Make the widget refreshable
     protected static ?string $maxHeight = '300px';
 
-    // Add polling for real-time updates
-    protected ?string $pollingInterval = '30s';
 
     // You can add custom styling
     protected function getViewData(): array

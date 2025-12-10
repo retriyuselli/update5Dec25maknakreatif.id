@@ -79,15 +79,11 @@
                                         Sign in with Google
                                     </a>
                                 @endif
-                                @if (Route::has('front.register'))
+                                {{-- @if (Route::has('front.register'))
                                     <a href="{{ route('front.register') }}"
                                         class="hidden w-full inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Create
                                         an account</a>
-                                @else
-                                    <a href="{{ route('pendaftaran') }}"
-                                        class="hidden w-full inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Create
-                                        an account</a>
-                                @endif
+                                @endif --}}
                             </div>
                         </form>
                     </div>

@@ -34,7 +34,14 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Handle 405 Method Not Allowed errors
+        $exceptions->render(function (Illuminate\Auth\AuthenticationException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthenticated'], 401);
+            }
+
+            return redirect()->to(config('app.url'));
+        });
+
         $exceptions->render(function (Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e, $request) {
             if ($request->expectsJson()) {
                 return response()->json([
@@ -44,11 +51,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 405);
             }
 
-            // For web requests, redirect to home
             return redirect()->route('home')->with('error', 'Method tidak diizinkan untuk halaman ini.');
         });
 
-        // Handle 404 Not Found errors
         $exceptions->render(function (Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
             if ($request->expectsJson()) {
                 return response()->json([
@@ -57,7 +62,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 404);
             }
 
-            // For web requests, redirect to home
             return redirect()->route('home')->with('error', 'Halaman tidak ditemukan.');
         });
     })->create();

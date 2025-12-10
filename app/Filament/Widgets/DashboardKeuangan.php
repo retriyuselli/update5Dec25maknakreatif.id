@@ -17,7 +17,6 @@ class DashboardKeuangan extends BaseWidget
 
     protected static ?int $sort = 11;
 
-    protected ?string $pollingInterval = '60s';
 
     public function getHeading(): ?string
     {

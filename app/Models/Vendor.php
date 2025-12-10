@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusVendor;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +22,7 @@ class Vendor extends Model
         'pic_name',
         'address',
         'status',
+        'is_master',
         'stock',
         'description',
         'harga_publish',
@@ -39,6 +41,8 @@ class Vendor extends Model
         'profit_margin' => 'decimal:2',
         'harga_publish' => 'decimal:2',
         'harga_vendor' => 'decimal:2',
+        'status' => StatusVendor::class,
+        'is_master' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -107,18 +111,7 @@ class Vendor extends Model
 
     public function activePrice(?\DateTimeInterface $at = null): ?VendorPriceHistory
     {
-        $at = $at ?? now();
-        $query = $this->priceHistories()
-            ->where('effective_from', '<=', $at)
-            ->where(function ($q) use ($at) {
-                $q->whereNull('effective_to')->orWhere('effective_to', '>=', $at);
-            });
-
-        if (Schema::hasColumn('vendor_price_histories', 'status')) {
-            $query->where('status', 'active');
-        }
-
-        return $query->orderByDesc('effective_from')->first();
+        return null;
     }
 
     /**

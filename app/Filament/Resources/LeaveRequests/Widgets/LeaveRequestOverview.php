@@ -93,5 +93,5 @@ class LeaveRequestOverview extends BaseWidget
     }
 
     // Refresh setiap 30 detik untuk data real-time
-    protected ?string $pollingInterval = '30s';
+    // protected ?string $pollingInterval = '30s';
 }

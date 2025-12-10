@@ -111,5 +111,5 @@ class LeaveRequestChart extends ChartWidget
     }
 
     // Refresh setiap 60 detik
-    protected ?string $pollingInterval = '60s';
+    // protected ?string $pollingInterval = '60s';
 }

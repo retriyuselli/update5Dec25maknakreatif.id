@@ -112,19 +112,20 @@ class NotaDinasSeeder extends Seeder
         $created = 0;
 
         foreach ($notaDinasList as $ndData) {
-            // Create Nota Dinas header only
-            $notaDinas = NotaDinas::create([
-                'no_nd' => $ndData['no_nd'],
-                'tanggal' => $ndData['tanggal'],
-                'pengirim_id' => $users->random()->id,
-                'penerima_id' => $users->random()->id,
-                'sifat' => $ndData['sifat'],
-                'hal' => $ndData['hal'],
-                'catatan' => $ndData['catatan'],
-                'status' => $ndData['status'],
-                'approved_by' => $ndData['status'] === 'disetujui' ? $users->random()->id : null,
-                'approved_at' => $ndData['status'] === 'disetujui' ? Carbon::now()->subDays(rand(1, 30)) : null,
-            ]);
+            $notaDinas = NotaDinas::firstOrCreate(
+                ['no_nd' => $ndData['no_nd']],
+                [
+                    'tanggal' => $ndData['tanggal'],
+                    'pengirim_id' => $users->random()->id,
+                    'penerima_id' => $users->random()->id,
+                    'sifat' => $ndData['sifat'],
+                    'hal' => $ndData['hal'],
+                    'catatan' => $ndData['catatan'],
+                    'status' => $ndData['status'],
+                    'approved_by' => $ndData['status'] === 'disetujui' ? $users->random()->id : null,
+                    'approved_at' => $ndData['status'] === 'disetujui' ? Carbon::now()->subDays(rand(1, 30)) : null,
+                ]
+            );
 
             $created++;
             $this->command->info("✅ Created Nota Dinas: {$ndData['no_nd']}");

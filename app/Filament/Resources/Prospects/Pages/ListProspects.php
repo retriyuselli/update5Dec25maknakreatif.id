@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Prospects\Pages;
 
 use App\Filament\Resources\Prospects\ProspectResource;
-use App\Filament\Resources\Prospects\Widgets\ProspectStatsWidget;
+use App\Filament\Resources\Prospects\Widgets\ProspectOverviewWidget;
 use App\Models\Prospect;
 use Exception;
 use Filament\Actions\Action;
@@ -37,7 +37,7 @@ class ListProspects extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            ProspectStatsWidget::class,
+            ProspectOverviewWidget::class,
         ];
     }
 }

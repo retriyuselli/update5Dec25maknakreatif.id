@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\LeaveRequest;
+use App\Models\LeaveType;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -31,13 +32,34 @@ class LeaveRequestSeeder extends Seeder
         LeaveRequest::truncate();
         echo "🗑️ Old leave request data cleared\n\n";
 
-        // Ambil LeaveType yang sudah ada
-        $leaveTypes = [
-            'Cuti Tahunan' => 13,    // ID sebenarnya dari database
-            'Cuti Sakit' => 14,      // ID sebenarnya dari database
-            'Cuti Ibadah' => 15,     // Ganti Cuti Pribadi dengan yang ada
-            'Cuti Keluarga' => 18,   // Ganti Cuti Darurat dengan yang ada
+        $leaveTypeNames = [
+            'Cuti Tahunan',
+            'Cuti Sakit',
+            'Cuti Ibadah',
+            'Cuti Keluarga',
         ];
+
+        $existingTypes = LeaveType::whereIn('name', $leaveTypeNames)->get()->keyBy('name');
+        $leaveTypes = [];
+        foreach ($leaveTypeNames as $name) {
+            $leaveTypes[$name] = optional($existingTypes->get($name))?->id ?? LeaveType::create([
+                'name' => $name,
+                'max_days_per_year' => match ($name) {
+                    'Cuti Tahunan' => 12,
+                    'Cuti Sakit' => 3,
+                    'Cuti Ibadah' => 3,
+                    'Cuti Keluarga' => 3,
+                    default => 0,
+                },
+                'keterangan' => match ($name) {
+                    'Cuti Tahunan' => 'Hak minimal 12 hari kerja setelah 1 tahun masa kerja.',
+                    'Cuti Sakit' => 'Cuti sakit dengan surat dokter bila diperlukan.',
+                    'Cuti Ibadah' => 'Cuti untuk ibadah hari besar.',
+                    'Cuti Keluarga' => 'Cuti karena kondisi darurat keluarga.',
+                    default => null,
+                },
+            ])->id;
+        }
 
         // Data Leave Request - 7 records only
         $leaveRequests = [

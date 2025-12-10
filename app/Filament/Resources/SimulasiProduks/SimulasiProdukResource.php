@@ -195,7 +195,7 @@ class SimulasiProdukResource extends Resource
                     ->sortable()
                     ->alignEnd(),
                 TextColumn::make('promo')
-                    ->money('IDR')
+                    ->money('IDR')  
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->alignEnd(),

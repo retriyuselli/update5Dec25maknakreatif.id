@@ -53,7 +53,7 @@ class OrderSeeder extends Seeder
             return;
         }
 
-        // Create 10 orders with only basic project information (Wizard Step 1: Informasi Proyek)
+        // Create 50 orders with only basic project information (Wizard Step 1: Informasi Proyek)
         $orders = [];
         $statuses = ['pending', 'processing', 'done', 'cancelled'];
 
@@ -68,7 +68,7 @@ class OrderSeeder extends Seeder
             $startNumber = isset($matches[1]) ? (int) $matches[1] + 1 : 100000;
         }
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             $prospect = $prospects->random();
             $user = $users->random();
             $employee = $employees->isEmpty() ? null : $employees->random();
@@ -103,18 +103,17 @@ class OrderSeeder extends Seeder
         foreach ($orders as $orderData) {
             $order = Order::create($orderData);
 
-            // Create order items (products) for the order
-            $itemCount = rand(2, 5); // 2-5 products per order
+            // Create order items (products) for the order ensuring total_price ≥ 150,000,000
             $totalProductPrice = 0;
-
-            for ($k = 0; $k < $itemCount; $k++) {
+            $itemsAdded = 0;
+            while ($totalProductPrice < 150_000_000 || $itemsAdded < 2) {
                 $product = $products->random();
                 $quantity = rand(1, 3); // 1-3 quantity per product
-                $unitPrice = rand(1000000, 15000000); // 1M - 15M per product
+                $unitPrice = rand(10_000_000, 75_000_000); // 10M - 75M per product to reach threshold
                 $itemTotal = $quantity * $unitPrice;
                 $totalProductPrice += $itemTotal;
+                $itemsAdded++;
 
-                // Create order product
                 OrderProduct::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
@@ -213,7 +212,7 @@ class OrderSeeder extends Seeder
             }
         }
 
-        $this->command->info('10 orders with project information, products, payments, and expenses created successfully!');
+        $this->command->info('50 orders with project information, products (≥150jt), payments, and expenses created successfully!');
     }
 
     /**
