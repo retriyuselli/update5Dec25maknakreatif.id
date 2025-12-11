@@ -46,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandLogo($brandLogo)
             ->brandName('Makna Kreatif')
-            ->brandLogoHeight('3rem')
+            ->brandLogoHeight('2rem')
             ->favicon($favicon)
             ->sidebarCollapsibleOnDesktop(true)
             ->colors([
