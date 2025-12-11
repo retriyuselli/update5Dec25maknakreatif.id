@@ -32,7 +32,9 @@ class AccountManagerWidget extends BaseWidget
             ->query(
                 User::query()
                     ->withCount(['orders as am_count']) // Menghitung jumlah order dan menamakannya am_count
-                    ->where('status_id', '2')  // User status must be active
+                    ->whereHas('status', function (Builder $query) {
+                        $query->where('status_name', 'Account Manager');
+                    })
                     // Only users who exclusively have the Account Manager role
                     ->has('roles', '=', 1)
                     ->whereHas('roles', function (Builder $query) {

@@ -16,7 +16,7 @@ class AccountManagerMonthlyRevenueChart extends ChartWidget
 {
     use HasWidgetShield;
 
-    protected static ?int $sort = 23; // Sesuaikan urutan widget di dashboard Anda
+    protected static ?int $sort = 23;
 
     public ?string $selectedAccountId = null;
 
