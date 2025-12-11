@@ -35,6 +35,7 @@ class AccountManagerWidget extends BaseWidget
                     ->whereHas('status', function (Builder $query) {
                         $query->where('status_name', 'Account Manager');
                     })
+                    ->where('status', 'active')
                     // Only users who exclusively have the Account Manager role
                     ->has('roles', '=', 1)
                     ->whereHas('roles', function (Builder $query) {
