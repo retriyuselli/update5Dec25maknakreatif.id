@@ -37,7 +37,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2">
-                        <img class="h-12 w-auto" src="{{ route('brand.logo') }}" alt="Logo"
+                        <img class="h-10 w-auto" src="{{ route('brand.logo') }}" alt="Logo"
                             onerror="this.src='{{ asset('images/logomki.png') }}'">
                         {{-- <span class="text-xl font-bold text-gray-800">MaknaPro</span> --}}
                     </a>
