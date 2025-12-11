@@ -172,6 +172,7 @@ class LaporanKeuangan extends Page
         Log::info('downloadPdfReport method called', [
             'tanggal_awal' => $this->tanggal_awal,
             'tanggal_akhir' => $this->tanggal_akhir,
+            'filter_jenis' => $this->filter_jenis,
         ]);
         // Get orders based on current date filters
         $startDate = $this->tanggal_awal ?? now()->startOfMonth()->toDateString();
@@ -205,22 +206,47 @@ class LaporanKeuangan extends Page
             return;
         }
 
-        // Calculate totals
-        $totalPaymentsReceived = $orders->sum(function ($order) {
-            return $order->dataPembayaran->sum('nominal');
-        });
-        $totalOrderValue = $orders->sum('grand_total');
-        $totalActualExpenses = $orders->sum(function ($order) {
-            return $order->expenses->sum('amount');
-        });
+        $filters = is_array($this->filter_jenis) ? $this->filter_jenis : (array) $this->filter_jenis;
+        $hasFilter = ! empty($filters);
 
-        $expenseOps = ExpenseOps::with('vendor')->whereBetween('date_expense', [$startDate, $endDate])
-            ->orderBy('date_expense', 'desc')->get();
-        $pengeluaranLain = PengeluaranLain::with('vendor')->whereBetween('date_expense', [$startDate, $endDate])
-            ->orderBy('date_expense', 'desc')->get();
+        $includeMasukWedding = ! $hasFilter || in_array('Masuk (Wedding)', $filters);
+        $includeKeluarWedding = ! $hasFilter || in_array('Keluar (Wedding)', $filters);
+        $includeOps = ! $hasFilter || in_array('Keluar (Operasional)', $filters);
+        $includePendapatanLain = ! $hasFilter || in_array('Masuk (Lain-lain)', $filters);
+        $includePengeluaranLain = ! $hasFilter || in_array('Keluar (Lain-lain)', $filters);
+
+        $totalPaymentsReceived = $includeMasukWedding
+            ? $orders->sum(function ($order) {
+                return $order->dataPembayaran->sum('nominal');
+            })
+            : 0;
+
+        $totalOrderValue = $includeMasukWedding ? $orders->sum('grand_total') : 0;
+
+        $totalActualExpenses = $includeKeluarWedding
+            ? $orders->sum(function ($order) {
+                return $order->expenses->sum('amount');
+            })
+            : 0;
+
+        $expenseOps = $includeOps
+            ? ExpenseOps::with('vendor')->whereBetween('date_expense', [$startDate, $endDate])
+                ->orderBy('date_expense', 'desc')->get()
+            : collect([]);
+
+        $pengeluaranLain = $includePengeluaranLain
+            ? PengeluaranLain::with('vendor')->whereBetween('date_expense', [$startDate, $endDate])
+                ->orderBy('date_expense', 'desc')->get()
+            : collect([]);
+
+        $pendapatanLain = $includePendapatanLain
+            ? PendapatanLain::with('vendor')->whereBetween('tgl_bayar', [$startDate, $endDate])
+                ->orderBy('tgl_bayar', 'desc')->get()
+            : collect([]);
 
         $totalExpenseOps = $expenseOps->sum('amount');
         $totalPengeluaranLain = $pengeluaranLain->sum('amount');
+        $totalPendapatanLain = $pendapatanLain->sum('nominal');
         $netProfitCalculation = $totalOrderValue - $totalActualExpenses;
 
         $reportData = [
@@ -231,11 +257,16 @@ class LaporanKeuangan extends Page
             'netProfit' => $netProfitCalculation,
             'expenseOps' => $expenseOps,
             'pengeluaranLain' => $pengeluaranLain,
+            'pendapatanLain' => $pendapatanLain,
             'totalExpenseOps' => $totalExpenseOps,
             'totalPengeluaranLain' => $totalPengeluaranLain,
+            'totalPendapatanLain' => $totalPendapatanLain,
             'filterStartDate' => $startDate,
             'filterEndDate' => $endDate,
             'generatedDate' => now()->format('d M Y H:i'),
+            'filterJenis' => $filters,
+            'includeMasukWedding' => $includeMasukWedding,
+            'includeKeluarWedding' => $includeKeluarWedding,
         ];
 
         try {

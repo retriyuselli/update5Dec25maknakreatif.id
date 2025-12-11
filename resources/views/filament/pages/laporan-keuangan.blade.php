@@ -19,10 +19,7 @@
                                             class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                                         <input type="date" id="tanggal_awal" wire:model.defer="tanggal_awal"
                                             wire:keydown.enter.prevent="filter"
-                                            class="block w-full h-10 py-2 rounded-lg border-gray-300 pl-9 pr-3 text-sm 
-                       shadow-sm placeholder:text-gray-400
-                       dark:bg-gray-700 dark:border-gray-600 dark:text-white
-                       focus:ring-primary-500 focus:border-primary-500" />
+                                            class="block w-full h-10 py-2 rounded-lg border-gray-300 pl-9 pr-3 text-sm shadow-sm placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-primary-500 focus:border-primary-500" />
                                     </div>
                                 </div>
 
@@ -34,38 +31,10 @@
                                             class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                                         <input type="date" id="tanggal_akhir" wire:model.defer="tanggal_akhir"
                                             wire:keydown.enter.prevent="filter"
-                                            class="block w-full h-10 py-2 rounded-lg border-gray-300 pl-9 pr-3 text-sm 
-                       shadow-sm placeholder:text-gray-400
-                       dark:bg-gray-700 dark:border-gray-600 dark:text-white
-                       focus:ring-primary-500 focus:border-primary-500" />
+                                            class="block w-full h-10 py-2 rounded-lg border-gray-300 pl-9 pr-3 text-sm shadow-sm placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-primary-500 focus:border-primary-500" />
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- <div class="flex items-start gap-2">
-                                <div class="flex-1">
-                                    <label for="tanggal_awal" class="sr-only">Tanggal Awal</label>
-                                    <div class="relative">
-                                        <x-heroicon-o-calendar
-                                            class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                                        <input type="date" id="tanggal_awal" wire:model.defer="tanggal_awal"
-                                            wire:keydown.enter.prevent="filter"
-                                            class="block w-full h-10 rounded-lg border-gray-300 pl-9 pr-3 text-sm shadow-sm placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-primary-500 focus:border-primary-500" />
-                                    </div>
-                                    <span class="text-xs text-gray-500 mt-1 block">Awal</span>
-                                </div>
-                                <div class="flex-1">
-                                    <label for="tanggal_akhir" class="sr-only">Tanggal Akhir</label>
-                                    <div class="relative">
-                                        <x-heroicon-o-calendar
-                                            class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                                        <input type="date" id="tanggal_akhir" wire:model.defer="tanggal_akhir"
-                                            wire:keydown.enter.prevent="filter"
-                                            class="block w-full h-10 rounded-lg border-gray-300 pl-9 pr-3 text-sm shadow-sm placeholder:text-gray-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-primary-500 focus:border-primary-500" />
-                                    </div>
-                                    <span class="text-xs text-gray-500 mt-1 block">Akhir</span>
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
 
