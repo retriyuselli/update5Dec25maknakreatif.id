@@ -83,12 +83,13 @@ class VendorForm
                                         Toggle::make('is_master')
                                             ->label('Master')
                                             ->helperText('Tandai vendor ini sebagai data master')
+                                            ->reactive()
                                             ->default(false),
                                         RichEditor::make('description')
                                             ->columnSpanFull()
                                             ->minLength(10)
                                             ->required()
-                                            ->label('Description'),
+                                            ->label('Description'), 
                                     ]),
                             ]),
 
@@ -302,6 +303,94 @@ class VendorForm
                                     ->collapsible(),
                             ])
                     ])
+                    ->columnSpanFull(),
+                Section::make('Pengaturan Master')
+                    ->schema([
+                        Repeater::make('priceHistories')
+                            ->relationship('priceHistories')
+                            ->label('Periode Harga')
+                            ->itemLabel(function (\Filament\Schemas\Components\Utilities\Get $get) {
+                                $from = $get('effective_from');
+                                $to = $get('effective_to');
+                                $fromStr = '-';
+                                $toStr = '-';
+                                if ($from instanceof \DateTimeInterface) {
+                                    $fromStr = $from->format('d M Y');
+                                } elseif (is_string($from) && $from !== '') {
+                                    try { $fromStr = \Illuminate\Support\Carbon::parse($from)->format('d M Y'); } catch (\Throwable $e) {}
+                                }
+                                if ($to instanceof \DateTimeInterface) {
+                                    $toStr = $to->format('d M Y');
+                                } elseif (is_string($to) && $to !== '') {
+                                    try { $toStr = \Illuminate\Support\Carbon::parse($to)->format('d M Y'); } catch (\Throwable $e) {}
+                                }
+                                return 'Periode: ' . $fromStr . ' – ' . $toStr;
+                            })
+                            ->addActionLabel('Tambah periode harga')
+                            ->grid(2)
+                            ->columns(2)
+                            ->collapsible()
+                            ->schema([
+                                DatePicker::make('effective_from')
+                                    ->label('Tgl Mulai')
+                                    ->required()
+                                    ->native(false)
+                                    ->format('Y-m-d')
+                                    ->displayFormat('d / m / Y')
+                                    ->reactive(),
+                                DatePicker::make('effective_to')
+                                    ->label('Tgl Akhir')
+                                    ->required()
+                                    ->native(false)
+                                    ->format('Y-m-d')
+                                    ->displayFormat('d / m / Y')
+                                    ->reactive(),
+                                TextInput::make('harga_publish')
+                                    ->label('Harga Publish')
+                                    ->numeric()
+                                    ->prefix('Rp')
+                                    ->mask(RawJs::make('$money($input)'))
+                                    ->stripCharacters(',')
+                                    ->debounce(500),
+
+                                TextInput::make('harga_vendor')
+                                    ->label('Harga Vendor')
+                                    ->numeric()
+                                    ->prefix('Rp')
+                                    ->mask(RawJs::make('$money($input)'))
+                                    ->stripCharacters(',')
+                                    ->debounce(500),
+
+                                TextInput::make('profit_amount')
+                                    ->label('Profit')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->prefix('Rp')
+                                    ->mask(RawJs::make('$money($input)'))
+                                    ->stripCharacters(',')
+                                    ->default(0),
+
+                                TextInput::make('profit_margin')
+                                    ->label('Profit Margin')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->prefix('%')
+                                    ->default(0),
+
+                                FileUpload::make('kontrak')
+                                    ->label('Kontrak')
+                                    ->directory('vendor-contracts/history')
+                                    ->preserveFilenames()
+                                    ->acceptedFileTypes(['application/pdf'])
+                                    ->maxSize(10240)
+                                    ->downloadable()
+                                    ->openable(),
+                                TextInput::make('description')
+                                    ->label('Deskripsi')
+                                    ->columnSpanFull(),
+                            ]),
+                    ])
+                    ->hidden(fn (Get $get) => ! (bool) $get('is_master'))
                     ->columnSpanFull(),
             ]);
     }

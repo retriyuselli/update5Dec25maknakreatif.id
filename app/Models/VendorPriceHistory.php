@@ -19,6 +19,8 @@ class VendorPriceHistory extends Model
         'effective_from',
         'effective_to',
         'status',
+        'kontrak',
+        'description',
     ];
 
     protected $casts = [
@@ -77,6 +79,11 @@ class VendorPriceHistory extends Model
                 }
             }
         });
+    }
+
+    public function calculateProfitAmount(): void
+    {
+        $this->profit_amount = $this->harga_publish - $this->harga_vendor;
     }
 
     public function vendor(): BelongsTo

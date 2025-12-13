@@ -98,6 +98,7 @@ class VendorsTable
                 TextColumn::make('profit_amount')
                     ->label('Profit')
                     ->money('IDR')
+                    ->sortable()
                     ->alignment('end')
                     ->color(fn (Vendor $record): string => ($record->profit_amount ?? 0) > 0 ? 'success' : 'danger'),
 
