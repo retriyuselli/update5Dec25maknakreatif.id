@@ -15,7 +15,7 @@ php artisan view:clear
 php artisan optimize:clear
 php artisan optimize
 
-Berisi file sudah dioptimize menggunakan filament v4
+Berisi file sudah dioptimize menggunakan filament v4.0.10
 Update 29 Nov 2025
 
 ## Urutan Widget Dashboard (Filament v4)
