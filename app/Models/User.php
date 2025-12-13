@@ -112,7 +112,6 @@ class User extends Authenticatable implements HasAvatar
     protected function casts(): array
     {
         return [
-            'role' => 'array',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'expire_date' => 'datetime',
@@ -164,19 +163,18 @@ class User extends Authenticatable implements HasAvatar
             abort(403, 'Only admin can change user roles');
         }
 
-        $oldRole = $this->role;
-        $this->role = $role;
+        $oldRoles = $this->getRoleNames()->toArray();
+        $this->syncRoles([$role]);
 
-        // Log activity
-        Log::info('Role updated', [
+        Log::info('Roles updated', [
             'user_id' => $this->id,
             'updated_by' => $updatedBy->id,
-            'old_role' => $oldRole,
-            'new_role' => $role,
+            'old_roles' => $oldRoles,
+            'new_roles' => [$role],
             'timestamp' => now(),
         ]);
 
-        return $this->save();
+        return true;
     }
 
     /**
