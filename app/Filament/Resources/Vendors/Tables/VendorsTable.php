@@ -54,7 +54,7 @@ class VendorsTable
                     ->sortable()
                     ->weight(FontWeight::Bold)
                     ->copyable()
-                    ->formatStateUsing(fn (string $state): string => Str::title($state))
+                    ->formatStateUsing(fn ($state): string => $state ? Str::title($state) : '-')
                     ->copyMessage('Vendor copied')
                     ->description(fn (Vendor $record): string => $record->category?->name ?? '-'),
 
@@ -69,7 +69,7 @@ class VendorsTable
                     ->copyable()
                     ->copyMessage('Phone number copied')
                     ->copyMessageDuration(1500)
-                    ->formatStateUsing(fn (string $state) => '+62 '.$state),
+                    ->formatStateUsing(fn ($state) => $state ? '+62 '.$state : '-'),
 
                 TextColumn::make('status')
                     ->label('Status')

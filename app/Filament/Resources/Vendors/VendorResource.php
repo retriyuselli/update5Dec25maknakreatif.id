@@ -52,7 +52,6 @@ class VendorResource extends Resource
         return VendorsTable::configure($table);
     }
 
-
     public static function getRelations(): array
     {
         return [
