@@ -10,6 +10,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Set;
 
 class ProspectAppForm
 {
@@ -113,6 +114,17 @@ class ProspectAppForm
                                 'premium' => 'Paket Premium - Rp 15.000.000',
                                 'enterprise' => 'Paket Enterprise - Rp 30.000.000',
                             ])
+                            ->reactive()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (?string $state, Set $set) {
+                                $mapping = [
+                                    'standard' => 8500000,
+                                    'premium' => 15000000,
+                                    'enterprise' => 30000000,
+                                    'basic' => null,
+                                ];
+                                $set('harga', $mapping[$state] ?? null);
+                            })
                             ->helperText('Pilih paket layanan untuk mengisi anggaran otomatis'),
                     ])
                     ->columns(1),
