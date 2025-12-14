@@ -10,9 +10,16 @@ use App\Models\DataPembayaran;
 use App\Models\Order;
 use Carbon\Carbon;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -207,11 +214,53 @@ class DataPembayaranResource extends Resource
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
+                    DeleteAction::make()
+                        ->visible(fn (?DataPembayaran $record): bool => $record && ! $record->trashed() && ! $record->order_id)
+                        ->requiresConfirmation(),
+                    RestoreAction::make()
+                        ->visible(fn (?DataPembayaran $record): bool => $record && $record->trashed()),
+                    ForceDeleteAction::make()
+                        ->visible(fn (?DataPembayaran $record): bool => $record && $record->trashed())
+                        ->requiresConfirmation(),
                 ]),
             ])
 
             ->toolbarActions([
-                DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    BulkAction::make('restricted_delete')
+                        ->label('Hapus Terpilih')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function (\Illuminate\Support\Collection $records) {
+                            $deletable = $records->filter(fn ($r) => ! $r->order_id && ! $r->trashed());
+                            $skipped = $records->count() - $deletable->count();
+
+                            $deleted = 0;
+                            foreach ($deletable as $rec) {
+                                $rec->delete();
+                                $deleted++;
+                            }
+
+                            if ($deleted > 0) {
+                                Notification::make()
+                                    ->success()
+                                    ->title('Hapus selesai')
+                                    ->body("Berhasil menghapus {$deleted} data.")
+                                    ->send();
+                            }
+
+                            if ($skipped > 0) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Sebagian dilewati')
+                                    ->body("{$skipped} data terhubung ke Order dan tidak bisa dihapus!!!")
+                                    ->send();
+                            }
+                        }),
+                    RestoreBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                ]),
             ])
             ->striped()
             ->defaultPaginationPageOption(10)

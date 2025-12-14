@@ -23,6 +23,11 @@ class DataPembayaranStatsOverview extends BaseWidget
         $totalPembayaranMingguIni = DataPembayaran::whereBetween('tgl_bayar', [$startOfWeek, $endOfWeek])->sum('nominal');
         $totalPembayaranBulanIni = DataPembayaran::whereBetween('tgl_bayar', [$startOfMonth, $endOfMonth])->sum('nominal');
         $jumlahTransaksiBulanIni = DataPembayaran::whereBetween('tgl_bayar', [$startOfMonth, $endOfMonth])->count();
+        $jumlahTanpaImageTahunBerjalan = DataPembayaran::whereYear('tgl_bayar', Carbon::now()->year)
+            ->where(function ($q) {
+                $q->whereNull('image')->orWhere('image', '');
+            })
+            ->count();
 
         return [
             Stat::make('Pembayaran Hari Ini', ''.number_format($totalPembayaranHariIni, 0, ',', '.'))
@@ -37,6 +42,10 @@ class DataPembayaranStatsOverview extends BaseWidget
                 ->description($jumlahTransaksiBulanIni.' transaksi bulan ini')
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color('primary'),
+            Stat::make('Tanpa Payment Proof Tahun Berjalan', ''.number_format($jumlahTanpaImageTahunBerjalan, 0, ',', '.'))
+                ->description('Transaksi tanpa payment proof tahun berjalan')
+                ->descriptionIcon('heroicon-m-photo')
+                ->color('warning'),
         ];
     }
 }

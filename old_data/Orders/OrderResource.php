@@ -21,7 +21,6 @@ use App\Models\Product;
 use App\Models\Prospect;
 use App\Models\User;
 use App\Models\Vendor;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -44,7 +43,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle; // <-- Tambahkan ini
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -279,12 +278,12 @@ class OrderResource extends Resource
                                             FileUpload::make('image')
                                                 ->label('Payment Proof')
                                                 ->image()
+                                                ->required()
                                                 ->maxSize(1280)
-                                                ->disk('public')
                                                 ->directory('payment-proofs/'.date('Y/m'))
-                                                ->visibility('public')
+                                                ->visibility('private')
                                                 ->downloadable()
-                                                ->openable()
+                                                ->openable() // Keep openable for both image and PDF
                                                 ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                                 ->helperText('Max 1MB. JPG or PNG only.'),
                                         ]),

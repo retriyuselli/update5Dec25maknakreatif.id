@@ -253,6 +253,11 @@
                     @endif
                 </select>
             </div>
+            <div>
+                <label for="search_event">Nama Event:</label>
+                <input type="text" name="search_event" id="search_event" value="{{ $searchEvent ?? '' }}"
+                    placeholder="Cari berdasarkan nama event">
+            </div>
             <button type="submit">Terapkan Filter</button>
         </form>
 
@@ -265,6 +270,7 @@
                     <th>Tanggal Pembayaran</th>
                     <th>Status Order</th>
                     <th>Metode Pembayaran</th>
+                    <th>Bukti Pembayaran</th>
                     <th>Catatan/Keterangan</th>
                 </tr>
             </thead>
@@ -296,12 +302,25 @@
                                 N/A
                             @endif
                         </td>
+                        <td>
+                            @if ($pembayaran->image)
+                                @php
+                                    $proofUrl = \Illuminate\Support\Facades\Storage::url($pembayaran->image);
+                                @endphp
+                                <a href="{{ $proofUrl }}" target="_blank" rel="noopener noreferrer">
+                                    <img src="{{ $proofUrl }}" alt="Payment Proof"
+                                        style="width: 40px; height: 40px; object-fit: cover; border-radius: 0;">
+                                </a>
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>{{ $pembayaran->keterangan ?? '-' }}</td>
                     </tr>
                     @php $totalPembayaran += ($pembayaran->nominal ?? 0); @endphp
                 @empty
                     <tr>
-                        <td colspan="7" class="no-data">Tidak ada data pembayaran yang ditemukan.</td>
+                        <td colspan="8" class="no-data">Tidak ada data pembayaran yang ditemukan.</td>
                     </tr>
                 @endforelse
                 {{-- Baris Total (Opsional) --}}
@@ -310,7 +329,7 @@
                         <td colspan="2" style="text-align: right;"><strong>Total Keseluruhan:</strong></td>
                         <td style="text-align: right;"><strong>
                                 {{ number_format($totalPembayaran, 0, ',', '.') }}</strong></td>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                     </tr>
                 @endif
             </tbody>

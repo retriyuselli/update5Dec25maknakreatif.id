@@ -17,7 +17,7 @@ use Livewire\Attributes\On;
 
 class OrderOverview extends BaseWidget
 {
-    protected ?string $pollingInterval = '5s';
+    // protected ?string $pollingInterval = '5s';
 
     public $metrics = [
         'payments' => 0,
