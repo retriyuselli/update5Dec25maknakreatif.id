@@ -12,7 +12,7 @@
                 <div class="flex items-center">
                     <div class="w-full max-w-md mx-auto">
                         <h1 class="text-3xl font-bold text-gray-900">Sign In</h1>
-                        <p class="mt-1 text-sm text-gray-500">Unlock your world.</p>
+                        <p class="mt-1 text-sm text-gray-500">Unlock Smarter Financial Decisions.</p>
                         @if (session('status'))
                             <p class="mt-3 text-sm text-green-600">{{ session('status') }}</p>
                         @endif
@@ -61,23 +61,25 @@
                                 <button type="submit"
                                     class="w-full px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Sign
                                     In</button>
-                                <div class="flex items-center my-2">
-                                    <div class="flex-1 h-px bg-gray-200"></div>
-                                    <span class="px-3 text-xs text-gray-500">Or</span>
-                                    <div class="flex-1 h-px bg-gray-200"></div>
-                                </div>
-                                @if (Route::has('auth.google.redirect'))
-                                    <a href="{{ route('auth.google.redirect') }}"
-                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
-                                        <i class="fab fa-google text-red-500"></i>
-                                        Sign in with Google
-                                    </a>
-                                @else
-                                    <a href="#"
-                                        class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
-                                        <i class="fab fa-google text-red-500"></i>
-                                        Sign in with Google
-                                    </a>
+                                @if (false)
+                                    <div class="flex items-center my-2">
+                                        <div class="flex-1 h-px bg-gray-200"></div>
+                                        <span class="px-3 text-xs text-gray-500">Or</span>
+                                        <div class="flex-1 h-px bg-gray-200"></div>
+                                    </div>
+                                    @if (Route::has('auth.google.redirect'))
+                                        <a href="{{ route('auth.google.redirect') }}"
+                                            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+                                            <i class="fab fa-google text-red-500"></i>
+                                            Sign in with Google
+                                        </a>
+                                    @else
+                                        <a href="#"
+                                            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
+                                            <i class="fab fa-google text-red-500"></i>
+                                            Sign in with Google
+                                        </a>
+                                    @endif
                                 @endif
                                 {{-- @if (Route::has('front.register'))
                                     <a href="{{ route('front.register') }}"

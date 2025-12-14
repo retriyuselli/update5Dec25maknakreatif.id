@@ -107,10 +107,11 @@ class DataPembayaranResource extends Resource
                     ->disabled()
                     ->image()
                     ->maxSize(1280)
+                    ->disk('public')
                     ->directory('payment-proofs/'.date('Y/m'))
-                    ->visibility('private')
+                    ->visibility('public')
                     ->downloadable()
-                    ->openable() // Keep openable for both image and PDF
+                    ->openable()
                     ->acceptedFileTypes(['image/jpeg', 'image/png'])
                     ->helperText('Max 1MB. JPG or PNG only.'),
             ])->columns(3);
