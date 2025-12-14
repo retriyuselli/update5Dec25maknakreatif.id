@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProspectApps\Pages;
 
 use App\Filament\Resources\ProspectApps\ProspectAppResource;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
 class EditProspectApp extends EditRecord
@@ -13,6 +14,12 @@ class EditProspectApp extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('generateProposal')
+                ->label('Generate Proposal')
+                ->icon('heroicon-o-document-text')
+                ->color('success')
+                ->url('https://update.maknakreatif.id/prospect-app')
+                ->openUrlInNewTab(),
             DeleteAction::make(),
         ];
     }

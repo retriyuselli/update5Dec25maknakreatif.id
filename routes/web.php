@@ -177,19 +177,24 @@ Route::post('/prospect/check-email', [ProspectController::class, 'checkEmail'])
 
 // Route untuk ProspectApp (New - Modern Form)
 Route::get('/prospect-app', [App\Http\Controllers\ProspectAppController::class, 'create'])
+    ->middleware('auth')
     ->name('prospect-app.form');
 
 // Route untuk halaman pendaftaran prospect yang lebih lengkap
 Route::get('/pendaftaran', [App\Http\Controllers\ProspectAppController::class, 'pendaftaran'])
+    ->middleware('auth')
     ->name('pendaftaran');
 
 Route::post('/prospect-app', [App\Http\Controllers\ProspectAppController::class, 'store'])
+    ->middleware('auth')
     ->name('prospect-app.store');
 
 Route::get('/prospect-app/success', [App\Http\Controllers\ProspectAppController::class, 'success'])
+    ->middleware('auth')
     ->name('prospect-app.success');
 
 Route::post('/prospect-app/check-email', [App\Http\Controllers\ProspectAppController::class, 'checkEmail'])
+    ->middleware('auth')
     ->name('prospect-app.check-email');
 
 // Route untuk download PDF Proposal ProspectApp
