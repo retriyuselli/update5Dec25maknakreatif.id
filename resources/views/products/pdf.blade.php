@@ -77,7 +77,7 @@
         }
 
         .vendor-description {
-            margin-left:10px;
+            margin-left: 10px;
             font-size: 8pt;
             margin-top: 3px;
             margin-bottom: 3px;
@@ -328,45 +328,45 @@
         </div>
 
         {{-- Addition Details --}}
-        @if($product->penambahanHarga && $product->penambahanHarga->count() > 0)
-        <div class="package-details-box">
-            <h3 class="section-title">Additional Price Details</h3>
-            <table class="items-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%; vertical-align: top;">No.</th>
-                        <th style="vertical-align: top;">Description</th>
-                        <th style="width: 15%; text-align: right; vertical-align: top;">Vendor</th>
-                        <th style="width: 15%; text-align: right; vertical-align: top;">Publish</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($product->penambahanHarga as $addition)
+        @if ($product->penambahanHarga && $product->penambahanHarga->count() > 0)
+            <div class="package-details-box">
+                <h3 class="section-title">Additional Price Details</h3>
+                <table class="items-table">
+                    <thead>
                         <tr>
-                            <td style="text-align: center; vertical-align: top;">{{ $loop->iteration }}</td>
-                            <td>
-                                <div style="font-weight: bold; margin-bottom: 2px;">
-                                    {{ $addition->vendor->name ?? 'N/A' }}
-                                </div>
-                                @isset($addition->description)
-                                    <ol class="vendor-description">
-                                        {!! strip_tags($addition->description, '<li>') !!}
-                                    </ol>
-                                @endisset
-                            </td>
-                            <td style="text-align: right; vertical-align: top;">
-                                {{ number_format($addition->harga_vendor ?? 0, 0, ',', '.') }}
-                            </td>
-                            <td style="text-align: right; vertical-align: top;">
-                                {{ number_format($addition->harga_publish ?? 0, 0, ',', '.') }}
-                            </td>
+                            <th style="width: 5%; vertical-align: top;">No.</th>
+                            <th style="vertical-align: top;">Description</th>
+                            <th style="width: 15%; text-align: right; vertical-align: top;">Vendor</th>
+                            <th style="width: 15%; text-align: right; vertical-align: top;">Publish</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($product->penambahanHarga as $addition)
+                            <tr>
+                                <td style="text-align: center; vertical-align: top;">{{ $loop->iteration }}</td>
+                                <td>
+                                    <div style="font-weight: bold; margin-bottom: 2px;">
+                                        {{ $addition->vendor->name ?? 'N/A' }}
+                                    </div>
+                                    @isset($addition->description)
+                                        <ol class="vendor-description">
+                                            {!! strip_tags($addition->description, '<li>') !!}
+                                        </ol>
+                                    @endisset
+                                </td>
+                                <td style="text-align: right; vertical-align: top;">
+                                    {{ number_format($addition->harga_vendor ?? 0, 0, ',', '.') }}
+                                </td>
+                                <td style="text-align: right; vertical-align: top;">
+                                    {{ number_format($addition->harga_publish ?? 0, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @endif
-        
+
         {{-- Reduction Details --}}
         <div class="package-details-box"> {{-- Gunakan box yang sudah ada stylenya --}}
             <h3 class="section-title">Reduction Details</h3> {{-- Gunakan kelas judul --}}
@@ -386,7 +386,7 @@
                             <td>
                                 <div style="font-weight: bold; margin-bottom: 2px;">
                                     {{ $discount->description ?? 'N/A' }}</div> {{-- Nama Vendor --}}
-                                @isset ($discount->notes)
+                                @isset($discount->notes)
                                     <ol class="vendor-description">
                                         {!! strip_tags($discount->notes, '<li>') !!}
                                     </ol>
@@ -409,29 +409,29 @@
         {{-- Price Calculation --}}
         <div class="package-details-box">
             @php
-            // Hitung total berdasarkan jumlah harga publik item
-            $totalPublicPrice = ($product->items ?? collect())->sum(function ($item) {
-                return ($item->harga_publish ?? 0) * ($item->quantity ?? 1);
-            });
+                // Hitung total berdasarkan jumlah harga publik item
+                $totalPublicPrice = ($product->items ?? collect())->sum(function ($item) {
+                    return ($item->harga_publish ?? 0) * ($item->quantity ?? 1);
+                });
 
-            // Hitung total berdasarkan jumlah harga vendor item
-            $totalVendorPrice = ($product->items ?? collect())->sum(function ($item) {
-                return ($item->harga_vendor ?? 0) * ($item->quantity ?? 1);
-            });
+                // Hitung total berdasarkan jumlah harga vendor item
+                $totalVendorPrice = ($product->items ?? collect())->sum(function ($item) {
+                    return ($item->harga_vendor ?? 0) * ($item->quantity ?? 1);
+                });
 
-            // Hitung total jumlah diskon
-            $totalDiscountAmount = ($product->pengurangans ?? collect())->sum('amount');
+                // Hitung total jumlah diskon
+                $totalDiscountAmount = ($product->pengurangans ?? collect())->sum('amount');
 
-            // Hitung total jumlah penambahan harga
-            $totalAdditionAmount = ($product->penambahanHarga ?? collect())->sum('harga_publish');
-            $totalAdditionVendorAmount = ($product->penambahanHarga ?? collect())->sum('harga_vendor');
+                // Hitung total jumlah penambahan harga
+                $totalAdditionAmount = ($product->penambahanHarga ?? collect())->sum('harga_publish');
+                $totalAdditionVendorAmount = ($product->penambahanHarga ?? collect())->sum('harga_vendor');
 
-            // Hitung harga final setelah diskon dan penambahan
-            $finalPriceAfterDiscounts = $totalPublicPrice - $totalDiscountAmount + $totalAdditionAmount;
-            $finalVendorPriceAfterDiscounts = $totalVendorPrice - $totalDiscountAmount + $totalAdditionVendorAmount;
+                // Hitung harga final setelah diskon dan penambahan
+                $finalPriceAfterDiscounts = $totalPublicPrice - $totalDiscountAmount + $totalAdditionAmount;
+                $finalVendorPriceAfterDiscounts = $totalVendorPrice - $totalDiscountAmount + $totalAdditionVendorAmount;
 
-            // Hitung Profit & Loss
-            $profitAndLoss = $finalPriceAfterDiscounts - $finalVendorPriceAfterDiscounts;
+                // Hitung Profit & Loss
+                $profitAndLoss = $finalPriceAfterDiscounts - $finalVendorPriceAfterDiscounts;
             @endphp
 
             <h3 class="section-title">Price Calculation</h3> {{-- Gunakan kelas judul --}}
@@ -450,17 +450,17 @@
                     <td style="text-align: right; font-weight: bold; color: red;"> -
                         {{ number_format($totalDiscountAmount, 0, ',', '.') }}</td>
                 </tr>
-                @if($totalAdditionAmount > 0 || $totalAdditionVendorAmount > 0)
-                <tr>
-                    <td><strong>Total Addition Publish</strong></td>
-                    <td style="text-align: right; font-weight: bold; color: green;"> +
-                        {{ number_format($totalAdditionAmount, 0, ',', '.') }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Total Addition Vendor</strong></td>
-                    <td style="text-align: right; font-weight: bold; color: green;"> +
-                        {{ number_format($totalAdditionVendorAmount, 0, ',', '.') }}</td>
-                </tr>
+                @if ($totalAdditionAmount > 0 || $totalAdditionVendorAmount > 0)
+                    <tr>
+                        <td><strong>Total Addition Publish</strong></td>
+                        <td style="text-align: right; font-weight: bold; color: green;"> +
+                            {{ number_format($totalAdditionAmount, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Addition Vendor</strong></td>
+                        <td style="text-align: right; font-weight: bold; color: green;"> +
+                            {{ number_format($totalAdditionVendorAmount, 0, ',', '.') }}</td>
+                    </tr>
                 @endif
                 <tr>
                     <td><strong>Total Paket Publish</strong></td>

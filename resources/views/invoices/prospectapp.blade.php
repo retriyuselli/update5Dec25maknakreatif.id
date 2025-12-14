@@ -291,14 +291,14 @@
     <!-- Header -->
     <div class="header">
         <h1>PT. MAKNA KREATIF INDONESIA</h1>
-        <h2>Wedding Organizer Financial System - {{ config('app.name', 'Makna Online') }}</h2>
-        <p>Email: ceo@maknawedding.id | Phone: +62 813 7318 3794</p>
+        <h2>Wedding Organizer Financial System - {{ config('app.name', 'WOFINS') }}</h2>
+        <p>Email: office@wofins.id | Phone: +62 813 7318 3794</p>
     </div>
 
     <!-- Document Title -->
     <div class="document-title">
         <h1>INVOICE Aplikasi Financial System</h1>
-        <h4>Application ID: #{{ $prospectApp->id }}</h4>
+        <h4>Application User: #{{ $prospectApp->company_name }}</h4>
     </div>
 
     <!-- Document Details -->
@@ -308,9 +308,9 @@
                 <address>
                     <strong>Kepada:</strong><br>
                     Ibu / Bpk {{ $prospectApp->full_name }}<br>
-                    {{ $prospectApp->position ? $prospectApp->position . ', ' : '' }}{{ $prospectApp->company_name }}<br>
+                    {{ $prospectApp->position }}<br>
                     Email: {{ $prospectApp->email }}<br>
-                    Phone: {{ $prospectApp->phone }}<br>
+                    Phone: +62{{ $prospectApp->phone }}<br>
                     @if ($prospectApp->name_of_website)
                         Website: {{ $prospectApp->name_of_website }}<br>
                     @endif
@@ -382,12 +382,15 @@
                 </tr>
                 <tr>
                     <td><strong>Telah Dibayarkan</strong></td>
-                    <td>Rp. {{ number_format($prospectApp->bayar, 0, ',', '.') }} Tanggal
-                        {{ $prospectApp->tgl_bayar }}</td>
+                    <td>Rp. {{ number_format($prospectApp->bayar, 0, ',', '.') }}
+                        @if (($prospectApp->bayar ?? 0) > 0 && $prospectApp->tgl_bayar)
+                            Tanggal {{ $prospectApp->tgl_bayar->format('d M Y') }}
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <td><strong>Sisa Pembayaran</strong></td>
-                    <td>Rp. {{ number_format($prospectApp->harga - $prospectApp->bayar) }}</td>
+                    <td>Rp. {{ number_format($prospectApp->harga - $prospectApp->bayar, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td><strong>Status Pembayaran</strong></td>
@@ -478,6 +481,8 @@
                 </li>
                 <li><strong>Proposal Detail:</strong> Penyusunan proposal teknis dan commercial yang sesuai</li>
                 <li><strong>Implementasi:</strong> Eksekusi project sesuai timeline yang disepakati</li>
+                <li><strong>Pembayaran:</strong> Dapat dilakukan melalui transfer rekening Bank BCA 2910777800 atas
+                    nama Perk Hastana Indonesia</li>
             </ol>
         </div>
     </div>
@@ -490,13 +495,13 @@
                 <td style="width: 50%; padding: 10px; border: 1px solid #ddd;">
                     <strong>Sales Manager</strong><br>
                     Satra<br>
-                    Email: sales@maknawedding.id<br>
+                    Email: sales@wofins.id<br>
                     Phone: +62 822-9796-2600
                 </td>
                 <td style="width: 50%; padding: 10px; border: 1px solid #ddd;">
                     <strong>Technical Manager</strong><br>
                     Rama Dhona Utama<br>
-                    Email: tech@maknawedding.id<br>
+                    Email: tech@wofins.id<br>
                     Phone: +62 813 7318 3794
                 </td>
             </tr>
@@ -509,7 +514,8 @@
         <p><strong>Terima kasih atas kepercayaan Anda!</strong></p>
         <p>Dari WO, untuk WO. Karena rapi sejak dini = SIAP JADI BESAR</p>
         <p>Dokumen ini dibuat secara otomatis pada {{ now()->format('d M Y H:i') }}</p>
-        <p>© {{ date('Y') }} {{ config('app.name', 'Makna Online') }}. All rights reserved.</p>
+        <p>© {{ date('Y') }} {{ config('app.name', 'Wedding Organizer Financial System') }}. All rights reserved.
+        </p>
     </div>
 
 </body>
