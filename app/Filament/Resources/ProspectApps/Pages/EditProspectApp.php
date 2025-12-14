@@ -18,7 +18,7 @@ class EditProspectApp extends EditRecord
                 ->label('Generate Proposal')
                 ->icon('heroicon-o-document-text')
                 ->color('success')
-                ->url('https://update.maknakreatif.id/prospect-app')
+                ->url(fn () => route('prospect-app.proposal.pdf', $this->record))
                 ->openUrlInNewTab(),
             DeleteAction::make(),
         ];
