@@ -254,7 +254,7 @@ class DataPembayaranResource extends Resource
                                 Notification::make()
                                     ->danger()
                                     ->title('Sebagian dilewati')
-                                    ->body("{$skipped} data terhubung ke Order dan tidak bisa dihapus!!!")
+                                    ->body("{$skipped} data terhubung ke Order dan tidak bisa dihapus")
                                     ->send();
                             }
                         }),
