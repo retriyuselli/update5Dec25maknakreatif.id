@@ -3,20 +3,48 @@
 namespace App\Filament\Resources\Vendors\Pages;
 
 use App\Filament\Resources\Vendors\VendorResource;
+use Filament\Notifications\Notification;
+use Illuminate\Database\QueryException;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class EditVendor extends EditRecord
 {
     protected static string $resource = VendorResource::class;
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (empty($data['slug']) && ! empty($data['name'])) {
+            $data['slug'] = Str::slug((string) $data['name']);
+        }
+        if (! empty($data['slug'])) {
+            $exists = \App\Models\Vendor::where('slug', $data['slug'])
+                ->where('id', '!=', $this->getRecord()->id)
+                ->exists();
+
+            if ($exists) {
+                Notification::make()
+                    ->danger()
+                    ->title('Slug Duplikat')
+                    ->body('Slug "'.($data['slug'] ?? '').'" sudah digunakan. Silakan ubah slug atau nama.')
+                    ->persistent()
+                    ->send();
+
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'slug' => 'Slug sudah digunakan',
+                ]);
+            }
+        }
+
+        return $data;
+    }
 
     protected function getHeaderActions(): array
     {

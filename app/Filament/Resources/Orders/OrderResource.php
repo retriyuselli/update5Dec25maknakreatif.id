@@ -21,7 +21,6 @@ use App\Models\Product;
 use App\Models\Prospect;
 use App\Models\User;
 use App\Models\Vendor;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;

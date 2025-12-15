@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Vendors\Schemas;
 
 use App\Models\Category;
+use App\Models\Vendor;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -37,17 +38,11 @@ class VendorForm
                                     ->schema([
                                         TextInput::make('name')
                                             ->required()
-                                            ->live(onBlur: true)
-                                            ->reactive()
-                                            ->afterStateUpdated(fn ($state, Set $set) => $set('slug', Str::slug((string) $state))),
+                                            ->live(onBlur: true),
                                         TextInput::make('slug')
                                             ->default(null)
-                                            ->reactive()
-                                            ->afterStateHydrated(function ($component, $state, Get $get) {
-                                                if (! $state) {
-                                                    $component->state(Str::slug((string) ($get('name') ?? '')));
-                                                }
-                                            }),
+                                            ->disabled()
+                                            ->dehydrated(false),
                                         TextInput::make('phone')
                                             ->tel()
                                             ->required()
