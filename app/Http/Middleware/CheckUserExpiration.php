@@ -42,7 +42,8 @@ class CheckUserExpiration
                 $request->session()->regenerateToken();
 
                 // Redirect with message
-                return redirect()->route('filament.admin.auth.login')
+                $appUrl = config('app.url') ?: url('/');
+                return redirect()->to($appUrl)
                     ->with('error', 'Akun Anda telah kedaluwarsa. Silakan hubungi administrator untuk memperpanjang akses.');
             }
 

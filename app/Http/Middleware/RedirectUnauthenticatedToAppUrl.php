@@ -19,7 +19,8 @@ class RedirectUnauthenticatedToAppUrl
                 return response()->json(['message' => 'Unauthenticated'], 401);
             }
 
-            return redirect()->to(route('filament.admin.auth.login'));
+            $appUrl = config('app.url') ?: url('/');
+            return redirect()->to($appUrl);
         }
 
         return $next($request);

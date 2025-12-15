@@ -27,16 +27,16 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $company = null;
-        if (Schema::hasTable('companies')) {
-            $company = Company::query()->first();
-        }
-        $brandLogo = $company && $company->logo_url
-            ? Storage::disk('public')->url($company->logo_url)
-            : asset('images/logomki.png');
-        $favicon = $company && $company->favicon_url
-            ? Storage::disk('public')->url($company->favicon_url)
-            : asset('images/favicon_makna.png');
+        // $company = null;
+        // if (Schema::hasTable('companies')) {
+        //     $company = Company::query()->first();
+        // }
+        // $brandLogo = $company && $company->logo_url
+        //     ? Storage::disk('public')->url($company->logo_url)
+        //     : asset('images/logomki.png');
+        // $favicon = $company && $company->favicon_url
+        //     ? Storage::disk('public')->url($company->favicon_url)
+        //     : asset('images/favicon_makna.png');
 
         return $panel
             ->default()
@@ -44,10 +44,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->font('Inter')
             ->login()
-            ->brandLogo($brandLogo)
-            ->brandName('Makna Kreatif')
+            ->brandLogo(asset('images/logomki.png'))
             ->brandLogoHeight('2rem')
-            ->favicon($favicon)
+            ->brandName('Makna Kreatif')
+            ->favicon(asset('images/SWE.png'))
             ->sidebarCollapsibleOnDesktop(true)
             ->colors([
                 'primary' => Color::Purple,
