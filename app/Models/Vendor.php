@@ -48,29 +48,21 @@ class Vendor extends Model
     protected static function booted(): void
     {
         static::saving(function (self $vendor): void {
+            foreach ([
+                'product_vendors_count',
+                'expenses_count',
+                'nota_dinas_details_count',
+                'product_penambahans_count',
+            ] as $attr) {
+                if (array_key_exists($attr, $vendor->getAttributes())) {
+                    $vendor->offsetUnset($attr);
+                }
+            }
             $hp = (float) ($vendor->harga_publish ?? 0);
             $hv = (float) ($vendor->harga_vendor ?? 0);
             $vendor->calculateProfitAmount();
             $profit = (float) ($vendor->profit_amount ?? 0);
             $vendor->profit_margin = $hp > 0 ? round(($profit / $hp) * 100, 2) : 0;
-        });
-
-        static::retrieved(function (self $vendor): void {
-            $hp = (float) ($vendor->harga_publish ?? 0);
-            $vendor->calculateProfitAmount();
-            $profit = (float) ($vendor->profit_amount ?? 0);
-            $margin = $hp > 0 ? round(($profit / $hp) * 100, 2) : 0;
-
-            $needsUpdate = ($vendor->profit_amount === null) || ($vendor->profit_margin === null) ||
-                ((float) $vendor->profit_margin !== (float) $margin);
-
-            if ($needsUpdate) {
-                $vendor->profit_margin = $margin;
-                try {
-                    $vendor->saveQuietly();
-                } catch (\Throwable $e) {
-                }
-            }
         });
     }
 

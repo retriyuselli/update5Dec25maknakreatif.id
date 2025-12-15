@@ -3,6 +3,7 @@ php artisan shield:generate --all
 lanjut blogs php artisan migrate --path=database/migrations/2025_09_01_100318_create_blogs_table.php
 php artisan migrate --path=database/migrations/
 cd /home/u380354370/domains/update.maknakreatif.id/public_html
+cd /home/u380354370/domains/wofins.id/public_html
 https://console.cloud.google.com/
 
 # Server Deployment Commands (Run setelah git pull)
