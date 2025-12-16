@@ -1002,8 +1002,6 @@ class OrderResource extends Resource
                     ->color('danger')
                     ->toggleable(),
 
-                // Payment Status
-
                 // Advanced Financial Details (Hidden by Default)
                 TextColumn::make('tot_pengeluaran')
                     ->label('Total Pengeluaran')
