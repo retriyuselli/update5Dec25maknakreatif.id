@@ -38,7 +38,7 @@
                         </div>
 
                         <!-- Trust Indicators -->
-                        <div class="mt-8 flex items-center space-x-6 text-sm text-gray-500">
+                        <div class="mt-8 flex items-center space-x-6 text-sm text-black">
                             <div class="flex items-center space-x-2">
                                 <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
@@ -74,9 +74,9 @@
                                 <!-- Dashboard Header -->
                                 <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
                                     <div class="flex items-center justify-between">
-                                        <div class="text-white">
-                                            <h3 class="font-semibold text-white">Dashboard Operasional</h3>
-                                            <p class="text-white text-sm">Real-time overview</p>
+                                        <div class="text-black">
+                                            <h3 class="font-semibold text-black">Dashboard Operasional</h3>
+                                            <p class="text-black text-sm">Real-time overview</p>
                                         </div>
                                         <div class="flex space-x-1">
                                             <div class="w-3 h-3 bg-red-400 rounded-full"></div>
@@ -146,8 +146,9 @@
                                 </div>
                             </div>
 
-                            <!-- Floating notification -->
-                            <div class="absolute -top-4 -right-4 bg-blue-600 text-white p-3 rounded-lg shadow-lg max-w-xs">
+                            <!-- Floating Notification -->
+                            <div
+                                class="absolute -top-20 md:-top-10 -right-4 bg-blue-600 text-white p-3 rounded-lg shadow-lg max-w-xs z-20">
                                 <div class="flex items-start space-x-2">
                                     <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 2L3 7v11a1 1 0 001 1h3v-7h6v7h3a1 1 0 001-1V7l-7-5z" />
@@ -168,7 +169,7 @@
         <section class="py-12 bg-gray-50 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-8">
-                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">
+                    <p class="text-sm font-medium text-black uppercase tracking-wide">
                         PT. Makna Kreatif Indonesia telah banyak melakukan kerjasama dengan berbagai perusahaan <br>
                         industri pernikahan di Sumatera Selatan dan sekitarnya, antara lain:
                     </p>

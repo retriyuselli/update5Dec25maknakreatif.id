@@ -37,7 +37,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2">
-                        <img class="h-6 md:h-10 w-auto" src="{{ route('brand.logo') }}" alt="Logo"
+                        <img class="h-6 md:h-8 w-auto" src="{{ route('brand.logo') }}" alt="Logo"
                             onerror="this.src='{{ asset('images/logomki.png') }}'">
                         {{-- <span class="text-xl font-bold text-gray-800">MaknaPro</span> --}}
                     </a>
@@ -111,7 +111,7 @@
                 <div class="ml-6 flex items-center space-x-4">
                     @auth
                         <!-- Profile Dropdown -->
-                        <div class="relative" x-data="{ open: false }">
+                        <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                             <button @click="open = !open"
                                 class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full">
                                 <div class="relative">
