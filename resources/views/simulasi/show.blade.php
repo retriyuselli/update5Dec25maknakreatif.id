@@ -111,6 +111,18 @@
             margin-bottom: 0px !important;
         }
 
+        /* Force black color for text elements to ensure consistency */
+        .invoice-table td p,
+        .invoice-table td ul,
+        .invoice-table td ol,
+        .invoice-table td li,
+        .invoice-table td span,
+        .invoice-table td div,
+        .invoice-table td strong,
+        .invoice-table td b {
+            color: #000000 !important;
+        }
+
         /* Print/PDF-specific rules */
         @media print {
 
@@ -309,7 +321,7 @@ Invoice Area
                                     <b>Office Information :</b>
                                     <address class="align-justify">PT. Makna Kreatif Indonesia <br>
                                         Jl. Sintraman Jaya I No. 2148, 20 Ilir D II, Kecamatan Kemuning, Kota Palembang,
-                                        Sumatera Selatan 30137, Phone: +153-8975-3698 <br>
+                                        Sumatera Selatan 30137, Phone: +62 822-9796-2600 <br>
                                     </address>
                                 </div>
                             </div>
