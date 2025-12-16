@@ -70,7 +70,7 @@
         }
 
         .invoice-container {
-            background-color: #ffffff !important;   
+            background-color: #ffffff !important;
             box-shadow: none !important;
             border: 0.5px solid #ddd !important;
             margin: 50 !important;
@@ -99,6 +99,18 @@
             font-weight: 600 !important;
         }
 
+        /* Fix for excessive spacing in description lists/paragraphs */
+        .invoice-table td p,
+        .invoice-table td ul,
+        .invoice-table td ol {
+            margin-bottom: 2px !important;
+            margin-top: 0px !important;
+        }
+
+        .invoice-table td li {
+            margin-bottom: 0px !important;
+        }
+
         /* Print/PDF-specific rules */
         @media print {
 
@@ -123,16 +135,16 @@
             .total-table .col-public-price {
                 display: none !important;
             }
-            
+
             /* Show publish price column for addition table */
             .addition-table .col-vendor-price {
                 display: none !important;
             }
-            
+
             .addition-table .col-public-price {
                 display: table-cell !important;
             }
-            
+
             /* Show amount column for reduction table */
             .reduction-table .col-public-price {
                 display: table-cell !important;
@@ -429,11 +441,6 @@ Invoice Area
                                 return ($item->harga_vendor ?? 0) * ($item->quantity ?? 1);
                             });
 
-                            // Total biaya vendor berdasarkan item-item dalam simulasi
-                            $calculationTotalVendorCost = collect($items)->sum(function ($item) {
-                                return ($item->totalVendorPrice ?? 0) * ($item->quantity ?? 1);
-                            });
-
                             // Hitung total penambahan harga
                             $totalAdditionPublish = ($simulasi->product->penambahanHarga ?? collect())->sum(
                                 'harga_publish',
@@ -456,10 +463,6 @@ Invoice Area
                                 $basePackagePrice + $totalAdditionPublish - $calculationTotalReductions;
                             $finalVendorPriceAfterDiscounts =
                                 $baseVendorPrice + $totalAdditionVendor - $calculationTotalReductions;
-
-                            // Grand total for the simulation, directly from the simulation record.
-                            $finalPriceAfterDiscounts =
-                                $basePackagePrice + $totalAdditionPublish - $calculationTotalReductions;
 
                             // Profit & Loss for this simulation
                             $calculationProfitLoss = $finalPublicPriceAfterDiscounts - $finalVendorPriceAfterDiscounts;
