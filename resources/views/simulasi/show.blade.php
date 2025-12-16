@@ -107,6 +107,16 @@
             margin-top: 0px !important;
         }
 
+        /* General list indentation */
+        .invoice-table td ol {
+            padding-left: 20px !important;
+        }
+
+        /* Extra indentation for bullet points (ul) to look like sub-items */
+        .invoice-table td ul {
+            padding-left: 45px !important;
+        }
+
         .invoice-table td li {
             margin-bottom: 0px !important;
         }
@@ -120,6 +130,11 @@
         .invoice-table td div,
         .invoice-table td strong,
         .invoice-table td b {
+            color: #000000 !important;
+        }
+
+        /* Ensure list markers (dots/numbers) are also black */
+        .invoice-table td li::marker {
             color: #000000 !important;
         }
 
