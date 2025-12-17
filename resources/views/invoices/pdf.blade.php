@@ -14,8 +14,8 @@
         }
 
         /* Universal Noto Sans Font Application */
-        *, 
-        *::before, 
+        *,
+        *::before,
         *::after {
             font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
         }
@@ -41,13 +41,13 @@
             padding-bottom: 5px;
             text-align: center;
         }
-        
+
         /* Header Company Info - Rapatkan jarak */
         .header h2 {
             margin: 0 0 2px 0;
             line-height: 1.1;
         }
-        
+
         .header td {
             line-height: 1.2;
             padding: 0;
@@ -494,11 +494,12 @@
                     <td class="text-right">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
                 </tr>
 
-                @if($totalAdditionAmount > 0)
-                <tr>
-                    <td>Total Penambahan dari Produk</td>
-                    <td class="text-right addition-amount">+ Rp {{ number_format($totalAdditionAmount, 0, ',', '.') }}</td>
-                </tr>
+                @if ($totalAdditionAmount > 0)
+                    <tr>
+                        <td>Total Penambahan dari Produk</td>
+                        <td class="text-right addition-amount">+ Rp
+                            {{ number_format($totalAdditionAmount, 0, ',', '.') }}</td>
+                    </tr>
                 @endif
 
                 @if ($order->promo > 0)
@@ -544,7 +545,11 @@
         $allProductPenambahanHarga = collect();
         if ($order->items && $order->items->count() > 0) {
             foreach ($order->items as $orderItem) {
-                if ($orderItem->product && $orderItem->product->penambahanHarga && $orderItem->product->penambahanHarga->count() > 0) {
+                if (
+                    $orderItem->product &&
+                    $orderItem->product->penambahanHarga &&
+                    $orderItem->product->penambahanHarga->count() > 0
+                ) {
                     foreach ($orderItem->product->penambahanHarga as $penambahan) {
                         // Menambahkan nama produk ke objek penambahan untuk referensi
                         $penambahan->product_name = $orderItem->product->name;

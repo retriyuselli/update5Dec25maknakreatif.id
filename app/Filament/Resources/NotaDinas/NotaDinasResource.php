@@ -28,8 +28,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -59,138 +58,118 @@ class NotaDinasResource extends Resource
     {
         return $schema
             ->components([
-                Tabs::make('Nota Dinas')
-                    ->tabs([
-                        Tab::make('Informasi ND')
-                            ->icon('heroicon-o-information-circle')
-                            ->schema([
-                                Grid::make(2)->schema([
-                                    Select::make('kategori_nd')
-                                        ->label('Kategori Nota Dinas')
-                                        ->options(NotaDinas::getKategoriOptions())
-                                        ->default('BIS')
-                                        ->required()
-                                        ->live()
-                                        ->afterStateUpdated(function ($state, Set $set) {
-                                            $tahun = date('Y');
-                                            $nomorBaru = NotaDinas::generateNomorND($state, $tahun);
-                                            $set('no_nd', $nomorBaru);
-                                        })
-                                        ->helperText('Pilih kategori untuk generate nomor otomatis'),
+                Section::make('Informasi ND')
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Select::make('kategori_nd')
+                                ->label('Kategori Nota Dinas')
+                                ->options(NotaDinas::getKategoriOptions())
+                                ->default('BIS')
+                                ->required()
+                                ->live()
+                                ->afterStateUpdated(function ($state, Set $set) {
+                                    $tahun = date('Y');
+                                    $nomorBaru = NotaDinas::generateNomorND($state, $tahun);
+                                    $set('no_nd', $nomorBaru);
+                                }),
+                                // ->helperText('Pilih kategori untuk generate nomor otomatis'),
 
-                                    DatePicker::make('tanggal')
-                                        ->label('Tanggal')
-                                        ->required()
-                                        ->default(now()),
-                                ]),
+                            DatePicker::make('tanggal')
+                                ->label('Tanggal')
+                                ->required()
+                                ->default(now()),
+                        ]),
 
-                                TextInput::make('no_nd')
-                                    ->label('Nomor ND')
-                                    ->required()
-                                    ->unique(table: 'nota_dinas', column: 'no_nd', ignoreRecord: true)
-                                    ->placeholder('ND/BIS/001/2024')
-                                    ->maxLength(255)
-                                    ->default(function () {
-                                        return NotaDinas::generateNomorND('BIS');
-                                    })
-                                    ->helperText('Nomor akan ter-generate otomatis sesuai kategori dan tahun'),
-                            ]),
+                        TextInput::make('no_nd')
+                            ->label('Nomor ND')
+                            ->required()
+                            ->readOnly()
+                            ->unique(table: 'nota_dinas', column: 'no_nd', ignoreRecord: true)
+                            ->placeholder('ND/BIS/001/2024')
+                            ->maxLength(255)
+                            ->default(function () {
+                                return NotaDinas::generateNomorND('BIS');
+                            }),
+                            // ->helperText('Nomor akan ter-generate otomatis sesuai kategori dan tahun'),
+                    ]),
+                
+                Section::make('Pihak')
+                    ->icon('heroicon-o-user-group')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Select::make('pengirim_id')
+                                ->label('Pengirim')
+                                ->relationship('pengirim', 'name')
+                                ->default(Auth::id())
+                                ->disabled(function (): bool {
+                                    /** @var User $user */
+                                    $user = Auth::user();
 
-                        Tab::make('Pihak')
-                            ->icon('heroicon-o-user-group')
-                            ->schema([
-                                Grid::make(2)->schema([
-                                    Select::make('pengirim_id')
-                                        ->label('Pengirim')
-                                        ->relationship('pengirim', 'name')
-                                        ->default(Auth::id())
-                                        ->disabled(function (): bool {
-                                            /** @var User $user */
-                                            $user = Auth::user();
+                                    return ! ($user && $user->hasRole('super_admin'));
+                                })
+                                ->dehydrated()
+                                ->required(),
 
-                                            return ! ($user && $user->hasRole('super_admin'));
-                                        })
-                                        ->dehydrated()
-                                        ->required(),
+                            Select::make('penerima_id')
+                                ->label('Penerima')
+                                ->relationship('penerima', 'name')
+                                ->searchable()
+                                ->preload(),
+                            
+                            Select::make('status')
+                                    ->label('Status')
+                                    ->options([
+                                        'diajukan' => 'Diajukan',
+                                        'disetujui' => 'Disetujui',
+                                        'ditolak' => 'Ditolak',
+                                    ])
+                                    ->default('diajukan')
+                                    ->required(),
+                        ]),
+                    ]),
 
-                                    Select::make('penerima_id')
-                                        ->label('Penerima')
-                                        ->relationship('penerima', 'name')
-                                        ->searchable()
-                                        ->preload(),
-                                ]),
-                            ]),
+                Section::make('Konten')
+                    ->icon('heroicon-o-document-text')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            Select::make('sifat')
+                                ->label('Sifat')
+                                ->options([
+                                    'Segera' => 'Segera',
+                                    'Biasa' => 'Biasa',
+                                    'Rahasia' => 'Rahasia',
+                                ])
+                                ->placeholder('Pilih sifat nota dinas')
+                                ->required(),
 
-                        Tab::make('Konten')
-                            ->icon('heroicon-o-document-text')
-                            ->schema([
-                                Grid::make(2)->schema([
-                                    Select::make('sifat')
-                                        ->label('Sifat')
-                                        ->options([
-                                            'Segera' => 'Segera',
-                                            'Biasa' => 'Biasa',
-                                            'Rahasia' => 'Rahasia',
-                                        ])
-                                        ->placeholder('Pilih sifat nota dinas')
-                                        ->required(),
+                            TextInput::make('hal')
+                                ->label('Hal')
+                                ->placeholder('Perihal nota dinas')
+                                ->maxLength(255),
+                        ]),
 
-                                    TextInput::make('hal')
-                                        ->label('Hal')
-                                        ->placeholder('Perihal nota dinas')
-                                        ->maxLength(255),
-                                ]),
+                        Textarea::make('catatan')
+                            ->label('Catatan')
+                            ->placeholder('Jika ada catatan tambahan, tuliskan disini...')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                    ]),
 
-                                Textarea::make('catatan')
-                                    ->label('Catatan')
-                                    ->placeholder('Jika ada catatan tambahan, tuliskan disini...')
-                                    ->rows(3)
-                                    ->columnSpanFull(),
-                            ]),
-
-                        Tab::make('Lampiran')
-                            ->icon('heroicon-o-paper-clip')
-                            ->schema([
-                                FileUpload::make('nd_upload')
-                                    ->label('Upload File Nota Dinas')
-                                    ->directory('nota-dinas-uploads')
-                                    ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
-                                    ->maxSize(1024)
-                                    ->downloadable()
-                                    ->openable()
-                                    ->previewable()
-                                    ->columnSpanFull()
-                                    ->helperText('PERHATIAN : Setelah ND ditanda tangani, SEGERA masukkan persetujuannya kesini. Max 1MB.'),
-                            ]),
-
-                        Tab::make('Approval')
-                            ->icon('heroicon-o-check-badge')
-                            ->schema([
-                                Grid::make(2)->schema([
-                                    Select::make('status')
-                                        ->label('Status')
-                                        ->options([
-                                            'diajukan' => 'Diajukan',
-                                            'disetujui' => 'Disetujui',
-                                            'ditolak' => 'Ditolak',
-                                        ])
-                                        ->default('diajukan')
-                                        ->required(),
-
-                                    Select::make('approved_by')
-                                        ->label('Disetujui Oleh')
-                                        ->relationship('approver', 'name')
-                                        ->searchable()
-                                        ->preload()
-                                        ->visible(fn ($get) => in_array($get('status'), ['disetujui', 'dibayar'])),
-                                ]),
-
-                                DateTimePicker::make('approved_at')
-                                    ->label('Waktu Persetujuan')
-                                    ->visible(fn ($get) => in_array($get('status'), ['disetujui', 'dibayar'])),
-                            ]),
-                    ])
-                    ->columnSpanFull(),
+                Section::make('Lampiran')
+                    ->icon('heroicon-o-paper-clip')
+                    ->schema([
+                        FileUpload::make('nd_upload')
+                            ->label('Upload File Nota Dinas')
+                            ->directory('nota-dinas-uploads')
+                            ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+                            ->maxSize(2048)
+                            ->downloadable()
+                            ->openable()
+                            ->previewable()
+                            ->columnSpanFull()
+                            ->helperText('PERHATIAN : Setelah ND ditanda tangani, SEGERA masukkan persetujuannya kesini. Max 2MB.'),
+                    ]),
             ]);
     }
 

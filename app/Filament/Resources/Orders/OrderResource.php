@@ -1083,15 +1083,6 @@ class OrderResource extends Resource
                                                 $q->whereDate('date_resepsi', '>=', $data['from_date'])->when($data['until_date'], fn ($q) => $q->whereDate('date_resepsi', '<=', $data['until_date']));
                                             });
                                         });
-
-                                        // Closing dates
-                                        // $subQuery->when($data['from_date'], function ($q) use ($data) {
-                                        //     $q->orWhere(function ($q) use ($data) {
-                                        //         $q->whereDate('closing_date', '>=', $data['from_date'])
-                                        //           ->when($data['until_date'], fn ($q) =>
-                                        //               $q->whereDate('closing_date', '<=', $data['until_date']));
-                                        //     });
-                                        // });
                                     });
 
                                     // Apply sorting for "All Events" - sort by the nearest event
