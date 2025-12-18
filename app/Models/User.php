@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Enums\OrderStatus;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasAvatar
+class User extends Authenticatable implements HasAvatar, FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
@@ -361,6 +362,14 @@ class User extends Authenticatable implements HasAvatar
 
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($this->status === 'terminated' || $this->status === 'inactive') {
+            return false;
+        }
+
+        if ($this->isExpired()) {
+            return false;
+        }
+
         return true;
     }
 

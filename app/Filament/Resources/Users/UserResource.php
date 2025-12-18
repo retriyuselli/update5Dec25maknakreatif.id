@@ -282,6 +282,8 @@ class UserResource extends Resource
                                                     ->afterStateUpdated(function ($state, $set) {
                                                         if ($state === 'terminated') {
                                                             $set('expire_date', now());
+                                                        } else {
+                                                            $set('expire_date', null);
                                                         }
                                                     }),
                                             ]),
@@ -290,8 +292,9 @@ class UserResource extends Resource
                                             ->label('Tanggal Kedaluwarsa Akun')
                                             ->helperText('Kosongkan jika akun tidak memiliki batas waktu. Otomatis diisi jika status Terminated.')
                                             ->displayFormat('d/m/Y H:i')
-                                            ->minDate(now())
-                                            ->hidden(fn ($get) => $get('status') === 'terminated')
+                                            // ->minDate(now())
+                                            ->disabled(fn ($get) => $get('status') === 'terminated')
+                                            ->dehydrated()
                                             ->columnSpanFull(),
                                     ]),
                             ]),
@@ -465,7 +468,7 @@ class UserResource extends Resource
                         return empty($roles) ? 'Tidak ada role' : 'Roles: '.implode(', ', $roles);
                     }),
 
-                TextColumn::make('status.status_name')
+                TextColumn::make('employmentStatus.status_name')
                     ->label('Status Jabatan')
                     ->badge()
                     ->searchable()
