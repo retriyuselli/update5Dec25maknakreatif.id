@@ -88,7 +88,7 @@ class UserResource extends Resource
             ->with(['payrolls' => function ($query) {
                 $query->latest(); // Load payrolls ordered by latest
             }])
-            ->with('status')
+            ->with('employmentStatus')
             ->with('roles') // Load roles for display and counting
             ->withCount('roles'); // Add roles count for sorting and display
 
@@ -266,7 +266,20 @@ class UserResource extends Resource
                                                     ->uploadingMessage('Mengupload foto...')
                                                     ->removeUploadedFileButtonPosition('right')
                                                     ->uploadButtonPosition('left')
-                                                    ->extraAttributes(['class' => 'avatar-upload-field']),
+                                                    ->extraAttributes(['class' => 'avatar-upload-field'])
+                                                    ->columnSpan(1),
+
+                                                FileUpload::make('signature_url')
+                                                    ->label('Tanda Tangan Digital')
+                                                    ->image()
+                                                    ->disk('public')
+                                                    ->directory('signatures')
+                                                    ->visibility('public')
+                                                    ->imageEditor()
+                                                    ->maxSize(2048)
+                                                    ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                                                    ->helperText('Upload gambar tanda tangan (transparan lebih baik). Format: PNG, JPG.')
+                                                    ->columnSpan(1),
 
                                                 Select::make('status')
                                                     ->label('Status Akun')

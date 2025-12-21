@@ -36,7 +36,7 @@ class PaymentMethodSeeder extends Seeder
                 'name' => 'Makna Online Cash',
                 'bank_name' => 'Uang Tunai',
                 'cabang' => null,
-                'no_rekening' => null,
+                'no_rekening' => '-',
                 'is_cash' => true,
                 'opening_balance' => 5000000, // Rp 5 juta
                 'opening_balance_date' => Carbon::parse('2024-01-01'),

@@ -54,6 +54,7 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
 
         // Avatar - Allowed for file upload
         'avatar_url',
+        'signature_url',
 
         // Documents & Notes - Allowed for upload and notes
         'contract_document',
@@ -285,6 +286,11 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         return $this->belongsTo(Status::class, 'status_id');
     }
 
+    public function employmentStatus(): BelongsTo
+    {
+        return $this->belongsTo(Status::class, 'status_id');
+    }
+
     public function vendors(): HasMany
     {
         return $this->hasMany(Vendor::class, 'created_by');
@@ -435,5 +441,21 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
     public function getEmployeeIdAttribute()
     {
         return 'EMP-'.str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    }
+
+    // Document Management System
+    public function createdDocuments(): HasMany
+    {
+        return $this->hasMany(Document::class, 'created_by');
+    }
+
+    public function documentApprovals(): HasMany
+    {
+        return $this->hasMany(DocumentApproval::class);
+    }
+
+    public function documentRecipients(): HasMany
+    {
+        return $this->hasMany(DocumentRecipient::class);
     }
 }

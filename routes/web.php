@@ -15,6 +15,7 @@ use App\Http\Controllers\Front\VendorFeatureController;
 use App\Http\Controllers\Front\ProjectController;
 use App\Http\Controllers\Front\VendorController;
 use App\Http\Controllers\FrontendDataPribadiController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\InvoiceOrderController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\ProductDisplayController;
@@ -91,6 +92,11 @@ Route::get('/payroll/{record}/slip-gaji', [App\Http\Controllers\PayrollSlipContr
 // Rute untuk melihat detail persetujuan cuti
 Route::get('/leave-request/{leaveRequest}/approval-detail', [App\Http\Controllers\LeaveApprovalController::class, 'show'])
     ->name('leave-request.approval-detail')
+    ->middleware(\Filament\Http\Middleware\Authenticate::class);
+
+// DOCUMENT
+Route::get('/document/{record}/stream', [DocumentController::class, 'stream'])
+    ->name('document.stream')
     ->middleware(\Filament\Http\Middleware\Authenticate::class);
 
 // INVOICE

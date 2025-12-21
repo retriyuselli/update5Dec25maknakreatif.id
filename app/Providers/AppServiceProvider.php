@@ -7,6 +7,8 @@ use App\Models\BankStatement;
 use App\Models\LeaveRequest;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Document;
+use App\Observers\DocumentObserver;
 use App\Observers\BankStatementObserver;
 use App\Observers\LeaveRequestObserver;
 use App\Observers\OrderObserver;
@@ -41,6 +43,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Register BankStatement Observer for tracking last edited by
         BankStatement::observe(BankStatementObserver::class);
+
+        // Register Document Observer for auto-numbering
+        Document::observe(DocumentObserver::class);
 
         // Register login event listener for daily expiration welcome notifications
         Event::listen(

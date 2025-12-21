@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
             PaymentMethodSeeder::class,    // Metode pembayaran untuk transaksi.
             RoleSeeder::class,             // Peran dan izin pengguna (Spatie).
             SopCategorySeeder::class,      // Kategori untuk SOP.
+            // DepartmentSeeder::class,       // Departemen perusahaan.
+            DocumentCategorySeeder::class, // Kategori dokumen.
             ChartOfAccountSeeder::class,   // Bagan Akun untuk akuntansi.
             FixedAssetChartOfAccountsSeeder::class, // Akun aset tetap dan akumulasi penyusutan.
             CompanySeeder::class,          // Data perusahaan.
@@ -73,6 +75,7 @@ class DatabaseSeeder extends Seeder
             SopRevisionSeeder::class,      // Revisi SOP.
             SopPermissionSeeder::class,    // Izin khusus untuk SOP.
             CompanyLogoSeeder::class,      // Logo perusahaan klien/partner.
+            DocumentSeeder::class,         // Dokumen perusahaan.
         ]);
 
         $this->command->newLine();
