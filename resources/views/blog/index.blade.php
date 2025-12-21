@@ -257,7 +257,7 @@
                         </div>
 
                         <!-- Newsletter -->
-                        <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white">
+                        {{-- <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white">
                             <h3 class="text-lg font-semibold mb-3">Newsletter WOFINS</h3>
                             <p class="text-blue-100 text-sm mb-4">
                                 Dapatkan tips terbaru seputar manajemen wedding organizer langsung di inbox Anda.
@@ -270,7 +270,7 @@
                                     Berlangganan
                                 </button>
                             </form>
-                        </div>
+                        </div> --}}
 
                         <!-- Tags -->
                         <div class="bg-white rounded-2xl shadow-lg p-6">
