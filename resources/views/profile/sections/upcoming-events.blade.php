@@ -31,14 +31,14 @@
 <div class="bg-white rounded-xl shadow-lg border border-gray-100" style="font-family: 'Poppins', sans-serif;">
     <!-- Header -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 rounded-t-xl">
-        <h3 class="text-xl font-bold text-white flex items-center">
+        <h3 class="text-xl font-bold text-black flex items-center">
             <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
             Acara Mendatang & Jadwal Cuti
         </h3>
-        <p class="text-white text-sm mt-1">Aktivitas mendatang dan rencana cuti Anda</p>
+        <p class="text-black text-sm mt-1">Aktivitas mendatang dan rencana cuti Anda</p>
     </div>
 
     <div class="p-6 space-y-6">

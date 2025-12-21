@@ -3,30 +3,7 @@
 @section('title', 'Manajemen Project')
 
 @section('content')
-    <!-- Check if user has required role -->
-    @php
-        $allowedRoles = ['super_admin', 'Account Manager', 'Finance'];
-        $hasAccess = false;
-        
-        if (auth()->check()) {
-            $user = auth()->user();
-            
-            // Check if user has hasRole method (Spatie Permission)
-            if (method_exists($user, 'hasRole')) {
-                foreach ($allowedRoles as $role) {
-                    if ($user->hasRole($role)) {
-                        $hasAccess = true;
-                        break;
-                    }
-                }
-            } else {
-                // Fallback: check user's role field directly
-                if (in_array($user->role, $allowedRoles)) {
-                    $hasAccess = true;
-                }
-            }
-        }
-    @endphp
+    <!-- Access Control handled in Controller -->
 
     @if(!$hasAccess)
         <!-- Access Denied Section -->

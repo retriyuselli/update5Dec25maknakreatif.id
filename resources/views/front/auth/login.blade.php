@@ -7,7 +7,7 @@
         <div class="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8">
             <div class="grid md:grid-cols-2 gap-8 items-stretch">
                 <div class="rounded-xl overflow-hidden">
-                    <img src="{{ asset('images/team_makna.jpg') }}" alt="Illustration" class="w-full h-full object-cover">
+                    <img src="{{ route('brand.login-image') }}" alt="Login Illustration" class="w-full h-full object-cover">
                 </div>
                 <div class="flex items-center">
                     <div class="w-full max-w-md mx-auto">

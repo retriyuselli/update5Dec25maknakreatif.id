@@ -4,7 +4,14 @@ use App\Http\Controllers\BankReconciliationTemplateController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\Front\AuthController;
+use App\Http\Controllers\Front\BiayaFeatureController;
 use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\HrisFeatureController;
+use App\Http\Controllers\Front\InvoiceController as FrontInvoiceController;
+use App\Http\Controllers\Front\LaporanFeatureController;
+use App\Http\Controllers\Front\PayrollFeatureController;
+use App\Http\Controllers\Front\AsetFeatureController;
+use App\Http\Controllers\Front\VendorFeatureController;
 use App\Http\Controllers\Front\ProjectController;
 use App\Http\Controllers\Front\VendorController;
 use App\Http\Controllers\FrontendDataPribadiController;
@@ -28,6 +35,7 @@ Route::get('/bank-reconciliation/template', [BankReconciliationTemplateControlle
 
 Route::get('/brand/logo', [BrandController::class, 'logo'])->name('brand.logo');
 Route::get('/brand/favicon', [BrandController::class, 'favicon'])->name('brand.favicon');
+Route::get('/brand/login-image', [BrandController::class, 'loginImage'])->name('brand.login-image');
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -402,6 +410,13 @@ Route::get('/register', function () {
 })->name('register');
 
 Route::get('/vendor', [VendorController::class, 'index'])->name('vendor');
+Route::get('/fitur/vendor', [VendorFeatureController::class, 'index'])->name('front.vendor_feature');
+Route::get('/fitur/biaya', [BiayaFeatureController::class, 'index'])->name('front.biaya_feature');
+Route::get('/fitur/laporan', [LaporanFeatureController::class, 'index'])->name('front.laporan_feature');
+Route::get('/fitur/aset', [AsetFeatureController::class, 'index'])->name('front.aset_feature');
+Route::get('/fitur/hris', [HrisFeatureController::class, 'index'])->name('front.hris_feature');
+Route::get('/fitur/payroll', [PayrollFeatureController::class, 'index'])->name('front.payroll_feature');
+Route::get('/invoice', [FrontInvoiceController::class, 'index'])->name('front.invoice');
 
 // Route untuk project management
 Route::middleware(['auth', 'project.access'])->group(function () {

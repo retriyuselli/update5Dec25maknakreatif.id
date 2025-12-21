@@ -42,7 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->font('Inter')
+            ->font('Noto Sans')
             ->login()
             ->brandLogo($brandLogo)
             ->brandLogoHeight('2rem')
@@ -81,7 +81,9 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->navigationLabel('Role')
+                    ->navigationGroup('SDM'),
             ]);
     }
 }

@@ -33,4 +33,17 @@ class BrandController extends Controller
             'Cache-Control' => 'public, max-age=86400',
         ]);
     }
+
+    public function loginImage()
+    {
+        $company = Schema::hasTable('companies') ? Company::query()->first() : null;
+        $path = public_path('images/team_makna.jpg');
+        if ($company && $company->image_login && Storage::disk('public')->exists($company->image_login)) {
+            $path = Storage::disk('public')->path($company->image_login);
+        }
+
+        return response()->file($path, [
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
+    }
 }

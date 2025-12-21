@@ -37,9 +37,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2">
-                        <img class="h-6 md:h-8 w-auto" src="{{ route('brand.logo') }}" alt="Logo"
-                            onerror="this.src='{{ asset('images/logomki.png') }}'">
-                        {{-- <span class="text-xl font-bold text-gray-800">MaknaPro</span> --}}
+                        <img class="h-6 md:h-8 w-auto" src="{{ route('brand.logo') }}" alt="Logo">
                     </a>
                 </div>
 
@@ -61,22 +59,20 @@
                             <!-- Fitur Dropdown Menu -->
                             <div
                                 class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-1 group-hover:translate-y-0">
-                                <a href="#"
+                                <a href="{{ route('front.invoice') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">Invoice</a>
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">Vendor</a>
-                                <a href="#"
+                                <a href="{{ route('front.biaya_feature') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">Biaya</a>
-                                <a href="#"
+                                <a href="{{ route('front.laporan_feature') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">Laporan</a>
-                                <a href="#"
+                                <a href="{{ route('front.aset_feature') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">Aset
                                     Tetap</a>
                                 <a href="#"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">Inventory</a>
-                                <a href="#"
+                                <a href="{{ route('front.hris_feature') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">HRIS</a>
-                                <a href="#"
+                                <a href="{{ route('front.payroll_feature') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 transition duration-150">Payroll</a>
                             </div>
                         </div>

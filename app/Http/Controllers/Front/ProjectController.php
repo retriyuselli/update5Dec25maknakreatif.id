@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
@@ -92,12 +93,35 @@ class ProjectController extends Controller
             return [$status->value => $status->getLabel()];
         })->toArray();
 
+        // Check access permissions
+        $allowedRoles = ['super_admin', 'Account Manager', 'Finance'];
+        $hasAccess = false;
+        $user = Auth::user();
+        
+        if ($user) {
+            // Check if user has hasRole method (Spatie Permission)
+            if (method_exists($user, 'hasRole')) {
+                foreach ($allowedRoles as $role) {
+                    if ($user->hasRole($role)) {
+                        $hasAccess = true;
+                        break;
+                    }
+                }
+            } else {
+                // Fallback: check user's role field directly
+                if (in_array($user->role, $allowedRoles)) {
+                    $hasAccess = true;
+                }
+            }
+        }
+
         return view('front.project', compact(
             'projects',
             'stats',
             'users',
             'employees',
-            'statusOptions'
+            'statusOptions',
+            'hasAccess'
         ));
     }
 

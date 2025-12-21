@@ -21,6 +21,7 @@ class Company extends Model
         'description',
         'logo_url',
         'favicon_url',
+        'image_login',
         'established_year',
         'employee_count',
         'legal_entity_type',

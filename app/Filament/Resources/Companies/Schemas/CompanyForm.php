@@ -133,6 +133,13 @@ class CompanyForm
                                                     ->acceptedFileTypes(['image/png', 'image/x-icon', 'image/svg+xml'])
                                                     ->imagePreviewHeight('64')
                                                     ->maxSize(5120),
+                                                FileUpload::make('image_login')
+                                                    ->label('Image Login')
+                                                    ->disk('public')
+                                                    ->directory('company/login_image')
+                                                    ->image()
+                                                    ->maxSize(5120)
+                                                    ->helperText('Gambar untuk halaman login frontend'),
                                                 TextInput::make('logo_url')
                                                     ->hidden(),
                                             ]),
