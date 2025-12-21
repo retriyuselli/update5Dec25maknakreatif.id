@@ -4,12 +4,15 @@ namespace App\Filament\Widgets;
 
 use App\Models\LeaveBalance;
 use App\Models\User;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
 
 class LeaveBalanceWidget extends BaseWidget
 {
+    use HasWidgetShield;
+
     protected static ?int $sort = 50;
 
     protected int|string|array $columnSpan = 'full';

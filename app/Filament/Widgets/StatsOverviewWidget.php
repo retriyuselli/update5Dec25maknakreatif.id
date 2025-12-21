@@ -20,16 +20,6 @@ class StatsOverviewWidget extends BaseWidget
 
     protected static ?int $sort = 12;
 
-    // public function getHeading(): ?string
-    // {
-    //     return 'Data Finance';
-    // }
-
-    // public function getDescription(): ?string
-    // {
-    //     return 'Ringkasan data finance bulan berjalan ('.now()->monthName.' '.now()->year.')';
-    // }
-
     use InteractsWithPageFilters;
 
     protected function getStats(): array

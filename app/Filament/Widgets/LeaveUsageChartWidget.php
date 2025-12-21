@@ -3,10 +3,13 @@
 namespace App\Filament\Widgets;
 
 use App\Models\LeaveRequest;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\ChartWidget;
 
 class LeaveUsageChartWidget extends ChartWidget
 {
+    use HasWidgetShield;
+
     protected static ?int $sort = 51;
 
     protected int|string|array $columnSpan = 'full';

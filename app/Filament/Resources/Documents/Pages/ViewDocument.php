@@ -7,6 +7,7 @@ use Filament\Resources\Pages\ViewRecord;
 use Filament\Actions\Action;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ViewDocument extends ViewRecord
 {
@@ -22,6 +23,7 @@ class ViewDocument extends ViewRecord
                 ->openUrlInNewTab(),
             Action::make('edit')
                 ->label('Edit')
+                ->visible(fn () => auth()->user()?->hasRole('super_admin'))
                 ->url(fn ($record) => DocumentResource::getUrl('edit', ['record' => $record])),
         ];
     }

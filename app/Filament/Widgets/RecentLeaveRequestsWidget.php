@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\LeaveRequest;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
@@ -20,6 +21,8 @@ use Illuminate\Support\Facades\Auth;
 
 class RecentLeaveRequestsWidget extends BaseWidget
 {
+    use HasWidgetShield;
+
     protected static ?int $sort = 52;
 
     protected int|string|array $columnSpan = 'full';
