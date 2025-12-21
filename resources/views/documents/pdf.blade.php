@@ -6,7 +6,7 @@
     <title>{{ $record->title }}</title>
     <style>
         @page {
-            margin: 20px 35px 20px 45px;
+            margin: 20px 50px 20px 60px;
         }
 
         body {
