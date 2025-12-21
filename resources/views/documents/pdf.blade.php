@@ -203,7 +203,7 @@
 
         @if ($signatureBase64)
             <div style="margin-bottom: 0px;">
-                <img src="{{ $signatureBase64 }}" alt="Signature" style="height: 120px; width: auto;">
+                <img src="{{ $signatureBase64 }}" alt="Signature" style="height: 100px; width: auto;">
             </div>
             <div class="name" style="margin-top: -40px; margin-bottom: 0px;">{{ $record->creator->name ?? 'Admin' }}
             </div>
