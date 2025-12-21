@@ -92,7 +92,6 @@ class DocumentForm
                                             ->schema([
                                                 FileUpload::make('file_path')
                                                     ->label('File')
-                                                    ->required()
                                                     ->directory('documents')
                                                     ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'])
                                                     ->maxSize(10240) // 10MB
