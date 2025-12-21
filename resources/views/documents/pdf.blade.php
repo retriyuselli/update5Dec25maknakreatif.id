@@ -160,9 +160,9 @@
                 </tr>
             @endif
             <tr>
-                <td style="padding-top: 10px;"><strong>Perihal</strong></td>
-                <td style="padding-top: 10px;">:</td>
-                <td style="padding-top: 10px;" colspan="2"><strong>{{ $record->title }}</strong></td>
+                <td><strong>Perihal</strong></td>
+                <td>:</td>
+                <td colspan="2"><strong>{{ $record->title }}</strong></td>
             </tr>
         </table>
     </div>
