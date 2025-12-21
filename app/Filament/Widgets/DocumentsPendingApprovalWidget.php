@@ -54,8 +54,14 @@ class DocumentsPendingApprovalWidget extends BaseWidget
             ->recordActions([
                 Action::make('review')
                     ->label('Review')
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin'))
                     ->url(fn (Document $record): string => route('filament.admin.resources.documents.edit', ['record' => $record->id]))
                     ->icon('heroicon-m-eye'),
+                Action::make('print')
+                    ->label('Preview PDF')
+                    ->icon('heroicon-m-printer')
+                    ->url(fn (Document $record) => route('document.stream', $record))
+                    ->openUrlInNewTab(),
             ]);
     }
 }
