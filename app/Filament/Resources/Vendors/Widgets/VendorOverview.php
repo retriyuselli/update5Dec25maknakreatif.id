@@ -57,6 +57,11 @@ class VendorOverview extends BaseWidget
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->description('Belum dipakai di mana pun'),
+
+                Stat::make('Status Master', Vendor::where('is_master', true)->count())
+                    ->icon('heroicon-o-star')
+                    ->color('info')
+                    ->description('Vendor dengan status Master'),
             ];
         } catch (\Throwable $e) {
             return [

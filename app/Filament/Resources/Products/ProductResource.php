@@ -138,6 +138,14 @@ class ProductResource extends Resource
                                                 ->modalSubmitActionLabel('Create category')
                                         ),
 
+                                    Select::make('parent_id')
+                                        ->label('Parent Product')
+                                        ->relationship('parent', 'name')
+                                        ->searchable()
+                                        ->preload()
+                                        ->placeholder('Select a parent product (optional)')
+                                        ->helperText('Jika produk ini adalah varian (child), pilih produk utamanya (parent).'),
+
                                     TextInput::make('pax')
                                         ->label('Capacity (pax)')
                                         ->required()

@@ -30,6 +30,7 @@ class Product extends Model
         'penambahan_publish',
         'penambahan_vendor',
         'last_edited_by_id',
+        'parent_id',
     ];
 
     protected $casts = [
@@ -97,6 +98,16 @@ class Product extends Model
     public function orderProducts()
     {
         return $this->hasMany(OrderProduct::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Product::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Product::class, 'parent_id');
     }
 
     public function orders()
