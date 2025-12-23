@@ -232,6 +232,11 @@ class VendorsTable
                         return null;
                     }),
 
+                Filter::make('zero_profit')
+                    ->label('Zero Profit')
+                    ->query(fn (Builder $query): Builder => $query->where('profit_amount', 0))
+                    ->toggle(),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([

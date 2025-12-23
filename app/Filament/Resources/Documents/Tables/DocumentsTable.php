@@ -35,6 +35,7 @@ class DocumentsTable
                         });
                 });
             })
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('document_number')
                     ->searchable()

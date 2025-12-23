@@ -14,7 +14,6 @@ class VendorOverview extends BaseWidget
     {
         try {
             $totalVendors = Vendor::count();
-            $masterVendors = Vendor::where('is_master', true)->count();
             $regularVendors = Vendor::where('is_master', false)->count();
 
             $inUseVendors = Vendor::query()
@@ -38,10 +37,10 @@ class VendorOverview extends BaseWidget
                     ->icon('heroicon-o-users')
                     ->color('primary'),
 
-                Stat::make('Master', $masterVendors)
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->description('Vendor berstatus Master'),
+                Stat::make('Profit Rp 0', Vendor::where('profit_amount', 0)->where('status', 'product')->count())
+                    ->icon('heroicon-o-banknotes')
+                    ->color('danger')
+                    ->description('Vendor (Product) dengan keuntungan Rp 0'),
 
                 Stat::make('Regular', $regularVendors)
                     ->icon('heroicon-o-minus-circle')
@@ -59,7 +58,7 @@ class VendorOverview extends BaseWidget
                     ->description('Belum dipakai di mana pun'),
 
                 Stat::make('Status Master', Vendor::where('is_master', true)->count())
-                    ->icon('heroicon-o-star')
+                    ->icon('heroicon-o-check-badge')
                     ->color('info')
                     ->description('Vendor dengan status Master'),
             ];
@@ -69,10 +68,10 @@ class VendorOverview extends BaseWidget
                     ->icon('heroicon-o-users')
                     ->color('primary'),
 
-                Stat::make('Master', 0)
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->description('Vendor berstatus Master'),
+                Stat::make('Profit Rp 0', 0)
+                    ->icon('heroicon-o-banknotes')
+                    ->color('danger')
+                    ->description('Vendor dengan keuntungan Rp 0'),
 
                 Stat::make('Regular', 0)
                     ->icon('heroicon-o-minus-circle')

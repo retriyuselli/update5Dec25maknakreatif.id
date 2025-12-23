@@ -15,6 +15,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\KeyValue;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentForm
@@ -79,7 +80,18 @@ class DocumentForm
                                                 DatePicker::make('date_effective')
                                                     ->label('Effective Date'),
                                                 DatePicker::make('date_expired')
-                                                    ->label('Expiration Date'),
+                                                    ->label('Expiration Date')
+                                                    ->live()
+                                                    ->afterStateUpdated(function ($get, $state) {
+                                                        $effectiveDate = $get('date_effective');
+                                                        if ($effectiveDate && $state && $state < $effectiveDate) {
+                                                            Notification::make()
+                                                                ->danger()
+                                                                ->title('Tanggal Tidak Valid')
+                                                                ->body('Tanggal kedaluwarsa tidak boleh sebelum tanggal efektif.')
+                                                                ->send();
+                                                        }
+                                                    }),
                                             ]),
                                     ]),
                             ]),

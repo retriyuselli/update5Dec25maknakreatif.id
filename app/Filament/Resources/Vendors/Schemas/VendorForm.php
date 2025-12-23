@@ -12,6 +12,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -144,11 +145,11 @@ class VendorForm
                                                 ->label('Partnership Agreement')
                                                 ->directory('vendor-contracts')
                                                 ->preserveFilenames()
-                                                ->acceptedFileTypes(['application/pdf'])
-                                                ->maxSize(10240)
+                                                ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'])
+                                                ->maxSize(2048)
                                                 ->downloadable()
                                                 ->openable()
-                                                ->helperText('Upload PDF file (max 10MB)')
+                                                ->helperText('Upload PDF file (max 2MB) or image file (max 2MB)')
                                                 ->columnSpanFull(),
                                     ]),
                             ]),
@@ -161,9 +162,10 @@ class VendorForm
                                     ->schema([
                                         Grid::make(3)
                                             ->schema([
-                                                Placeholder::make('products_count')
+                                                ViewField::make('products_count')
                                                     ->label('Used in Products')
-                                                    ->content(function ($record): string {
+                                                    ->view('filament.forms.components.text-content')
+                                                    ->formatStateUsing(function ($record): string {
                                                         if (! $record) {
                                                             return '0 items';
                                                         }
@@ -188,9 +190,10 @@ class VendorForm
                                                         return ! empty($details) ? implode(', ', $details) : 'No usage';
                                                     }),
 
-                                                Placeholder::make('expenses_count')
+                                                ViewField::make('expenses_count')
                                                     ->label('Related Expenses')
-                                                    ->content(function ($record): string {
+                                                    ->view('filament.forms.components.text-content')
+                                                    ->formatStateUsing(function ($record): string {
                                                         if (! $record) {
                                                             return '0 transactions';
                                                         }
@@ -198,9 +201,10 @@ class VendorForm
                                                         return $count.' transactions';
                                                     }),
 
-                                                Placeholder::make('deletion_status')
+                                                ViewField::make('deletion_status')
                                                     ->label('Deletion Status')
-                                                    ->content(function ($record): string {
+                                                    ->view('filament.forms.components.text-content')
+                                                    ->formatStateUsing(function ($record): string {
                                                         if (! $record) {
                                                             return 'Unknown';
                                                         }
@@ -211,9 +215,10 @@ class VendorForm
 
                                 Section::make('Usage Details')
                                     ->schema([
-                                        Placeholder::make('usage_summary')
+                                        ViewField::make('usage_summary')
                                             ->label('Detailed Usage Information')
-                                            ->content(function ($record): string {
+                                            ->view('filament.forms.components.text-content')
+                                            ->formatStateUsing(function ($record): string {
                                                 if (! $record) {
                                                     return 'This vendor is not currently used in any products, expenses, or product additions and can be safely deleted.';
                                                 }
@@ -290,9 +295,10 @@ class VendorForm
                                                 return implode("\n\n", $lines);
                                             })
                                             ->columnSpanFull(),
-                                        Placeholder::make('usage_note')
-                                            ->label('Note')
-                                            ->content('Note: This vendor cannot be deleted while these associations exist.')
+                                        ViewField::make('usage_note')
+                                            ->label('Catatan')
+                                            ->view('filament.forms.components.text-content')
+                                            ->formatStateUsing(fn () => 'Catatan: Vendor ini tidak dapat dihapus selama masih terhubung dengan data lain.')
                                             ->columnSpanFull(),
                                     ])
                                     ->collapsible(),

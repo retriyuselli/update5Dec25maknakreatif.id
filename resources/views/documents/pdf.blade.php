@@ -6,7 +6,7 @@
     <title>{{ $record->title }}</title>
     <style>
         @page {
-            margin: 20px 50px 20px 60px;
+            margin: 110px 50px 20px 60px;
         }
 
         body {
@@ -17,10 +17,14 @@
         }
 
         .header {
+            position: fixed;
+            top: -85px;
+            left: 0;
+            right: 0;
+            height: 70px;
             text-align: center;
-            margin-bottom: 20px;
             border-bottom: 2px solid #000;
-            padding-bottom: 10px;
+            padding-bottom: 1px;
         }
 
         .header h1 {
@@ -50,6 +54,27 @@
             text-align: justify;
             margin-bottom: 40px;
             margin-top: 40px;
+        }
+
+        .content ol,
+        .content ul {
+            margin-top: 10px;
+            margin-bottom: 0px;
+            padding-left: 30px;
+        }
+
+        .content li {
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+
+        .content p {
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .content li p {
+            margin: 0;
         }
 
         .signature {
@@ -174,17 +199,6 @@
             <p><em>Tidak ada konten detail.</em></p>
         @endif
     </div>
-
-    {{-- @if ($record->attachments && $record->attachments->count() > 0)
-        <div style="margin-top: 30px; border-top: 1px dashed #ccc; padding-top: 10px;">
-            <strong>Lampiran:</strong>
-            <ul style="margin-top: 5px;">
-                @foreach ($record->attachments as $attachment)
-                    <li>{{ $attachment->file_name ?? basename($attachment->file_path) }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif --}}
 
     <div class="signature">
         <p>Hormat Kami,</p>
