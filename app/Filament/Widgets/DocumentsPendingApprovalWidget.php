@@ -14,13 +14,36 @@ use Illuminate\Support\Facades\Auth;
 
 class DocumentsPendingApprovalWidget extends BaseWidget
 {
-    use HasWidgetShield;
+    use HasWidgetShield {
+        canView as canViewShield;
+    }
     
     protected int | string | array $columnSpan = 'full';
     
     protected static ?string $heading = 'Dokumen yang telah disetujui';
 
     protected static ?int $sort = 2;
+
+    public static function canView(): bool
+    {
+        // Cek permission dari Shield terlebih dahulu
+        if (! static::canViewShield()) {
+            return false;
+        }
+
+        // Cek apakah ada data yang perlu ditampilkan
+        return Document::query()
+            ->where(function (Builder $query) {
+                $query->whereHas('approvals', function (Builder $q) {
+                    $q->where('user_id', Auth::id())
+                        ->where('status', 'pending');
+                })
+                ->orWhereHas('recipientsList', function (Builder $q) {
+                    $q->where('users.id', Auth::id());
+                });
+            })
+            ->exists();
+    }
 
     public function table(Table $table): Table
     {
