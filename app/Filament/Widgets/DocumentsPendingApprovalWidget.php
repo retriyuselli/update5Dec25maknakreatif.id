@@ -60,6 +60,7 @@ class DocumentsPendingApprovalWidget extends BaseWidget
                         });
                     })
                     ->with(['category', 'creator'])
+                    ->latest()
             )
             ->columns([
                 Tables\Columns\TextColumn::make('document_number')
