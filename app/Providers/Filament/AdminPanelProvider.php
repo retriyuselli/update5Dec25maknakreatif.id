@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\RedirectUnauthenticatedToAppUrl;
+use Filament\Support\Enums\Width;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -44,6 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->font('Noto Sans')
             ->login()
+            ->maxContentWidth(Width::Full)
             ->brandLogo($brandLogo)
             ->brandLogoHeight('2rem')
             ->brandName('Makna Kreatif')
@@ -76,8 +78,6 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->databaseNotifications()
-            ->databaseNotificationsPolling('30s')
             ->authMiddleware([
                 RedirectUnauthenticatedToAppUrl::class,
                 Authenticate::class,
