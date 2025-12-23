@@ -32,22 +32,25 @@ class VendorPriceHistorySeeder extends Seeder
             VendorPriceHistory::firstOrCreate(
                 [
                     'vendor_id' => $vendor->id,
-                    'effective_from' => now()->subMonths(3),
+                    'effective_from' => now()->subMonths(3)->startOfDay(),
                 ],
                 [
                     'harga_publish' => $publish,
                     'harga_vendor' => $vendorPrice,
                     'profit_amount' => $profit,
                     'profit_margin' => $margin,
-                    'effective_to' => now()->subMonth(),
+                    'effective_to' => now()->subMonth()->startOfDay(),
                     'status' => 'inactive',
                 ]
             );
 
+            // Ensure no other active records exist to prevent validation error
+            VendorPriceHistory::where('vendor_id', $vendor->id)->update(['status' => 'inactive']);
+
             VendorPriceHistory::firstOrCreate(
                 [
                     'vendor_id' => $vendor->id,
-                    'effective_from' => now()->subMonth(),
+                    'effective_from' => now()->subMonth()->startOfDay(),
                 ],
                 [
                     'harga_publish' => $publish * 1.05,
