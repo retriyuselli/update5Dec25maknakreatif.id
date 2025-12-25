@@ -11,10 +11,15 @@ class PendapatanLainOverviewWidget extends BaseWidget
 {
     protected function getStats(): array
     {
-        // Get totals
-        $totalPendapatan = PendapatanLain::where('kategori_transaksi', 'uang_masuk')->sum('nominal');
-        $totalPengeluaran = PendapatanLain::where('kategori_transaksi', 'uang_keluar')->sum('nominal');
-        $totalTransaksi = PendapatanLain::count();
+        // Get totals for current year
+        $currentYear = Carbon::now()->year;
+        $totalPendapatan = PendapatanLain::where('kategori_transaksi', 'uang_masuk')
+            ->whereYear('tgl_bayar', $currentYear)
+            ->sum('nominal');
+        $totalPengeluaran = PendapatanLain::where('kategori_transaksi', 'uang_keluar')
+            ->whereYear('tgl_bayar', $currentYear)
+            ->sum('nominal');
+        $totalTransaksi = PendapatanLain::whereYear('tgl_bayar', $currentYear)->count();
 
         // Get monthly data for trend
         $currentMonth = Carbon::now()->startOfMonth();
@@ -47,7 +52,7 @@ class PendapatanLainOverviewWidget extends BaseWidget
         $netProfit = $totalPendapatan - $totalPengeluaran;
 
         return [
-            Stat::make('Total Pendapatan', ''.number_format($totalPendapatan, 0, ',', '.'))
+            Stat::make('Pendapatan Tahun Ini', ''.number_format($totalPendapatan, 0, ',', '.'))
                 ->description($pendapatanChange >= 0
                     ? number_format(abs($pendapatanChange), 1).'% naik dari bulan lalu'
                     : number_format(abs($pendapatanChange), 1).'% turun dari bulan lalu'
@@ -55,6 +60,14 @@ class PendapatanLainOverviewWidget extends BaseWidget
                 ->descriptionIcon($pendapatanChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($pendapatanChange >= 0 ? 'success' : 'danger')
                 ->chart($this->getPendapatanChartData()),
+
+            Stat::make('Pendapatan Bulan Ini', ''.number_format($currentMonthPendapatan, 0, ',', '.'))
+                ->description($pendapatanChange >= 0
+                    ? number_format(abs($pendapatanChange), 1).'% naik dari bulan lalu'
+                    : number_format(abs($pendapatanChange), 1).'% turun dari bulan lalu'
+                )
+                ->descriptionIcon($pendapatanChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($pendapatanChange >= 0 ? 'success' : 'danger'),
 
             Stat::make('Net Profit', ''.number_format($netProfit, 0, ',', '.'))
                 ->description('Pendapatan bersih (Income - Expense)')

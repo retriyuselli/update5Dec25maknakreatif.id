@@ -163,6 +163,11 @@ Route::get('/laporan/expense/pdf', [ReportController::class, 'generateExpensePdf
     ->name('expense.pdf-report')
     ->middleware(\Filament\Http\Middleware\Authenticate::class);
 
+// Route untuk Laporan Net Cash Flow PDF Stream
+Route::get('/laporan/net-cash-flow/pdf/stream', [ReportController::class, 'streamNetCashFlowPdf'])
+    ->name('reports.net-cash-flow.pdf.stream')
+    ->middleware(\Filament\Http\Middleware\Authenticate::class);
+
 // RUTE DATA PRIBADI
 // Route untuk menampilkan form tambah data pribadi
 Route::get('/data-pribadi/tambah', [FrontendDataPribadiController::class, 'create'])

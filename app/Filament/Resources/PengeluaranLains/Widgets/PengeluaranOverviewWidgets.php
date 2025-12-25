@@ -11,10 +11,15 @@ class PengeluaranOverviewWidgets extends BaseWidget
 {
     protected function getStats(): array
     {
-        // Get totals
-        $totalPengeluaran = PengeluaranLain::where('kategori_transaksi', 'uang_keluar')->sum('amount');
-        $totalPemasukan = PengeluaranLain::where('kategori_transaksi', 'uang_masuk')->sum('amount');
-        $totalTransaksi = PengeluaranLain::count();
+        // Get totals for current year
+        $currentYear = Carbon::now()->year;
+        $totalPengeluaran = PengeluaranLain::where('kategori_transaksi', 'uang_keluar')
+            ->whereYear('date_expense', $currentYear)
+            ->sum('amount');
+        $totalPemasukan = PengeluaranLain::where('kategori_transaksi', 'uang_masuk')
+            ->whereYear('date_expense', $currentYear)
+            ->sum('amount');
+        $totalTransaksi = PengeluaranLain::whereYear('date_expense', $currentYear)->count();
 
         // Get monthly data for trend
         $currentMonth = Carbon::now()->startOfMonth();
@@ -44,7 +49,7 @@ class PengeluaranOverviewWidgets extends BaseWidget
             : 0;
 
         return [
-            Stat::make('Total Pengeluaran', ''.number_format($totalPengeluaran, 0, ',', '.'))
+            Stat::make('Total Pengeluaran Tahun Ini', ''.number_format($totalPengeluaran, 0, ',', '.'))
                 ->description($pengeluaranChange >= 0
                     ? number_format(abs($pengeluaranChange), 1).'% naik dari bulan lalu'
                     : number_format(abs($pengeluaranChange), 1).'% turun dari bulan lalu'
@@ -53,12 +58,15 @@ class PengeluaranOverviewWidgets extends BaseWidget
                 ->color($pengeluaranChange >= 0 ? 'danger' : 'success')
                 ->chart($this->getPengeluaranChartData()),
 
-            Stat::make('Total Pemasukan', ''.number_format($totalPemasukan, 0, ',', '.'))
-                ->description('Total pemasukan dari semua transaksi')
-                ->descriptionIcon('heroicon-m-banknotes')
-                ->color('success'),
+            Stat::make('Pengeluaran Bulan Ini', ''.number_format($currentMonthPengeluaran, 0, ',', '.'))
+                ->description($pengeluaranChange >= 0
+                    ? number_format(abs($pengeluaranChange), 1).'% naik dari bulan lalu'
+                    : number_format(abs($pengeluaranChange), 1).'% turun dari bulan lalu'
+                )
+                ->descriptionIcon($pengeluaranChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($pengeluaranChange >= 0 ? 'danger' : 'success'),
 
-            Stat::make('Total Transaksi', number_format($totalTransaksi, 0, ',', '.'))
+            Stat::make('Total Transaksi Tahun Ini', number_format($totalTransaksi, 0, ',', '.'))
                 ->description($transaksiChange >= 0
                     ? number_format(abs($transaksiChange), 1).'% naik dari bulan lalu'
                     : number_format(abs($transaksiChange), 1).'% turun dari bulan lalu'
@@ -66,6 +74,14 @@ class PengeluaranOverviewWidgets extends BaseWidget
                 ->descriptionIcon($transaksiChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($transaksiChange >= 0 ? 'success' : 'danger')
                 ->chart($this->getTransaksiChartData()),
+
+            Stat::make('Transaksi Bulan Ini', number_format($currentMonthTransaksi, 0, ',', '.'))
+                ->description($transaksiChange >= 0
+                    ? number_format(abs($transaksiChange), 1).'% naik dari bulan lalu'
+                    : number_format(abs($transaksiChange), 1).'% turun dari bulan lalu'
+                )
+                ->descriptionIcon($transaksiChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($transaksiChange >= 0 ? 'success' : 'danger'),
         ];
     }
 

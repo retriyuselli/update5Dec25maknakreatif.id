@@ -8,8 +8,6 @@ use App\Filament\Resources\Orders\Pages\EditOrder;
 use App\Filament\Resources\Orders\Pages\Invoice;
 use App\Filament\Resources\Orders\Pages\ListOrders;
 use App\Filament\Resources\Orders\Pages\ViewOrder;
-use App\Filament\Resources\Orders\Widgets\OrderOverview;
-use App\Filament\Resources\Orders\Widgets\UangDiterimaOverview;
 use App\Filament\Resources\Products\ProductResource;
 use App\Models\Employee;
 use App\Models\Expense;
@@ -43,7 +41,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle; // <-- Tambahkan ini
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -1465,11 +1463,6 @@ class OrderResource extends Resource
         return [
             //
         ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [OrderOverview::class, UangDiterimaOverview::class];
     }
 
     public static function getNavigationBadge(): ?string

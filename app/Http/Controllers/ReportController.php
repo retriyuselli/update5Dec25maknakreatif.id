@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Models\Order;
 use App\Models\DataPembayaran;
 use App\Models\Expense; // Pastikan path model ini benar
 use App\Models\ExpenseOps;
@@ -392,5 +393,44 @@ class ReportController extends Controller
             'paymentMethods' => $paymentMethods, // Kirim ke view
             'filters' => $request->only(['date_from', 'date_to', 'payment_method_id']), // Kirim nilai filter saat ini
         ]);
+    }
+
+    public function streamNetCashFlowPdf(Request $request)
+    {
+        $status = $request->input('status', 'processing');
+        $statusEnum = OrderStatus::tryFrom($status) ?? OrderStatus::Processing;
+
+        $orders = Order::where('status', $statusEnum)
+            ->with(['dataPembayaran', 'expenses', 'prospect', 'user', 'employee', 'items.product.parent'])
+            ->get()
+            ->map(function ($order) {
+                $totalPayments = $order->dataPembayaran->sum('nominal');
+                $totalExpenses = $order->expenses->sum('amount');
+                $netCashFlow = $totalPayments - $totalExpenses;
+
+                $order->total_payments_received = $totalPayments;
+                $order->total_expenses_incurred = $totalExpenses;
+                $order->net_cash_flow = $netCashFlow;
+
+                return $order;
+            })
+            ->sortByDesc('net_cash_flow');
+
+        $totalPaymentsAll = $orders->sum('total_payments_received');
+        $totalExpensesAll = $orders->sum('total_expenses_incurred');
+        $totalNetCashFlowAll = $orders->sum('net_cash_flow');
+
+        $pageTitle = 'Laporan Arus Kas Bersih (Net Cash Flow) - Order Status: ' . Str::ucfirst($status);
+
+        $pdf = Pdf::loadView('reports.net-cash-flow-pdf', [
+            'orders' => $orders,
+            'status' => $status,
+            'totalPaymentsAll' => $totalPaymentsAll,
+            'totalExpensesAll' => $totalExpensesAll,
+            'totalNetCashFlowAll' => $totalNetCashFlowAll,
+            'pageTitle' => $pageTitle,
+        ]);
+
+        return $pdf->stream('Laporan_Net_Cash_Flow_' . now()->format('Y-m-d_H-i') . '.pdf');
     }
 }

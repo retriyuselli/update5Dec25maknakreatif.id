@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Orders\Widgets;
 
 use App\Enums\OrderStatus;
+use App\Filament\Pages\NetCashFlowReport;
 use App\Models\DataPembayaran;
 use App\Models\Expense;
 use App\Models\ExpenseOps;
@@ -17,7 +18,7 @@ use Livewire\Attributes\On;
 
 class OrderOverview extends BaseWidget
 {
-    protected ?string $pollingInterval = '5s';
+    // protected ?string $pollingInterval = '5s';
 
     public $metrics = [
         'payments' => 0,
@@ -186,7 +187,8 @@ class OrderOverview extends BaseWidget
             )
                 ->description($descriptionText)
                 ->descriptionIcon('heroicon-m-banknotes') // Ganti ikon jika perlu
-                ->color('primary'), // Ganti warna jika perlu (success, warning, danger, etc.)
+                ->color('primary') // Ganti warna jika perlu (success, warning, danger, etc.)
+                ->url(NetCashFlowReport::getUrl(['status' => $statusTarget instanceof BackedEnum ? $statusTarget->value : $statusTarget])),
         ];
     }
 }
