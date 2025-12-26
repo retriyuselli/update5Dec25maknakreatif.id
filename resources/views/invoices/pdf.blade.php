@@ -9,7 +9,7 @@
     <style>
         @page {
             size: a4 portrait;
-            margin: 3.5cm 1cm 1.5cm 1cm;
+            margin: 0.5cm 1cm 1.5cm 1cm;
             /* top, right, bottom, left */
         }
 
@@ -34,42 +34,12 @@
             max-width: 100%;
         }
 
-        /* Fixed Header Wrapper */
-        .header-fixed {
-            position: fixed;
-            top: -3cm;
-            left: 0;
-            right: 0;
-            height: 3.0cm;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-
-        /* Fixed Footer Wrapper */
-        .footer-fixed {
-            position: fixed;
-            bottom: -1cm;
-            left: 0;
-            right: 0;
-            height: 1cm;
-            text-align: center;
-            font-size: 12px;
-            color: #555;
-            /* border-top: 1px solid #ddd; */
-            padding-top: 5px;
-            font-style: italic;
-        }
-
-        .pagenum:before {
-            content: counter(page);
-        }
-
         /* Header */
         .header {
-            margin-bottom: 0;
-            padding-bottom: 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
             text-align: center;
-            width: 100%;
         }
 
         /* Header Company Info - Rapatkan jarak */
@@ -84,7 +54,7 @@
         }
 
         .header img {
-            max-height: 100px;
+            max-height: 50px;
             width: auto;
             vertical-align: middle;
         }
@@ -427,46 +397,37 @@
     @endif
 
     <!-- Header -->
-    <div class="header-fixed">
-        <table class="header" style="width: 100%;">
-            <tr>
-                <td style="line-height: 1;">
-                    <div>
-                        <b>PT. Makna Kreatif Indonesia</b><br>
-                        Alamat : Jln. Sintraman Jaya, No. 2148, Sekip Jaya, Palembang<br>
-                        No. Tlp : +62 822-9796-2600<br>
-                        Email : maknawedding@gmail.com
-                    </div>
-                </td>
-                <td style="width: 60%; height: auto; text-align: right; vertical-align: middle;">
-                    {{-- Embed image using Base64 for reliable PDF rendering --}}
-                    @php
-                        $logoPath = public_path(config('invoice.logo', 'images/logo.png'));
-                        if (file_exists($logoPath)) {
-                            $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
-                            $logoData = file_get_contents($logoPath);
-                            $logoBase64 = 'data:image/' . $logoType . ';base64,' . base64_encode($logoData);
-                        } else {
-                            $logoBase64 = ''; /* Handle missing logo */
-                        }
-                    @endphp
-                    @if ($logoBase64)
-                        <img src="{{ $logoBase64 }}" alt="Company Logo">
-                    @else
-                        {{-- Optional: Display text or placeholder if logo is missing --}}
-                        <span>Logo</span>
-                    @endif
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="footer-fixed">
-        Dokumen ini diterbitkan secara otomatis oleh sistem dan sah tanpa tanda tangan.
-        <div style="position: absolute; right: 0; top: 5px;">
-            Hal <span class="pagenum"></span>
-        </div>
-    </div>
+    <table class="header" style="width: 100%;">
+        <tr>
+            <td style="line-height: 1;">
+                <div>
+                    <b>PT. Makna Kreatif Indonesia</b><br>
+                    Alamat : Jln. Sintraman Jaya, No. 2148, Sekip Jaya, Palembang<br>
+                    No. Tlp : +62 822-9796-2600<br>
+                    Email : maknawedding@gmail.com
+                </div>
+            </td>
+            <td style="width: 60%; height: auto; text-align: right; vertical-align: middle;">
+                {{-- Embed image using Base64 for reliable PDF rendering --}}
+                @php
+                    $logoPath = public_path(config('invoice.logo', 'images/logo.png'));
+                    if (file_exists($logoPath)) {
+                        $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
+                        $logoData = file_get_contents($logoPath);
+                        $logoBase64 = 'data:image/' . $logoType . ';base64,' . base64_encode($logoData);
+                    } else {
+                        $logoBase64 = ''; /* Handle missing logo */
+                    }
+                @endphp
+                @if ($logoBase64)
+                    <img src="{{ $logoBase64 }}" alt="Company Logo">
+                @else
+                    {{-- Optional: Display text or placeholder if logo is missing --}}
+                    <span>Logo</span>
+                @endif
+            </td>
+        </tr>
+    </table>
 
     <!-- Invoice Title -->
     <div class="invoice-title">
@@ -506,55 +467,17 @@
     </table>
 
     @php
-        // Initialize variables
-        $totalPublicPrice = 0;
+        // Hitung total penambahan harga dari semua produk dalam order
         $totalAdditionAmount = 0;
-        $totalReductionAmount = 0;
-
-        // Loop through order items to calculate totals
         if ($order->items && $order->items->count() > 0) {
             foreach ($order->items as $orderItem) {
-                $product = $orderItem->product;
-                if ($product) {
+                if ($orderItem->product && $orderItem->product->penambahanHarga) {
+                    $productAdditionPublish = $orderItem->product->penambahanHarga->sum('harga_publish');
                     $quantity = $orderItem->quantity ?? 1;
-
-                    // 1. Calculate Base Package Price (Total Paket Awal)
-                    // Sum of product items' public prices
-            $productPublicPrice = ($product->items ?? collect())->sum(function ($item) {
-                return ($item->harga_publish ?? 0) * ($item->quantity ?? 1);
-            });
-            $totalPublicPrice += $productPublicPrice * $quantity;
-
-            // 2. Calculate Product Additions
-            $productAdditionPublish = ($product->penambahanHarga ?? collect())->sum('harga_publish');
-            $totalAdditionAmount += $productAdditionPublish * $quantity;
-
-            // 3. Calculate Product Reductions
-            $productReduction = $product->pengurangan ?? 0;
-            $totalReductionAmount += $productReduction * $quantity;
+                    $totalAdditionAmount += $productAdditionPublish * $quantity;
+                }
+            }
         }
-    }
-}
-
-$basePackagePrice = $totalPublicPrice;
-
-// Hitung Manual Additions (Order Penambahan)
-$manualPenambahans = $order->orderPenambahans;
-$totalManualAdditionAmount = $manualPenambahans->sum('harga_publish');
-
-// Hitung Manual Reductions (Order Pengurangan)
-$manualPengurangans = $order->orderPengurangans;
-$totalManualReductionAmount = $manualPengurangans->sum('total_pengurangan');
-
-        // Recalculate Grand Total for consistency
-        $grandTotal =
-            $basePackagePrice +
-            $totalAdditionAmount +
-            $totalManualAdditionAmount -
-            ($order->promo ?? 0) -
-            ($totalReductionAmount + $totalManualReductionAmount);
-
-        $sisaTagihan = $grandTotal - $order->bayar;
     @endphp
 
     <!-- Billing Summary Table -->
@@ -568,60 +491,49 @@ $totalManualReductionAmount = $manualPengurangans->sum('total_pengurangan');
             <tbody>
                 <tr>
                     <td>Total Paket Awal</td>
-                    <td class="text-right">Rp {{ number_format($basePackagePrice, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
                 </tr>
 
                 @if ($totalAdditionAmount > 0)
                     <tr>
                         <td>Total Penambahan dari Produk</td>
-                        <td class="text-right addition-amount" style="color: #28a745;">+ Rp
+                        <td class="text-right addition-amount">+ Rp
                             {{ number_format($totalAdditionAmount, 0, ',', '.') }}</td>
-                    </tr>
-                @endif
-
-                @if ($totalManualAdditionAmount > 0)
-                    <tr>
-                        <td>Order Penambahan</td>
-                        <td class="text-right addition-amount" style="color: #28a745;">+ Rp
-                            {{ number_format($totalManualAdditionAmount, 0, ',', '.') }}</td>
                     </tr>
                 @endif
 
                 @if ($order->promo > 0)
                     <tr>
                         <td>Diskon</td>
-                        <td class="text-right" style="color: #dc3545;">- Rp
-                            {{ number_format($order->promo, 0, ',', '.') }}</td>
+                        <td class="text-right">- Rp {{ number_format($order->promo, 0, ',', '.') }}</td>
                     </tr>
                 @endif
 
-                @if ($totalReductionAmount > 0)
+                @if ($order->penambahan > 0)
                     <tr>
-                        <td>Total Pengurangan dari Produk</td>
-                        <td class="text-right" style="color: #dc3545;">- Rp
-                            {{ number_format($totalReductionAmount, 0, ',', '.') }}</td>
+                        <td>Penambahan</td>
+                        <td class="text-right">Rp {{ number_format($order->penambahan, 0, ',', '.') }}</td>
                     </tr>
                 @endif
 
-                @if ($totalManualReductionAmount > 0)
+                @if ($order->pengurangan > 0)
                     <tr>
-                        <td>Order Pengurangan</td>
-                        <td class="text-right" style="color: #dc3545;">- Rp
-                            {{ number_format($totalManualReductionAmount, 0, ',', '.') }}</td>
+                        <td>Pengurangan</td>
+                        <td class="text-right">Rp {{ number_format($order->pengurangan, 0, ',', '.') }}</td>
                     </tr>
                 @endif
 
                 <tr>
                     <td class="bold">Grand Total</td>
-                    <td class="text-right bold">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                    <td class="text-right bold">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>Sudah Dibayar</td>
                     <td class="text-right">Rp {{ number_format($order->bayar, 0, ',', '.') }}</td>
                 </tr>
-                <tr class="total">
+                <tr class="total"> <!-- You might want to style .total rows specifically if needed -->
                     <td class="bold">Sisa Tagihan (Balance Due)</td>
-                    <td class="text-right"><strong>Rp {{ number_format($sisaTagihan, 0, ',', '.') }}</strong>
+                    <td class="text-right"><strong>Rp {{ number_format($order->sisa, 0, ',', '.') }}</strong>
                     </td>
                 </tr>
             </tbody>
@@ -682,40 +594,6 @@ $totalManualReductionAmount = $manualPengurangans->sum('total_pengurangan');
         </div>
     @endif
 
-    @if ($order->orderPenambahans && $order->orderPenambahans->count() > 0)
-        <div class="section-container" style="margin-top: 20px;">
-            <h3 class="sub-section-title"
-                style="font-size: 1.1em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
-                Rincian Order Penambahan</h3>
-            <table class="bordered" style="font-size: 18px;">
-                <thead>
-                    <tr>
-                        <th style="width: 5%; text-align: center;">No</th>
-                        <th style="width: 70%;">Deskripsi Penambahan</th>
-                        <th style="width: 25%; text-align: right;">Nilai</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($order->orderPenambahans as $index => $penambahan)
-                        <tr>
-                            <td style="text-align: center;">{{ $index + 1 }}</td>
-                            <td>
-                                {{ $penambahan->name ?? 'N/A' }}
-                                @if ($penambahan->description)
-                                    <div style="font-size: 15px; margin-left: 30px; color: #555; margin-top: 0px;">
-                                        {!! strip_tags($penambahan->description, '<li><strong><ul><li><br><span><div>') !!}
-                                    </div>
-                                @endif
-                            </td>
-                            <td style="text-align: right; color: #28a745; font-weight: bold;">+ Rp
-                                {{ number_format($penambahan->harga_publish ?? 0, 0, ',', '.') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
-
     <!-- Detail Pengurangan per Produk dalam Order -->
     @php
         $allProductPengurangans = collect();
@@ -759,40 +637,6 @@ $totalManualReductionAmount = $manualPengurangans->sum('total_pengurangan');
                             </td>
                             <td style="text-align: right;">Rp
                                 {{ number_format($itemPengurangan->amount ?? 0, 0, ',', '.') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
-
-    @if ($order->orderPengurangans && $order->orderPengurangans->count() > 0)
-        <div class="section-container" style="margin-top: 20px;">
-            <h3 class="sub-section-title"
-                style="font-size: 1.1em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
-                Rincian Order Pengurangan</h3>
-            <table class="bordered" style="font-size: 18px;">
-                <thead>
-                    <tr>
-                        <th style="width: 5%; text-align: center;">No</th>
-                        <th style="width: 70%;">Deskripsi Pengurangan</th>
-                        <th style="width: 25%; text-align: right;">Nilai</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($order->orderPengurangans as $index => $pengurangan)
-                        <tr>
-                            <td style="text-align: center;">{{ $index + 1 }}</td>
-                            <td>
-                                {{ $pengurangan->description ?? 'N/A' }}
-                                @if ($pengurangan->notes)
-                                    <div style="font-size: 15px; margin-left: 30px; color: #555; margin-top: 0px;">
-                                        {!! strip_tags($pengurangan->notes, '<li><strong><ul><li><br><span><div>') !!}
-                                    </div>
-                                @endif
-                            </td>
-                            <td style="text-align: right; color: #dc3545; font-weight: bold;">- Rp
-                                {{ number_format($pengurangan->total_pengurangan ?? 0, 0, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

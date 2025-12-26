@@ -36,8 +36,6 @@
         @php
             $grandTotal = $order->grand_total ?? 0;
             $totalPaid = $order->bayar ?? 0;
-            $paymentProgress = $grandTotal > 0 ? ($totalPaid / $grandTotal) * 100 : 0;
-            $paymentProgress = min($paymentProgress, 100);
 
             // Hitung total berdasarkan jumlah harga publik item dari semua produk dalam order
             $totalPublicPrice = 0;
@@ -113,6 +111,10 @@
 
             // Update Sisa Tagihan based on new Grand Total
             $orderSisa = $grandTotal - $totalPaid;
+
+            // Recalculate Payment Progress based on new Grand Total
+            $paymentProgress = $grandTotal > 0 ? ($totalPaid / $grandTotal) * 100 : 0;
+            $paymentProgress = min($paymentProgress, 100);
 
             // Hitung Profit & Loss dari perhitungan detail (Estimasi)
             $calculatedProfitLoss = $grandTotal - $finalVendorPriceAfterDiscounts;
