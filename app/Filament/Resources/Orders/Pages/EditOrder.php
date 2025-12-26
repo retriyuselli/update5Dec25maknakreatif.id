@@ -27,9 +27,4 @@ class EditOrder extends EditRecord
                 ->openUrlInNewTab(),
         ];
     }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        return OrderResource::calculateTotals($data);
-    }
 }

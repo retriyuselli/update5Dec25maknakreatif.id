@@ -36,6 +36,8 @@
         @php
             $grandTotal = $order->grand_total ?? 0;
             $totalPaid = $order->bayar ?? 0;
+            $paymentProgress = $grandTotal > 0 ? ($totalPaid / $grandTotal) * 100 : 0;
+            $paymentProgress = min($paymentProgress, 100);
 
             // Hitung total berdasarkan jumlah harga publik item dari semua produk dalam order
             $totalPublicPrice = 0;
@@ -72,52 +74,20 @@
                     $totalAdditionVendorAmount += $productAdditionVendor * $quantity;
 
                     // Total pengurangan dari product
-                    $productDiscount = $product->pengurangan ?? 0;
+                    $productDiscount = ($product->pengurangans ?? collect())->sum('amount');
                     $totalDiscountAmount += $productDiscount * $quantity;
                 }
             }
 
-            // Hitung Manual Additions (Order Penambahan)
-            $manualPenambahans = $order->orderPenambahans;
-            // Filter kategori_transaksi dihapus sesuai permintaan user
-            $totalManualAdditionAmount = $manualPenambahans->sum('harga_publish');
-            $totalManualAdditionVendorAmount = $manualPenambahans->sum('harga_vendor');
-
-            // Hitung Manual Reductions (Order Pengurangan)
-            $manualPengurangans = $order->orderPengurangans;
-            $totalManualReductionAmount = $manualPengurangans->sum('total_pengurangan');
-
             // Harga dasar paket adalah total harga publik
             $basePackagePrice = $totalPublicPrice;
 
-            // Hitung harga final setelah diskon dan penambahan (Product + Manual)
-            $finalPriceAfterDiscounts =
-                $basePackagePrice -
-                $totalDiscountAmount +
-                $totalAdditionAmount +
-                $totalManualAdditionAmount -
-                $totalManualReductionAmount;
-
+            // Hitung harga final setelah diskon dan penambahan
+            $finalPriceAfterDiscounts = $basePackagePrice - $totalDiscountAmount + $totalAdditionAmount;
             $finalVendorPriceAfterDiscounts = $totalVendorPrice - $totalDiscountAmount + $totalAdditionVendorAmount;
 
-            // Recalculate Grand Total to ensure consistency with displayed items
-            $recalculatedGrandTotal = $finalPriceAfterDiscounts - ($order->promo ?? 0);
-
-            // Use recalculated value if it differs significantly (or always to be safe)
-            $grandTotal = $recalculatedGrandTotal;
-
-            // Variable for table display (Grand Total row)
-            $finalPriceAfterDiscountsRealisasi = $grandTotal;
-
-            // Update Sisa Tagihan based on new Grand Total
-            $orderSisa = $grandTotal - $totalPaid;
-
-            // Recalculate Payment Progress based on new Grand Total
-            $paymentProgress = $grandTotal > 0 ? ($totalPaid / $grandTotal) * 100 : 0;
-            $paymentProgress = min($paymentProgress, 100);
-
-            // Hitung Profit & Loss dari perhitungan detail (Estimasi)
-            $calculatedProfitLoss = $grandTotal - $finalVendorPriceAfterDiscounts;
+            // Hitung Profit & Loss dari perhitungan detail
+            $calculatedProfitLoss = $finalPriceAfterDiscounts - $finalVendorPriceAfterDiscounts;
         @endphp
 
         <!-- Billing Information -->
@@ -170,19 +140,8 @@
         <!-- Separator Line -->
         <hr class="border-t-2 border-gray-200 dark:border-gray-600 py-1.5">
 
-        <!-- Payment Progress Bar -->
-        <div class="progress-bar-container mb-6">
-            <div class="progress-bar-header">
-                <span class="progress-bar-label">Progress Pembayaran</span>
-                <span class="progress-bar-percentage">{{ number_format($paymentProgress, 1) }}%</span>
-            </div>
-            <div class="progress-bar-track">
-                <div class="progress-bar-fill" style="width: {{ $paymentProgress }}%"></div>
-            </div>
-        </div>
-
         <!-- Rincian Perhitungan Pada Product -->
-        {{-- <div class="mt-8 pt-10 mb-10">
+        <div class="mt-8 pt-10 mb-10">
             <h3 class="section-header">
                 <svg xmlns="http://www.w3.org/2000/svg" class="section-header-icon" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
@@ -230,7 +189,7 @@
                             <tr>
                                 <td
                                     class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                    Total Addition Publish (Product)</td>
+                                    Total Addition Publish (Penambahan)</td>
                                 <td
                                     class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-green-600">
                                     + Rp
@@ -243,7 +202,7 @@
                             <tr>
                                 <td
                                     class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                    Total Addition Vendor (Product)</td>
+                                    Total Addition Vendor (Penambahan)</td>
                                 <td
                                     class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-green-600">
                                     + Rp
@@ -297,10 +256,10 @@
                     </tbody>
                 </table>
             </div>
-        </div> --}}
+        </div>
 
         <!-- Rincian Perhitungan Realisasi -->
-        <div class="mt-1 pt-5 mb-5">
+        <div class="mt-8 pt-10 mb-10">
             <h3 class="section-header">
                 <svg xmlns="http://www.w3.org/2000/svg" class="section-header-icon" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
@@ -350,7 +309,7 @@
                             <tr>
                                 <td
                                     class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                    Penambahan (Product)</td>
+                                    Penambahan</td>
                                 <td
                                     class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-green-700 font-semibold">
                                     + Rp
@@ -359,45 +318,19 @@
                             </tr>
                         @endif
 
-                        @if ($totalDiscountAmount > 0)
+                        @if ($order->pengurangan > 0)
                             <tr>
                                 <td
                                     class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                    Pengurangan (Product)</td>
+                                    Pengurangan</td>
                                 <td
                                     class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
                                     - Rp
-                                    {{ number_format($totalDiscountAmount, 0, ',', '.') }}
+                                    {{ number_format($order->pengurangan, 0, ',', '.') }}
                                 </td>
                             </tr>
                         @endif
 
-                        @if ($totalManualAdditionAmount > 0)
-                            <tr>
-                                <td
-                                    class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                    Penambahan (Order)</td>
-                                <td
-                                    class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-green-700 font-semibold">
-                                    + Rp
-                                    {{ number_format($totalManualAdditionAmount, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        @endif
-
-
-                        @if ($totalManualReductionAmount > 0)
-                            <tr>
-                                <td
-                                    class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-red-600 font-semibold">
-                                    Pengurangan (Order)</td>
-                                <td
-                                    class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-red-600 font-semibold">
-                                    - Rp
-                                    {{ number_format($totalManualReductionAmount, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        @endif
                         <tr>
                             <td
                                 class="font-semibold px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
@@ -405,7 +338,7 @@
                             <td
                                 class="text-right font-semibold px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
                                 Rp
-                                {{ number_format($finalPriceAfterDiscountsRealisasi, 0, ',', '.') }}
+                                {{ number_format($order->grand_total, 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
@@ -440,16 +373,13 @@
                             <td
                                 class="text-right font-semibold px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
                                 <strong>Rp
-                                    {{ number_format($finalPriceAfterDiscountsRealisasi - $order->bayar, 0, ',', '.') }}</strong>
+                                    {{ number_format($order->sisa, 0, ',', '.') }}</strong>
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
-                @php
-                    $totalVendor = $order->expenses()->sum('amount');
-                    $profitLoss = $grandTotal - $totalVendor;
-                @endphp
+                @php $profitLoss = $order->laba_kotor ?? 0; @endphp
                 <div class="profit-loss-card {{ $profitLoss >= 0 ? 'is-profit' : 'is-loss' }}">
                     <div class="profit-loss-card-content">
                         <div class="profit-loss-card-details">
@@ -458,13 +388,13 @@
                             @php
                                 $selisihProfitLoss = $profitLoss - $calculatedProfitLoss;
                             @endphp
-                            {{-- <p class="profit-loss-card-description">Selisih dengan Calculated Profit & Loss:
+                            <p class="profit-loss-card-description">Selisih dengan Calculated Profit & Loss:
                                 <span
                                     class="{{ $selisihProfitLoss >= 0 ? 'text-green-600' : 'text-red-600' }} font-semibold">
                                     {{ $selisihProfitLoss >= 0 ? '+' : '' }}Rp
                                     {{ number_format($selisihProfitLoss, 0, ',', '.') }}
                                 </span>
-                            </p> --}}
+                            </p>
                         </div>
                         <p class="profit-loss-card-amount">
                             Rp {{ number_format($profitLoss, 0, ',', '.') }}
@@ -492,10 +422,10 @@
             }
         @endphp
 
-        <div class="mt-1 pt-5 mb-5">
+        <div class="mt-8 pt-10 mb-10">
             <h3 class="section-header">
-                <svg xmlns="http://www.w3.org/2000/svg" class="section-header-icon" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="section-header-icon" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -558,126 +488,16 @@
             </div>
         </div>
 
-        @if ($order->orderPenambahans && $order->orderPenambahans->count() > 0)
-            <div class="mt-8">
-                <h3 class="section-header">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="section-header-icon text-green-600" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div class="section-header-content">
-                        <span class="section-header-title text-green-600">Rincian Order Penambahan</span>
-                        <p class="section-description">Detail penambahan tambahan yang diterapkan secara manual pada
-                            order ini.</p>
-                    </div>
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm sm:text-base border border-gray-200 dark:border-gray-600 rounded-lg">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th
-                                    class="bg-gray-100 dark:bg-gray-700 px-4 py-2 text-center w-10 text-gray-700 dark:text-white font-medium">
-                                    No</th>
-                                <th
-                                    class="bg-gray-100 dark:bg-gray-700 px-4 py-2 text-left text-gray-700 dark:text-white font-medium">
-                                    Nama & Deskripsi
-                                </th>
-                                <th
-                                    class="bg-gray-100 dark:bg-gray-700 px-4 py-2 text-right text-gray-700 dark:text-white font-medium w-2/5">
-                                    Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($order->orderPenambahans as $index => $penambahan)
-                                <tr>
-                                    <td
-                                        class="text-center px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                        {{ $index + 1 }}</td>
-                                    <td
-                                        class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                        <div class="font-semibold">
-                                            {{ ucwords(strtolower($penambahan->name ?? 'N/A')) }}
-                                        </div>
-                                        @if ($penambahan->description)
-                                            <div class="ml-7 text-gray-600 dark:text-white text-sm">
-                                                {!! strip_tags($penambahan->description, '<li><strong><em><ul><br><span><div>') !!}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td
-                                        class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-green-600 font-semibold">
-                                        + Rp
-                                        {{ number_format($penambahan->harga_publish ?? 0, 0, ',', '.') }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Payment Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar-header">
+                <span class="progress-bar-label">Progress Pembayaran</span>
+                <span class="progress-bar-percentage">{{ number_format($paymentProgress, 1) }}%</span>
             </div>
-        @endif
-
-        @if ($order->orderPengurangans && $order->orderPengurangans->count() > 0)
-            <div class="mt-8">
-                <h3 class="section-header">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="section-header-icon text-red-600" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div class="section-header-content">
-                        <span class="section-header-title text-red-600">Rincian Order Pengurangan</span>
-                        <p class="section-description">Detail pengurangan tambahan yang diterapkan secara manual pada
-                            order ini.</p>
-                    </div>
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm sm:text-base border border-gray-200 dark:border-gray-600 rounded-lg">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th
-                                    class="bg-gray-100 dark:bg-gray-700 px-4 py-2 text-center w-10 text-gray-700 dark:text-white font-medium">
-                                    No</th>
-                                <th
-                                    class="bg-gray-100 dark:bg-gray-700 px-4 py-2 text-left text-gray-700 dark:text-white font-medium">
-                                    Deskripsi Pengurangan
-                                </th>
-                                <th
-                                    class="bg-gray-100 dark:bg-gray-700 px-4 py-2 text-right text-gray-700 dark:text-white font-medium w-2/5">
-                                    Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($order->orderPengurangans as $index => $pengurangan)
-                                <tr>
-                                    <td
-                                        class="text-center px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                        {{ $index + 1 }}</td>
-                                    <td
-                                        class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
-                                        <div>
-                                            {{ ucwords(strtolower($pengurangan->description ?? 'N/A')) }}
-                                        </div>
-                                        @if ($pengurangan->notes)
-                                            <div class="ml-7 text-gray-600 dark:text-white">
-                                                {!! strip_tags($pengurangan->notes, '<li><strong><em><ul><br><span><div>') !!}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td
-                                        class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-red-600 font-semibold">
-                                        - Rp
-                                        {{ number_format($pengurangan->total_pengurangan ?? 0, 0, ',', '.') }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" style="width: {{ $paymentProgress }}%"></div>
             </div>
-        @endif
-
+        </div>
 
         <!-- Payment History -->
         <div class="mt-8">
