@@ -168,6 +168,17 @@
         <!-- Separator Line -->
         <hr class="border-t-2 border-gray-200 dark:border-gray-600 py-1.5">
 
+        <!-- Payment Progress Bar -->
+        <div class="progress-bar-container mb-6">
+            <div class="progress-bar-header">
+                <span class="progress-bar-label">Progress Pembayaran</span>
+                <span class="progress-bar-percentage">{{ number_format($paymentProgress, 1) }}%</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" style="width: {{ $paymentProgress }}%"></div>
+            </div>
+        </div>
+
         <!-- Rincian Perhitungan Pada Product -->
         {{-- <div class="mt-8 pt-10 mb-10">
             <h3 class="section-header">
@@ -346,7 +357,7 @@
                             </tr>
                         @endif
 
-                        @if ($order->pengurangan > 0)
+                        @if ($totalDiscountAmount > 0)
                             <tr>
                                 <td
                                     class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
@@ -354,7 +365,7 @@
                                 <td
                                     class="text-right px-4 py-2 border-b border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white">
                                     - Rp
-                                    {{ number_format($order->pengurangan, 0, ',', '.') }}
+                                    {{ number_format($totalDiscountAmount, 0, ',', '.') }}
                                 </td>
                             </tr>
                         @endif
@@ -665,16 +676,6 @@
             </div>
         @endif
 
-        <!-- Payment Progress Bar -->
-        <div class="progress-bar-container">
-            <div class="progress-bar-header">
-                <span class="progress-bar-label">Progress Pembayaran</span>
-                <span class="progress-bar-percentage">{{ number_format($paymentProgress, 1) }}%</span>
-            </div>
-            <div class="progress-bar-track">
-                <div class="progress-bar-fill" style="width: {{ $paymentProgress }}%"></div>
-            </div>
-        </div>
 
         <!-- Payment History -->
         <div class="mt-8">

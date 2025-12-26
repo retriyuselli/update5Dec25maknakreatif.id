@@ -506,46 +506,54 @@
     </table>
 
     @php
-        // Hitung total penambahan harga dari semua produk dalam order
+        // Initialize variables
+        $totalPublicPrice = 0;
         $totalAdditionAmount = 0;
-        if ($order->items && $order->items->count() > 0) {
-            foreach ($order->items as $orderItem) {
-                if ($orderItem->product && $orderItem->product->penambahanHarga) {
-                    $productAdditionPublish = $orderItem->product->penambahanHarga->sum('harga_publish');
-                    $quantity = $orderItem->quantity ?? 1;
-                    $totalAdditionAmount += $productAdditionPublish * $quantity;
-                }
-            }
-        }
-
-        // Hitung Manual Additions (Order Penambahan)
-        $manualPenambahans = $order->orderPenambahans;
-        $totalManualAdditionAmount = $manualPenambahans->sum('harga_publish');
-
-        // Hitung Product Reductions
         $totalReductionAmount = 0;
+
+        // Loop through order items to calculate totals
         if ($order->items && $order->items->count() > 0) {
             foreach ($order->items as $orderItem) {
-                if ($orderItem->product) {
-                    $productReduction = $orderItem->product->pengurangan ?? 0;
+                $product = $orderItem->product;
+                if ($product) {
                     $quantity = $orderItem->quantity ?? 1;
-                    $totalReductionAmount += $productReduction * $quantity;
-                }
-            }
-        }
 
-        // Hitung Manual Reductions (Order Pengurangan)
-        $manualPengurangans = $order->orderPengurangans;
-        $totalManualReductionAmount = $manualPengurangans->sum('total_pengurangan');
+                    // 1. Calculate Base Package Price (Total Paket Awal)
+                    // Sum of product items' public prices
+            $productPublicPrice = ($product->items ?? collect())->sum(function ($item) {
+                return ($item->harga_publish ?? 0) * ($item->quantity ?? 1);
+            });
+            $totalPublicPrice += $productPublicPrice * $quantity;
+
+            // 2. Calculate Product Additions
+            $productAdditionPublish = ($product->penambahanHarga ?? collect())->sum('harga_publish');
+            $totalAdditionAmount += $productAdditionPublish * $quantity;
+
+            // 3. Calculate Product Reductions
+            $productReduction = $product->pengurangan ?? 0;
+            $totalReductionAmount += $productReduction * $quantity;
+        }
+    }
+}
+
+$basePackagePrice = $totalPublicPrice;
+
+// Hitung Manual Additions (Order Penambahan)
+$manualPenambahans = $order->orderPenambahans;
+$totalManualAdditionAmount = $manualPenambahans->sum('harga_publish');
+
+// Hitung Manual Reductions (Order Pengurangan)
+$manualPengurangans = $order->orderPengurangans;
+$totalManualReductionAmount = $manualPengurangans->sum('total_pengurangan');
 
         // Recalculate Grand Total for consistency
-        // Rumus: Total Price (Base) + Product Additions + Manual Additions - Promo - (Product Reductions + Manual Reductions)
         $grandTotal =
-            $order->total_price +
+            $basePackagePrice +
             $totalAdditionAmount +
             $totalManualAdditionAmount -
             ($order->promo ?? 0) -
             ($totalReductionAmount + $totalManualReductionAmount);
+
         $sisaTagihan = $grandTotal - $order->bayar;
     @endphp
 
@@ -560,7 +568,7 @@
             <tbody>
                 <tr>
                     <td>Total Paket Awal</td>
-                    <td class="text-right">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format($basePackagePrice, 0, ',', '.') }}</td>
                 </tr>
 
                 @if ($totalAdditionAmount > 0)
