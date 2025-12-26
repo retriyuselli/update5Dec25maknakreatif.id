@@ -12,6 +12,8 @@ use Livewire\Attributes\Url;
 
 class NetCashFlowReport extends Page
 {
+    use HasPageShield;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected string $view = 'filament.pages.net-cash-flow-report';
@@ -20,8 +22,6 @@ class NetCashFlowReport extends Page
 
     protected static ?string $title = 'Laporan Arus Kas Bersih (Net Cash Flow)';
 
-    use HasPageShield;
-    
     public $orders;
 
     #[Url]

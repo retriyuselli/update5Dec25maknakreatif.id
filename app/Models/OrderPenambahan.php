@@ -3,38 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProductPenambahan extends Model
+class OrderPenambahan extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'product_id',
+        'order_id',
         'vendor_id',
+        'name',
         'description',
         'harga_publish',
         'harga_vendor',
-        'kategori_transaksi',
-        'notes',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'amount' => 'decimal:2', // Cast amount to a decimal with 2 places
         'harga_publish' => 'decimal:2',
         'harga_vendor' => 'decimal:2',
-        'kategori_transaksi' => 'string',
     ];
 
-    public function product(): BelongsTo
+    public function order(): BelongsTo
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Order::class);
     }
 
     public function vendor(): BelongsTo

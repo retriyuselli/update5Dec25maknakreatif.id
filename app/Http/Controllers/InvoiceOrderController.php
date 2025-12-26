@@ -94,7 +94,7 @@ class InvoiceOrderController extends Controller
             'margin_bottom' => 15,
         ]);
 
-        return $pdf->download("Invoice-{$order->prospect->name_event}.pdf");
+        return $pdf->stream("Invoice-{$order->prospect->name_event}.pdf");
     }
 
     /**

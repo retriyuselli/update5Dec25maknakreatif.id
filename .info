@@ -17,5 +17,7 @@ php artisan optimize
 php artisan filament:optimize
 php artisan shield:generate --all
 
+composer2 dump-autoload
+
 Berisi file sudah dioptimize menggunakan filament v4.0.10
 Update 29 Nov 2025

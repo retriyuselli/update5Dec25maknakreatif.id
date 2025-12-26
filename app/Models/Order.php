@@ -127,6 +127,16 @@ class Order extends Model
         return $this->belongsTo(User::class, 'last_edited_by');
     }
 
+    public function orderPenambahans()
+    {
+        return $this->hasMany(OrderPenambahan::class);
+    }
+
+    public function orderPengurangans()
+    {
+        return $this->hasMany(OrderPengurangan::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(OrderProduct::class, 'order_id');
