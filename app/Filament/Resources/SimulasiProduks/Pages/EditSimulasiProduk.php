@@ -22,6 +22,12 @@ class EditSimulasiProduk extends EditRecord
                 ->icon('heroicon-o-eye')
                 ->url(fn (SimulasiProduk $record) => route('simulasi.show', $record))
                 ->openUrlInNewTab(),
+            Action::make('draftKontrak')
+                ->label('Draft Kontrak')
+                ->color('primary')
+                ->icon('heroicon-o-document-text')
+                ->url(fn (SimulasiProduk $record) => route('simulasi.draft-kontrak', $record))
+                ->openUrlInNewTab(),
         ];
     }
 }

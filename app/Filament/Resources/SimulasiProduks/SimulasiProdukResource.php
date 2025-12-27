@@ -138,7 +138,24 @@ class SimulasiProdukResource extends Resource
                                 self::recalculateGrandTotal($get, $set, '../'); // Path to Summary step
                             })
                             ->helperText('Price from selected base product. Adjustments below.'),
-                    ]), // End of Product & Pricing Step's schema
+                    ]),
+                Step::make('Data Pemesanan')
+                    ->icon('heroicon-o-user')
+                    ->description('Data pemesanan')
+                    ->schema([
+                        TextInput::make('customer_name')
+                            ->label('Nama Customer')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('customer_email')
+                            ->label('Email Customer')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('customer_phone')
+                            ->label('No. HP Customer')
+                            ->required()
+                            ->maxLength(255),
+                    ]),
                 Step::make('Riwayat Modifikasi')
                     ->icon('heroicon-o-clock')
                     ->description('Catat detail modifikasi')

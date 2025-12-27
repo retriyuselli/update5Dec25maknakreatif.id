@@ -74,4 +74,32 @@ class SimulasiDisplayController extends Controller
         // Atau jika ingin menampilkan di browser terlebih dahulu (inline)
         // return $pdf->stream($fileName);
     }
+
+    public function draftKontrak(SimulasiProduk $record)
+    {
+        $items = collect();
+        if ($record->product) {
+            $items = $record->product->items()->with(['vendor.category'])->get();
+        }
+
+        $data = [
+            'record' => $record,
+            'items' => $items,
+            'prospect' => $record->prospect,
+        ];
+
+        $pdf = Pdf::loadView('pdf.draft_kontrak', $data);
+        $pdf->setPaper('a4', 'portrait');
+        
+        // Configure DomPDF for better compatibility
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultFont' => 'sans-serif',
+        ]);
+
+        $fileName = 'Draft_Kontrak_' . $record->slug . '_' . now()->format('Ymd') . '.pdf';
+
+        return $pdf->stream($fileName);
+    }
 }

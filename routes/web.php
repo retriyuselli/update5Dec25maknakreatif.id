@@ -66,6 +66,11 @@ Route::get('/simulasi/{record:slug}/download-pdf', [SimulasiDisplayController::c
     ->name('simulasi.pdf')
     ->middleware(\Filament\Http\Middleware\Authenticate::class);
 
+// Rute untuk draft kontrak simulasi produk
+Route::get('/simulasi/{record:slug}/draft-kontrak', [SimulasiDisplayController::class, 'draftKontrak'])
+    ->name('simulasi.draft-kontrak')
+    ->middleware(\Filament\Http\Middleware\Authenticate::class);
+
 // USER REGISTRATION FORM PDF
 // Rute untuk generate form pendaftaran karyawan kosong (PDF)
 Route::get('/hr/user-form/blank', [UserFormPdfController::class, 'generateBlankForm'])
