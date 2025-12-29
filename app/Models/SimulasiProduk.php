@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class SimulasiProduk extends Model
 {
@@ -17,15 +18,49 @@ class SimulasiProduk extends Model
         'penambahan',
         'pengurangan',
         'grand_total',
+        'total_simulation',
         'notes',
+        'customer_name',
+        'customer_email',
+        'customer_phone',
+        'payment_dp_amount',
+        'payment_term2_amount',
+        'payment_term3_amount',
+        'payment_term4_amount',
+        'payment_simulation',
+        'last_edited_by',
+        'name_ttd',
+        'title_ttd',
+    ];
+
+    protected $casts = [
+        'payment_simulation' => 'array',
     ];
 
     protected $table = 'simulasi_produks';
 
-    public function getGrandTotalAttribute()
+    protected static function booted()
     {
-        return $this->total_price + $this->penambahan - $this->promo - $this->pengurangan;
+        static::creating(function ($model) {
+            if (!$model->user_id) {
+                $model->user_id = Auth::id();
+            }
+        });
+
+        static::updating(function ($model) {
+            $model->last_edited_by = Auth::id();
+        });
     }
+
+    public function lastEditedBy()
+    {
+        return $this->belongsTo(User::class, 'last_edited_by');
+    }
+
+    // public function getGrandTotalAttribute()
+    // {
+    //     return $this->total_price + $this->penambahan - $this->promo - $this->pengurangan;
+    // }
 
     public function user()
     {

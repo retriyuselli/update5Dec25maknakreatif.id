@@ -7,7 +7,7 @@
     <style>
         @page {
             /* Top margin adjusted to ensure content starts below the fixed header on all pages */
-            margin: 110px 50px 20px 70px;
+            margin: 110px 50px 30px 70px;
         }
 
         body {
@@ -45,7 +45,7 @@
         /* Footer */
         .footer {
             position: fixed;
-            bottom: -8px;
+            bottom: 0px;
             right: 0px;
             text-align: right;
             font-size: 10px;
@@ -54,6 +54,20 @@
 
         .pagenum:before {
             content: counter(page);
+        }
+
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.1);
+            /* Transparent gray */
+            z-index: -1000;
+            text-align: center;
+            white-space: nowrap;
         }
 
         /* Typography */
@@ -178,6 +192,7 @@
 </head>
 
 <body>
+    <div class="watermark">COMING SOON</div>
     <!-- HEADER (Fixed on every page) -->
     <header>
         <table class="header-table">
@@ -212,15 +227,30 @@
 
     <!-- FOOTER -->
     <div class="footer">
-        www.paketpernikahan.co.id | Hal <span class="pagenum"></span>
+        <table style="width: 100%; border-collapse: collapse; border: none;">
+            <tr>
+                <td style="text-align: right; vertical-align: bottom; padding-right: 10px;">
+                    www.paketpernikahan.co.id | Hal <span class="pagenum"></span>
+                </td>
+                <td style="width: 50px; vertical-align: bottom;">
+                    <div style="border: 1px solid #000; width: 40px; height: 40px; margin-left: auto; margin-right: 0;">
+                    </div>
+                    <div style="text-align: center; font-size: 8px; margin-top: 2px;">Paraf</div>
+                </td>
+                <td style="width: 50px; vertical-align: bottom;">
+                    <div style="border: 1px solid #000; width: 40px; height: 40px; margin-left: auto; margin-right: 0;">
+                    </div>
+                    <div style="text-align: center; font-size: 8px; margin-top: 2px;">Paraf</div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <!-- MAIN CONTENT -->
 
     <!-- Title -->
     <div class="title">KONTRAK KERJASAMA PERNIKAHAN</div>
-    <div class="subtitle">Nomor :
-        {{ str_pad($record->id, 3, '0', STR_PAD_LEFT) }}/MW/KKP/{{ \Carbon\Carbon::now()->format('IX/Y') }}</div>
+    <div class="subtitle">Nomor : 0{{ $nomorSurat }}</div>
 
     <!-- Pihak Pertama -->
     <table class="content-table">
@@ -271,7 +301,8 @@
 
     <div class="text-justify" style="margin-bottom: 15px;">
         Sehubungan dengan akan diadakannya Pernikahan <b>{{ $prospect->name_cpw ?? '...' }} &
-            {{ $prospect->name_cpp ?? '...' }}</b> di <b>{{ $prospect->venue ?? '...' }}</b>, berikut adalah rincian dan
+            {{ $prospect->name_cpp ?? '...' }}</b> di <b>{{ $prospect->venue ?? '...' }}</b>, berikut adalah rincian
+        dan
         ketentuan Paket Pernikahannya :
     </div>
 
@@ -415,15 +446,18 @@
             selambat-lambatnya 3 (tiga) hari kerja dari Kontrak Kerjasama Paket Pernikahan ini dibuat.</li>
         <li>Pembatalan secara mendadak setelah Kontrak Kerjasama Paket Pernikahan ini ditandatangani akan dikenakan
             biaya sebesar 50% dari total biaya yang tercantum di Kontrak Kerjasama Paket Pernikahan.</li>
-        <li>Kontrak Kerjasama Paket Pernikahan ini juga berlaku sebagai Jaminan atas Pembayaran dari PIHAK KEDUA.</li>
-        <li>PIHAK PERTAMA akan tetap mengikuti kebijakan pihak Gedung yang menjadi lokasi pernikahan yang dipilih oleh
+        <li>Kontrak Kerjasama Paket Pernikahan ini juga berlaku sebagai Jaminan atas Pembayaran dari PIHAK KEDUA.
+        </li>
+        <li>PIHAK PERTAMA akan tetap mengikuti kebijakan pihak Gedung yang menjadi lokasi pernikahan yang dipilih
+            oleh
             PIHAK KEDUA.</li>
     </ol>
 
     <div class="section-title">PEMBAYARAN</div>
     <ol>
         <li>Pembayaran DP (Down Payment) minimal sebesar Rp. 5.000.000,- (Lima Juta Rupiah) atau Booking Date.</li>
-        <li>Pembayaran Termin I sebesar 50% (Lima Puluh Persen) dari sisa pembayaran, dibayarkan 2 (dua) bulan sebelum
+        <li>Pembayaran Termin I sebesar 50% (Lima Puluh Persen) dari sisa pembayaran, dibayarkan 2 (dua) bulan
+            sebelum
             hari H.</li>
         <li>Pelunasan pembayaran paling lambat H-14 (Empat Belas Hari) sebelum acara dilaksanakan.</li>
         <li>Pembayaran dapat dilakukan melalui transfer ke rekening:
@@ -433,23 +467,28 @@
                 A.n: <b>PT. Makna Kreatif Indonesia</b>
             </div>
         </li>
-        <li>Bukti transfer dapat di email ke maknawedding@gmail.com atau datang langsung ke kantor Makna Wedding dengan
+        <li>Bukti transfer dapat di email ke maknawedding@gmail.com atau datang langsung ke kantor Makna Wedding
+            dengan
             menunjukkan bukti ke bagian administrasi.</li>
         <li>Pembayaran secara tunai dilakukan langsung ke bagian administrasi di kantor Makna Wedding Organizer dan
             PIHAK KEDUA akan menerima bukti pembayaran atau pelunasan yang telah ditandatangani oleh bagian keuangan
-            atau bisa langsung menghubungi saudari <b>Amalia Nabilah di nomor 0878-9778-2893</b>.</li>
-        <li>Tidak dibenarkan melakukan pembayaran di luar dengan cara menitipkan kepada pihak lain selain yang ditunjuk
+            atau bisa langsung menghubungi saudari <b>{{ $financeUser->name ?? 'Finance' }} di nomor
+                {{ $financeUser->phone_number ?? '-' }}</b>.</li>
+        <li>Tidak dibenarkan melakukan pembayaran di luar dengan cara menitipkan kepada pihak lain selain yang
+            ditunjuk
             oleh PIHAK PERTAMA.</li>
     </ol>
 
     <div class="section-title" style="margin-top: 10px;">VENDOR</div>
     <ol>
-        <li>Vendor pernikahan yang telah dipilih oleh PIHAK KEDUA, wajib bertanggung jawab terhadap fasilitas yang telah
+        <li>Vendor pernikahan yang telah dipilih oleh PIHAK KEDUA, wajib bertanggung jawab terhadap fasilitas yang
+            telah
             diberikan sesuai dengan paket yang telah dipilih. PIHAK PERTAMA bersedia membantu sebagai mediator dalam
             berdiskusi dan koordinasi jika terjadi kendala dengan vendor.</li>
         <li>PIHAK PERTAMA akan memberikan daftar rekomendasi vendor yang telah sesuai dengan kriteria sehingga dapat
             dijadikan pilihan oleh PIHAK KEDUA dalam menentukan vendor pernikahan.</li>
-        <li>PIHAK KEDUA dapat melakukan perubahan vendor diluar rekomendasi yang telah disampaikan dengan menyesuaikan
+        <li>PIHAK KEDUA dapat melakukan perubahan vendor diluar rekomendasi yang telah disampaikan dengan
+            menyesuaikan
             perhitungan dari paket sebelumnya.</li>
         <li>Apabila diperlukan, para vendor akan diminta untuk membuat kontrak kerjasama yang isinya mengenai
             pertanggungjawaban para vendor terhadap keberhasilan acara pernikahan sesuai dengan ketentuan yang telah
@@ -463,27 +502,33 @@
     <ol>
         <li>Apabila terjadi pembatalan sepihak dari konsumen (keluarga/pengantin) PIHAK KEDUA, maka uang yang telah
             disetorkan dapat dikembalikan dengan syarat sebagai berikut :</li>
-        <li>Jika pembatalan 3 (tiga) bulan sebelum acara berlangsung maka akan dikenakan biaya 50% dari total biaya yang
+        <li>Jika pembatalan 3 (tiga) bulan sebelum acara berlangsung maka akan dikenakan biaya 50% dari total biaya
+            yang
             telah disepakati.</li>
-        <li>Jika pembatalan 1 (satu) bulan sebelum acara berlangsung, maka akan dikenakan biaya 100% dari total biaya
+        <li>Jika pembatalan 1 (satu) bulan sebelum acara berlangsung, maka akan dikenakan biaya 100% dari total
+            biaya
             yang telah disepakati.</li>
-        <li>Jika pembatalan dilakukan setelah ada pembayaran ke beberapa vendor, maka uang yang telah disetor ke vendor
+        <li>Jika pembatalan dilakukan setelah ada pembayaran ke beberapa vendor, maka uang yang telah disetor ke
+            vendor
             akan mengikuti kebijakan dari masing - masing vendor dalam hal pengembalian uang.</li>
         <li>Uang muka sebagai tanda jadi atau down payment (DP) yang telah dibayarkan tidak dapat dikembalikan.</li>
     </ol>
 
     <div class="section-title" style="margin-top: 10px;">FORCE MAJEURE</div>
     <ol>
-        <li>Force Majeure yang dimaksud adalah suatu keadaan memaksa diluar batas kemampuan kedua belah pihak yang dapat
+        <li>Force Majeure yang dimaksud adalah suatu keadaan memaksa diluar batas kemampuan kedua belah pihak yang
+            dapat
             menggangu bahkan menggagalkan terlaksananya event, seperti bencana alam, pandemi penyakit berbahaya,
-            peperangan, pemogokan, sabotase, pemberontakan masyarakat, blokade, kebijaksanaan pemerintah dan khususnya
+            peperangan, pemogokan, sabotase, pemberontakan masyarakat, blokade, kebijaksanaan pemerintah dan
+            khususnya
             yang disebabkan diluar batas kemampuan manusia.</li>
         <li>Terhadap pembatalan akibat dari Force Majeure, PIHAK PERTAMA dan PIHAK KEDUA sepakat untuk menanggung
             kerugiannya masing – masing.</li>
     </ol>
 
     <p style="text-align: justify; margin-top: 10px;">
-        Demikianlah Kontrak Kerjasama Paket Pernikahan ini dibuat dalam 2 (dua) rangkap dan ditandatangani oleh kedua
+        Demikianlah Kontrak Kerjasama Paket Pernikahan ini dibuat dalam 2 (dua) rangkap dan ditandatangani oleh
+        kedua
         belah pihak.
     </p>
 
@@ -496,7 +541,6 @@
             <tr>
                 <td style="width: 35%;">
                     Menyetujui,<br>
-                    Calon Tunang Wanita
                 </td>
                 <td colspan="2" style="width: 65%;">
                     Mengetahui,<br>
@@ -506,9 +550,9 @@
             <tr>
                 <td style="vertical-align: bottom; height: 100px;">
                     <div style="text-decoration: underline; font-weight: bold;">
-                        {{ $prospect->name_cpw ?? '....................' }}
+                        {{ $record->name_ttd ?? '....................' }}
                     </div>
-                    <b>Calon Mempelai Wanita</b>
+                    <b>{{ $record->title_ttd ?? 'Calon Pengantin' }}</b>
                 </td>
                 <td style="vertical-align: bottom; height: 100px;">
                     <div style="text-decoration: underline; font-weight: bold;">
