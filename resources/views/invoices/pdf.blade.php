@@ -9,7 +9,7 @@
     <style>
         @page {
             size: a4 portrait;
-            margin: 0.5cm 1cm 1.5cm 1cm;
+            margin: 180px 1cm 1.5cm 1cm;
             /* top, right, bottom, left */
         }
 
@@ -35,37 +35,59 @@
         }
 
         /* Header */
-        .header {
+        header {
+            position: fixed;
+            top: -150px;
+            left: 0px;
+            right: 0px;
+            height: 150px;
             border-bottom: 1px solid #ddd;
             margin-bottom: 5px;
             padding-bottom: 5px;
             text-align: center;
         }
 
+        /* Page Footer */
+        .page-footer {
+            position: fixed;
+            bottom: -40px;
+            left: 0px;
+            right: 0px;
+            height: 30px;
+            text-align: center;
+            font-size: 12px;
+            font-style: italic;
+            color: #555;
+        }
+
+        .header-table {
+            width: 100%;
+        }
+
         /* Header Company Info - Rapatkan jarak */
-        .header h2 {
+        header h2 {
             margin: 0 0 2px 0;
             line-height: 1.1;
         }
 
-        .header td {
+        header td {
             line-height: 1.2;
             padding: 0;
         }
 
-        .header img {
+        header img {
             max-height: 50px;
             width: auto;
             vertical-align: middle;
         }
 
-        .header h2 {
+        header h2 {
             font-size: 16px;
             font-weight: bold;
             margin: 0;
         }
 
-        .header p {
+        header p {
             font-size: 16px;
             margin: 0;
         }
@@ -397,37 +419,44 @@
     @endif
 
     <!-- Header -->
-    <table class="header" style="width: 100%;">
-        <tr>
-            <td style="line-height: 1;">
-                <div>
-                    <b>PT. Makna Kreatif Indonesia</b><br>
-                    Alamat : Jln. Sintraman Jaya, No. 2148, Sekip Jaya, Palembang<br>
-                    No. Tlp : +62 822-9796-2600<br>
-                    Email : maknawedding@gmail.com
-                </div>
-            </td>
-            <td style="width: 60%; height: auto; text-align: right; vertical-align: middle;">
-                {{-- Embed image using Base64 for reliable PDF rendering --}}
-                @php
-                    $logoPath = public_path(config('invoice.logo', 'images/logo.png'));
-                    if (file_exists($logoPath)) {
-                        $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
-                        $logoData = file_get_contents($logoPath);
-                        $logoBase64 = 'data:image/' . $logoType . ';base64,' . base64_encode($logoData);
-                    } else {
-                        $logoBase64 = ''; /* Handle missing logo */
-                    }
-                @endphp
-                @if ($logoBase64)
-                    <img src="{{ $logoBase64 }}" alt="Company Logo">
-                @else
-                    {{-- Optional: Display text or placeholder if logo is missing --}}
-                    <span>Logo</span>
-                @endif
-            </td>
-        </tr>
-    </table>
+    <header>
+        <table class="header-table">
+            <tr>
+                <td style="line-height: 1;">
+                    <div>
+                        <b>PT. Makna Kreatif Indonesia</b><br>
+                        Alamat : Jln. Sintraman Jaya, No. 2148, Sekip Jaya, Palembang<br>
+                        No. Tlp : +62 822-9796-2600<br>
+                        Email : maknawedding@gmail.com
+                    </div>
+                </td>
+                <td style="width: 60%; height: auto; text-align: right; vertical-align: middle;">
+                    {{-- Embed image using Base64 for reliable PDF rendering --}}
+                    @php
+                        $logoPath = public_path(config('invoice.logo', 'images/logo.png'));
+                        if (file_exists($logoPath)) {
+                            $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
+                            $logoData = file_get_contents($logoPath);
+                            $logoBase64 = 'data:image/' . $logoType . ';base64,' . base64_encode($logoData);
+                        } else {
+                            $logoBase64 = ''; /* Handle missing logo */
+                        }
+                    @endphp
+                    @if ($logoBase64)
+                        <img src="{{ $logoBase64 }}" alt="Company Logo">
+                    @else
+                        {{-- Optional: Display text or placeholder if logo is missing --}}
+                        <span>Logo</span>
+                    @endif
+                </td>
+            </tr>
+        </table>
+    </header>
+
+    <!-- Page Footer -->
+    <div class="page-footer">
+        Dibuat secara otomatis sehingga tidak membutuhkan tanda tangan
+    </div>
 
     <!-- Invoice Title -->
     <div class="invoice-title">
@@ -686,18 +715,8 @@
                     <li>For questions, contact our customer service</li>
                 </ul>
             </td>
-            <td style="width: 35%; text-align: right; vertical-align: top;">
+            <td style="width: 35%; text-align: center; vertical-align: top;">
                 <p style="margin-bottom: 10px;">Thank you for your business!</p>
-                <p>Approved by:</p>
-                <p style="margin-top: 60px;">____________________</p>
-                @php
-                    // Mengambil karyawan dengan posisi 'Finance'.
-                    // Pastikan model Employee Anda berada di App\Models\Employee
-                    // dan memiliki kolom 'position'.
-                    $financeApprover = \App\Models\Employee::where('position', 'Finance')->orderBy('name')->first(); // orderBy untuk konsistensi jika ada lebih dari satu
-                    $approverName = $financeApprover ? $financeApprover->name : 'Finance Department'; // Default jika tidak ditemukan karyawan Finance
-                @endphp
-                <p>{{ $approverName }}</p>
             </td>
         </tr>
     </table>
