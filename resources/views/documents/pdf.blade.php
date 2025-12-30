@@ -77,6 +77,86 @@
             margin: 0;
         }
 
+        /* Styling for Headings from RichEditor */
+        .content h1,
+        .content h2,
+        .content h3,
+        .content h4,
+        .content h5,
+        .content h6 {
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .content h1 {
+            font-size: 18px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .content h2 {
+            font-size: 16px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
+        }
+
+        .content h3 {
+            font-size: 14px;
+        }
+
+        .content h4 {
+            font-size: 13px;
+        }
+
+        .content h5 {
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .content h6 {
+            font-size: 12px;
+            text-decoration: underline;
+        }
+
+        /* Styling for tables from RichEditor */
+        .content table {
+            width: auto;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .content table,
+        .content th,
+        .content td {
+            border: 1px solid #ccc;
+        }
+
+        .content th,
+        .content td {
+            padding: 4px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        /* Reset margins for paragraphs inside tables to prevent huge row heights */
+        .content table p,
+        .content table ul,
+        .content table ol,
+        .content table li {
+            margin: 0;
+            padding: 0;
+            line-height: 1.2;
+        }
+
+        /* Ensure lists inside tables still have some indentation if needed, but minimal */
+        .content table ul,
+        .content table ol {
+            padding-left: 15px;
+        }
+
         .signature {
             float: right;
             width: 200px;
