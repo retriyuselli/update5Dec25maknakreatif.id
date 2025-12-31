@@ -174,21 +174,33 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 20px;
-            text-align: center;
-            font-size: 7px;
+            height: 30px;
+            font-size: 9px;
             color: #777;
             border-top: 1px solid #ddd;
             padding-top: 5px;
             font-style: italic;
             background-color: #fff;
         }
+
+        .page-number:after {
+            content: counter(page);
+        }
     </style>
 </head>
 
 <body>
     <div class="footer">
-        PT. Makna Kreatif Indonesia
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: left; width: 50%;">
+                    Halaman <span class="page-number"></span>
+                </td>
+                <td style="text-align: right; width: 50%;">
+                    PT. Makna Kreatif Indonesia
+                </td>
+            </tr>
+        </table>
     </div>
     <div class="header">
         <table style="width: 100%; margin-bottom: 1px; padding-bottom: 3px;">
@@ -265,8 +277,8 @@
                 </tr>
             @endif
             <tr>
-                <td><strong>Perihal</strong></td>
-                <td>:</td>
+                <td style="vertical-align: top;"><strong>Perihal</strong></td>
+                <td style="vertical-align: top;">:</td>
                 <td colspan="2"><strong>{{ $record->title }}</strong></td>
             </tr>
         </table>
