@@ -283,19 +283,21 @@
     <table style="width: 100%; margin-top: 20px;">
         <tr>
             <td style="width: 50%; text-align: center; vertical-align: top;">
-                <p>Penerima,</p>
-                <br><br><br>
-                <div class="name" style="font-weight: bold; text-decoration: underline; margin-top: 10px;">
-                    @if ($record->recipientsList->count() > 0)
-                        {{ $record->recipientsList->first()->name }}
-                    @else
-                        ( ..................................... )
-                    @endif
-                </div>
-                <div>{{ data_get($record->recipientsList->first(), 'activeEmployee.position') }}</div>
+                @if ($record->category && $record->category->name === 'Surat Keputusan')
+                    <p>Penerima,</p>
+                    <br><br><br>
+                    <div class="name" style="font-weight: bold; text-decoration: underline; margin-top: 10px;">
+                        @if ($record->recipientsList->count() > 0)
+                            {{ $record->recipientsList->first()->name }}
+                        @else
+                            ( ..................................... )
+                        @endif
+                    </div>
+                    <div>{{ data_get($record->recipientsList->first(), 'activeEmployee.position') }}</div>
+                @endif
             </td>
             <td style="width: 50%; text-align: center; vertical-align: top;">
-                <p>Hormat Kami,</p>
+                <p>PT. Makna Kreatif Indonesia,</p>
 
                 @php
                     $signatureBase64 = '';
