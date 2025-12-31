@@ -143,6 +143,8 @@ class EmployeeResource extends Resource
                                                         'Finance' => 'Finance',
                                                         'Founder' => 'Founder',
                                                         'Co Founder' => 'Co Founder',
+                                                        'Direktur' => 'Direktur',
+                                                        'Wakil Direktur' => 'Wakil Direktur',
                                                         'Other' => 'Other',
                                                     ])
                                                     ->searchable(),
@@ -368,6 +370,8 @@ class EmployeeResource extends Resource
                         'Finance' => 'Finance',
                         'Founder' => 'Founder',
                         'Co Founder' => 'Co Founder',
+                        'Direktur' => 'Direktur',
+                        'Wakil Direktur' => 'Wakil Direktur',
                         'Other' => 'Other',
                     ])
                     ->multiple(),

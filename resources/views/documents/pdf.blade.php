@@ -6,7 +6,7 @@
     <title>{{ $record->title }}</title>
     <style>
         @page {
-            margin: 110px 50px 20px 60px;
+            margin: 110px 50px 10px 60px;
         }
 
         body {
@@ -85,9 +85,9 @@
         .content h5,
         .content h6 {
             font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            line-height: 1.2;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            line-height: 1.1;
         }
 
         .content h1 {
@@ -174,9 +174,9 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 30px;
+            height: 20px;
             text-align: center;
-            font-size: 9px;
+            font-size: 7px;
             color: #777;
             border-top: 1px solid #ddd;
             padding-top: 5px;
@@ -188,7 +188,7 @@
 
 <body>
     <div class="footer">
-        Dokumen ini diterbitkan secara otomatis oleh sistem komputer dan sah tanpa tanda tangan basah.
+        PT. Makna Kreatif Indonesia
     </div>
     <div class="header">
         <table style="width: 100%; margin-bottom: 1px; padding-bottom: 3px;">
@@ -280,34 +280,54 @@
         @endif
     </div>
 
-    <div class="signature">
-        <p>Hormat Kami,</p>
+    <table style="width: 100%; margin-top: 20px;">
+        <tr>
+            <td style="width: 50%; text-align: center; vertical-align: top;">
+                <p>Penerima,</p>
+                <br><br><br>
+                <div class="name" style="font-weight: bold; text-decoration: underline; margin-top: 10px;">
+                    @if ($record->recipientsList->count() > 0)
+                        {{ $record->recipientsList->first()->name }}
+                    @else
+                        ( ..................................... )
+                    @endif
+                </div>
+                <div>{{ data_get($record->recipientsList->first(), 'activeEmployee.position') }}</div>
+            </td>
+            <td style="width: 50%; text-align: center; vertical-align: top;">
+                <p>Hormat Kami,</p>
 
-        @php
-            $signatureBase64 = '';
-            if ($record->creator && $record->creator->signature_url) {
-                $signaturePath = public_path('storage/' . $record->creator->signature_url);
-                if (file_exists($signaturePath)) {
-                    $sigType = pathinfo($signaturePath, PATHINFO_EXTENSION);
-                    $sigData = file_get_contents($signaturePath);
-                    $signatureBase64 = 'data:image/' . $sigType . ';base64,' . base64_encode($sigData);
-                }
-            }
-        @endphp
+                @php
+                    $signatureBase64 = '';
+                    if ($record->creator && $record->creator->signature_url) {
+                        $signaturePath = public_path('storage/' . $record->creator->signature_url);
+                        if (file_exists($signaturePath)) {
+                            $sigType = pathinfo($signaturePath, PATHINFO_EXTENSION);
+                            $sigData = file_get_contents($signaturePath);
+                            $signatureBase64 = 'data:image/' . $sigType . ';base64,' . base64_encode($sigData);
+                        }
+                    }
+                @endphp
 
-        @if ($signatureBase64)
-            <div style="margin-bottom: 0px;">
-                <img src="{{ $signatureBase64 }}" alt="Signature" style="height: 100px; width: auto;">
-            </div>
-            <div class="name" style="margin-top: -40px; margin-bottom: 0px;">{{ $record->creator->name ?? 'Admin' }}
-            </div>
-        @else
-            <div class="name" style="">{{ $record->creator->name ?? 'Admin' }}
-            </div>
-        @endif
+                @if ($signatureBase64)
+                    <div style="margin-bottom: 0px;">
+                        <img src="{{ $signatureBase64 }}" alt="Signature" style="height: 100px; width: auto;">
+                    </div>
+                    <div class="name"
+                        style="margin-top: -20px; margin-bottom: 0px; font-weight: bold; text-decoration: underline;">
+                        {{ $record->creator->name ?? 'Admin' }}
+                    </div>
+                @else
+                    <br><br><br>
+                    <div class="name" style="margin-top: 10px; font-weight: bold; text-decoration: underline;">
+                        {{ $record->creator->name ?? 'Admin' }}
+                    </div>
+                @endif
 
-        <div>{{ $record->creator->activeEmployee->position ?? 'Direktur Utama' }}</div>
-    </div>
+                <div>{{ $record->creator->activeEmployee->position ?? 'Direktur Utama' }}</div>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>
