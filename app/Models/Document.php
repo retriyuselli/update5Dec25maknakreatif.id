@@ -27,6 +27,7 @@ class Document extends Model
         'confidentiality',
         'created_by',
         'use_digital_signature',
+        'show_confidentiality_warning',
     ];
 
     protected $casts = [
@@ -34,6 +35,7 @@ class Document extends Model
         'date_effective' => 'date',
         'date_expired' => 'date',
         'use_digital_signature' => 'boolean',
+        'show_confidentiality_warning' => 'boolean',
     ];
 
     public function category(): BelongsTo

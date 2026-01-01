@@ -68,6 +68,10 @@ class DocumentForm
                                                     ->label('Gunakan Tanda Tangan Digital')
                                                     ->default(true)
                                                     ->inline(false),
+                                                Toggle::make('show_confidentiality_warning')
+                                                    ->label('Tampilkan Peringatan Kerahasiaan')
+                                                    ->default(false)
+                                                    ->inline(false),
                                             ]),
                                         Textarea::make('summary')
                                             ->rows(3)

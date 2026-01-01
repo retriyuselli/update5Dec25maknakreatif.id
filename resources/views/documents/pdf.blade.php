@@ -6,7 +6,7 @@
     <title>{{ $record->title }}</title>
     <style>
         @page {
-            margin: 110px 50px 10px 60px;
+            margin: 110px 50px 20px 60px;
         }
 
         body {
@@ -53,7 +53,7 @@
         .content {
             text-align: justify;
             margin-bottom: 40px;
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .content ol,
@@ -171,10 +171,10 @@
 
         .footer {
             position: fixed;
-            bottom: 0;
+            bottom: 0px;
             left: 0;
             right: 0;
-            height: 30px;
+            height: auto;
             font-size: 9px;
             color: #777;
             border-top: 1px solid #ddd;
@@ -193,10 +193,15 @@
     <div class="footer">
         <table style="width: 100%;">
             <tr>
-                <td style="text-align: left; width: 50%;">
+                <td style="text-align: left; width: 20%;">
                     Halaman <span class="page-number"></span>
                 </td>
-                <td style="text-align: right; width: 50%;">
+                <td style="text-align: center; width: 55%;">
+                    @if ($record->show_confidentiality_warning)
+                        Dokumen ini hanya boleh diketahui oleh pemilik dan tidak boleh menyebar
+                    @endif
+                </td>
+                <td style="text-align: right; width: 25%;">
                     PT. Makna Kreatif Indonesia
                 </td>
             </tr>
