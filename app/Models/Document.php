@@ -26,12 +26,14 @@ class Document extends Model
         'status',
         'confidentiality',
         'created_by',
+        'use_digital_signature',
     ];
 
     protected $casts = [
         'metadata' => 'array',
         'date_effective' => 'date',
         'date_expired' => 'date',
+        'use_digital_signature' => 'boolean',
     ];
 
     public function category(): BelongsTo

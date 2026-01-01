@@ -17,6 +17,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\KeyValue;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Toggle;
 
 class DocumentForm
 {
@@ -63,6 +64,10 @@ class DocumentForm
                                                     ->placeholder('Auto-generated')
                                                     ->disabled()
                                                     ->dehydrated(false),
+                                                Toggle::make('use_digital_signature')
+                                                    ->label('Gunakan Tanda Tangan Digital')
+                                                    ->default(true)
+                                                    ->inline(false),
                                             ]),
                                         Textarea::make('summary')
                                             ->rows(3)

@@ -313,7 +313,7 @@
 
                 @php
                     $signatureBase64 = '';
-                    if ($record->creator && $record->creator->signature_url) {
+                    if ($record->use_digital_signature && $record->creator && $record->creator->signature_url) {
                         $signaturePath = public_path('storage/' . $record->creator->signature_url);
                         if (file_exists($signaturePath)) {
                             $sigType = pathinfo($signaturePath, PATHINFO_EXTENSION);
