@@ -30,7 +30,7 @@ class DocumentCategoryForm
                             ->required(),
                         TextInput::make('format_number')
                             ->label('Numbering Format')
-                            ->placeholder('e.g., {Y}/MKI/SK/{SEQ}'),
+                            ->placeholder('e.g., {SEQ}/{CAT}/MKI/{ROMAN_MONTH}/{Y}'),
                         Select::make('parent_id')
                             ->relationship('parent', 'name')
                             ->searchable()

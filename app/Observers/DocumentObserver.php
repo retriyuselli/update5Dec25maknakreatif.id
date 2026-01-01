@@ -22,7 +22,7 @@ class DocumentObserver
     protected function generateDocumentNumber(Document $document): string
     {
         $category = $document->category;
-        $format = $category->format_number ?? '{Y}/MKI/{CAT}/{SEQ}';
+        $format = $category->format_number ?? '{SEQ}/{CAT}/MKI/{ROMAN_MONTH}/{Y}';
 
         // Replacements
         $replacements = [
