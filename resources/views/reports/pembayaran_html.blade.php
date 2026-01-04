@@ -183,16 +183,15 @@
 
         <div class="report-title-header">
             @php
-                // Ganti dengan path logo Anda yang sebenarnya
-                $logoPath = public_path('images/logomki.png'); // Sesuaikan path logo
-                $logoSrc = '';
-                if (file_exists($logoPath)) {
-                    $logoMime = mime_content_type($logoPath);
-                    if ($logoMime) {
-                        // Pastikan mime_content_type berhasil
-                        $logoSrc = 'data:' . $logoMime . ';base64,' . base64_encode(file_get_contents($logoPath));
-                    }
+                $company = null;
+                if (\Illuminate\Support\Facades\Schema::hasTable('companies')) {
+                    $company = \App\Models\Company::query()->first();
                 }
+
+                $logoSrc =
+                    $company && $company->logo_url
+                        ? \Illuminate\Support\Facades\Storage::disk('public')->url($company->logo_url)
+                        : asset('images/logomki.png');
             @endphp
             @if ($logoSrc)
                 <img src="{{ $logoSrc }}" alt="Nama Perusahaan Anda" class="company-logo">
@@ -211,10 +210,35 @@
                         Periode)</small>
                 @endif
             </h1>
-            <p class="company-address">Jl. Sintraman Jaya I No. 2148, 20 Ilir D II, <br>
-                Kecamatan Kemuning, Kota Palembang, Sumatera Selatan 30137</p>
-            <p class="company-address" style="margin-top:0;">PT. Makna Kreatif Indonesia | maknawedding@gmail.com | +62
-                822-9796-2600</p>
+            @if ($company)
+                <p class="company-address">
+                    {{ $company->address }}
+                    @if ($company->city)
+                        , {{ $company->city }}
+                    @endif
+                    @if ($company->province)
+                        , {{ $company->province }}
+                    @endif
+                    @if ($company->postal_code)
+                        {{ $company->postal_code }}
+                    @endif
+                </p>
+                <p class="company-address" style="margin-top:0;">
+                    {{ $company->company_name }}
+                    @if ($company->email)
+                        | {{ $company->email }}
+                    @endif
+                    @if ($company->phone)
+                        | {{ $company->phone }}
+                    @endif
+                </p>
+            @else
+                <p class="company-address">Jl. Sintraman Jaya I No. 2148, 20 Ilir D II, <br>
+                    Kecamatan Kemuning, Kota Palembang, Sumatera Selatan 30137</p>
+                <p class="company-address" style="margin-top:0;">PT. Makna Kreatif Indonesia | maknawedding@gmail.com |
+                    +62
+                    822-9796-2600</p>
+            @endif
         </div>
 
         <form action="{{ route('data-pembayaran.html-report') }}" method="GET" class="filter-form">

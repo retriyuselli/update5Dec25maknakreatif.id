@@ -21,3 +21,25 @@ composer2 dump-autoload
 
 Berisi file sudah dioptimize menggunakan filament v4.0.10
 Update 29 Nov 2025
+
+Resume Perubahan 5 Hari Terakhir (30 Des 2025 - 04 Jan 2026)
+------------------------------------------------------------
+1. Dokumen & PDF:
+   - Pembaruan besar pada template PDF dokumen (`resources/views/documents/pdf.blade.php`) termasuk layout dan konten.
+   - Penambahan fitur 'Confidentiality Warning' pada dokumen (Migration & Form).
+   - Penambahan fitur 'Digital Signature' pada dokumen (Migration & Form).
+   - Update `DocumentForm.php` dan `DocumentObserver`.
+
+2. Kategori Dokumen:
+   - Update format nomor pada `DocumentCategory` (Migration & Seeder).
+
+3. Resource & Konfigurasi:
+   - Update `UserResource.php` dan `EmployeeResource.php`.
+   - Update `config/app.php`.
+
+History Commit:
+- [02 Jan 2026] Penambahan show_confidentiality_warning
+- [01 Jan 2026] Penambahan use_digital_signature
+- [01 Jan 2026] Update format nomor kategori dokumen
+- [01 Jan 2026] Update PDF dokumen (multiple commits)
+- [31 Des 2025] Update awal template PDF

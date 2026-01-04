@@ -17,6 +17,16 @@
     <link href="{{ asset('assets/datacrew/datacrew.css') }}" rel="stylesheet">
 </head>
 
+@php
+    $companyName = 'Makna Wedding & Event Planner';
+    if (\Illuminate\Support\Facades\Schema::hasTable('companies')) {
+        $val = \App\Models\Company::value('company_name');
+        if ($val) {
+            $companyName = $val;
+        }
+    }
+@endphp
+
 <body>
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -43,7 +53,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <strong>Terima kasih sudah menjadi bagian dari Makna Wedding & Event Planner!</strong>
+                                <strong>Terima kasih sudah menjadi bagian dari {{ $companyName }}!</strong>
                                 <br>
                                 <small class="text-light opacity-75">Data Anda telah berhasil disimpan dengan
                                     baik.</small>
@@ -155,7 +165,7 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="gaji" class="form-label">Fee Makna (Rp)</label>
+                    <label for="gaji" class="form-label">Fee {{ $companyName }} (Rp)</label>
                     {{-- Kembalikan type ke number --}}
                     <input type="number" class="form-control @error('gaji') is-invalid @enderror" id="gaji"
                         name="gaji" value="{{ old('gaji') }}" placeholder="Contoh: 5000000" min="0"
@@ -188,7 +198,7 @@
                     @enderror
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="pelatihan" class="form-label">Pelatihan Makna</label>
+                    <label for="pelatihan" class="form-label">Pelatihan {{ $companyName }}</label>
                     <textarea class="form-control @error('pelatihan') is-invalid @enderror" id="pelatihan" name="pelatihan"
                         rows="3" placeholder="Jelaskan pelatihan yang pernah diikuti"
                         @error('pelatihan') aria-invalid="true" @enderror>{{ old('pelatihan') }}</textarea>

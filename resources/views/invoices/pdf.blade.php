@@ -1,5 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+@php
+    $company = null;
+    if (\Illuminate\Support\Facades\Schema::hasTable('companies')) {
+        $company = \App\Models\Company::with('paymentMethod')->first();
+    }
+    $paymentDetails = 'Please contact us for payment details.';
+    if ($company && $company->paymentMethod) {
+        $paymentDetails =
+            $company->paymentMethod->no_rekening .
+            ' ' .
+            $company->paymentMethod->bank_name .
+            ' (' .
+            $company->paymentMethod->name .
+            ')';
+    }
+@endphp
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -424,16 +440,20 @@
             <tr>
                 <td style="line-height: 1;">
                     <div>
-                        <b>PT. Makna Kreatif Indonesia</b><br>
-                        Alamat : Jln. Sintraman Jaya, No. 2148, Sekip Jaya, Palembang<br>
-                        No. Tlp : +62 822-9796-2600<br>
-                        Email : maknawedding@gmail.com
+                        <b>{{ $company->company_name ?? 'PT. Makna Kreatif Indonesia' }}</b><br>
+                        Alamat : {{ $company->address ?? 'Jln. Sintraman Jaya, No. 2148, Sekip Jaya, Palembang' }}<br>
+                        No. Tlp : {{ $company->phone ?? '+62 822-9796-2600' }}<br>
+                        Email : {{ $company->email ?? 'maknawedding@gmail.com' }}
                     </div>
                 </td>
                 <td style="width: 60%; height: auto; text-align: right; vertical-align: middle;">
                     {{-- Embed image using Base64 for reliable PDF rendering --}}
                     @php
-                        $logoPath = public_path(config('invoice.logo', 'images/logo.png'));
+                        $logoPath =
+                            $company && $company->logo_url
+                                ? \Illuminate\Support\Facades\Storage::disk('public')->path($company->logo_url)
+                                : public_path(config('invoice.logo', 'images/logo.png'));
+
                         if (file_exists($logoPath)) {
                             $logoType = pathinfo($logoPath, PATHINFO_EXTENSION);
                             $logoData = file_get_contents($logoPath);
@@ -708,8 +728,7 @@
             <td style="width: 65%; vertical-align: top;">
                 <div class="bold">Terms & Conditions</div>
                 <ul>
-                    <li>Please make payments via bank transfer to the account provided <br>112 00 7744 4474 PT. Bank
-                        Mandiri (CV. Rumah Desain Production)</li>
+                    <li>Please make payments via bank transfer to the account provided <br>{{ $paymentDetails }}</li>
                     <li>Payment is due within {{ config('invoice.payment_days', 7) }} days from the invoice date.</li>
                     <li>Please make payments via bank transfer to the account provided</li>
                     <li>For questions, contact our customer service</li>

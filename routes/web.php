@@ -282,9 +282,7 @@ Route::get('/admin/laporan-keuangan/download-pdf-direct', function (\Illuminate\
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.profit_loss_report', $reportData);
         $fileName = 'laporan_laba_rugi_'.now()->format('YmdHis').'.pdf';
 
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
-        }, $fileName, ['Content-Type' => 'application/pdf']);
+        return $pdf->stream($fileName);
 
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);

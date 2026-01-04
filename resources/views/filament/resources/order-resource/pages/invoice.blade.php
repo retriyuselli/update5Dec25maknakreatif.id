@@ -1,3 +1,14 @@
+@php
+    $company = null;
+    if (\Illuminate\Support\Facades\Schema::hasTable('companies')) {
+        $company = \App\Models\Company::query()->first();
+    }
+    $logoSrc =
+        $company && $company->logo_url
+            ? \Illuminate\Support\Facades\Storage::disk('public')->url($company->logo_url)
+            : asset(config('invoice.logo', 'images/logo.png'));
+@endphp
+
 <x-filament-panels::page>
 
     <link rel="stylesheet" href="{{ asset('assets/invoice/invoice.css') }}">
@@ -15,8 +26,7 @@
                 </p>
             </div>
             <div>
-                <img src="{{ asset(config('invoice.logo', 'images/logo.png')) }}" alt="Company Logo"
-                    class="h-10 w-auto mr-4">
+                <img src="{{ $logoSrc }}" alt="Company Logo" class="h-10 w-auto mr-4">
             </div>
         </div>
 

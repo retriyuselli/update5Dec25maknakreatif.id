@@ -63,6 +63,16 @@ class CompanyForm
                                                     ->placeholder('Jumlah karyawan'),
                                             ]),
                                     ]),
+                                Section::make('Informasi Rekening')
+                                    ->schema([
+                                        Select::make('payment_method_id')
+                                            ->label('Rekening Bank Utama')
+                                            ->relationship('paymentMethod', 'bank_name')
+                                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->bank_name} - {$record->no_rekening} ({$record->name})")
+                                            ->searchable()
+                                            ->preload()
+                                            ->placeholder('Pilih rekening bank utama'),
+                                    ]),
                             ]),
                         Tabs\Tab::make('Kontak & Alamat')
                             ->icon(Heroicon::OutlinedCurrencyDollar)

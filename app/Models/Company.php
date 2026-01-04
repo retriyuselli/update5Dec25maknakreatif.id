@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Company extends Model
 {
     protected $fillable = [
@@ -37,6 +39,7 @@ class Company extends Model
         'tax_office',
         'legal_documents',
         'legal_document_status',
+        'payment_method_id',
     ];
 
     protected $casts = [
@@ -65,5 +68,10 @@ class Company extends Model
         }
 
         return asset('images/favicon_makna.png');
+    }
+
+    public function paymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

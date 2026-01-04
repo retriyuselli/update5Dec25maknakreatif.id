@@ -272,7 +272,21 @@ Invoice Area
                                 <div class="col-auto">
                                     <div class="header-logo">
                                         @php
-                                            $logoPath = public_path('images/logomki.png');
+                                            $company = \App\Models\Company::first();
+                                            if (
+                                                $company &&
+                                                $company->logo_url &&
+                                                \Illuminate\Support\Facades\Storage::disk('public')->exists(
+                                                    $company->logo_url,
+                                                )
+                                            ) {
+                                                $logoPath = \Illuminate\Support\Facades\Storage::disk('public')->path(
+                                                    $company->logo_url,
+                                                );
+                                            } else {
+                                                $logoPath = public_path('images/logomki.png');
+                                            }
+
                                             // Embed image for PDF reliability
                                             $logoSrc = file_exists($logoPath)
                                                 ? 'data:' .
@@ -284,7 +298,7 @@ Invoice Area
                                         @if ($logoSrc)
                                             <a href="{{ route('filament.admin.auth.login') }}" class="cta-button">
                                                 <img src="{{ $logoSrc }}" alt="Logo Perusahaan"
-                                                    class="company-logo">
+                                                    class="company-logo" style="max-height: 100px; width: auto;">
                                             </a>
                                         @endif
                                     </div>
@@ -334,9 +348,11 @@ Invoice Area
                             <div style="100%">
                                 <div class="address-box">
                                     <b>Office Information :</b>
-                                    <address class="align-justify">PT. Makna Kreatif Indonesia <br>
-                                        Jl. Sintraman Jaya I No. 2148, 20 Ilir D II, Kecamatan Kemuning, Kota Palembang,
-                                        Sumatera Selatan 30137, Phone: +62 822-9796-2600 <br>
+                                    <address class="align-justify">
+                                        {{ $company->company_name ?? 'PT. Makna Kreatif Indonesia' }}<br>
+                                        {{ $company->address ?? 'Jl. Sintraman Jaya I No. 2148, 20 Ilir D II, Kecamatan Kemuning, Kota Palembang, Sumatera Selatan 30137' }}
+                                        |
+                                        Phone: {{ $company->phone ?? '+62 822-9796-2600' }} <br>
                                     </address>
                                 </div>
                             </div>
@@ -560,7 +576,7 @@ Invoice Area
                                 <p style="border-top: 1px solid var(--title-color); margin: 0 10px; padding-top: 5px;">
                                     ( {{ $simulasi->user->name ?? 'Account Manager' }} )
                                 </p>
-                                <p>PT. Makna Kreatif Indonesia</p>
+                                <p>{{ $company->company_name ?? 'PT. Makna Kreatif Indonesia' }}</p>
                             </div>
                             <div style="float: right; width: 40%; text-align: center; margin-right: 5%;">
                                 <p style="margin-bottom: 70px;">Disetujui Oleh,</p>
