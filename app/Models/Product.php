@@ -36,12 +36,12 @@ class Product extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'is_approved' => 'boolean',
-        'product_price' => 'decimal:2',
-        'pengurangan' => 'decimal:2',
-        'penambahan' => 'decimal:2',
-        'penambahan_publish' => 'decimal:2',
-        'penambahan_vendor' => 'decimal:2',
-        'price' => 'decimal:2', // Harga akhir setelah pengurangan + penambahan
+        'product_price' => 'integer',
+        'pengurangan' => 'integer',
+        'penambahan' => 'integer',
+        'penambahan_publish' => 'integer',
+        'penambahan_vendor' => 'integer',
+        'price' => 'integer',
     ];
 
     protected static function boot()
@@ -147,7 +147,6 @@ class Product extends Model
 
     public function getVendorTotalAttribute()
     {
-        // Menjumlahkan 'price_vendor' (harga_vendor * quantity) dari setiap item ProductVendor
-        return $this->items()->sum('price_vendor');
+        return (int) $this->items()->sum('total_price');
     }
 }

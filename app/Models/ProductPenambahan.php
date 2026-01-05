@@ -26,9 +26,9 @@ class ProductPenambahan extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'amount' => 'decimal:2', // Cast amount to a decimal with 2 places
-        'harga_publish' => 'decimal:2',
-        'harga_vendor' => 'decimal:2',
+        'amount' => 'integer',
+        'harga_publish' => 'integer',
+        'harga_vendor' => 'integer',
         'kategori_transaksi' => 'string',
     ];
 

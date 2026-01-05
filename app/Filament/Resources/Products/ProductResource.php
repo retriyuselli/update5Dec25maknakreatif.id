@@ -101,7 +101,7 @@ class ProductResource extends Resource
                                         ->disabled()
                                         ->dehydrated()
                                         ->unique(ignoreRecord: true)
-                                        ->helperText('Auto-generated from name'),
+                                        ->helperText('Otomatis dibuat dari nama'),
 
                                     FileUpload::make('image')
                                         ->image()
@@ -160,11 +160,20 @@ class ProductResource extends Resource
                                         ->readOnly()
                                         ->label('Product Price')
                                         ->reactive()
+                                        ->minValue(0)
                                         ->live()
                                         ->dehydrated()
-                                        ->mask(RawJs::make('$money($input)'))
-                                        ->stripCharacters(',')
-                                        ->helperText('Total Publish Price - Total Pengurangan + Total Penambahan'),
+                                        ->formatStateUsing(fn ($state) => number_format(is_numeric($state) ? $state : self::stripCurrency($state), 0, '.', ','))
+                                        ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
+                                        ->helperText('Total Harga Publish - Total Pengurangan + Total Penambahan')
+                                        ->afterStateHydrated(function ($component, $state, $record) {
+                                            if ($record) {
+                                                $final = (int) ($record->product_price ?? 0)
+                                                    - (int) ($record->pengurangan ?? 0)
+                                                    + (int) ($record->penambahan_publish ?? 0);
+                                                $component->state($final);
+                                            }
+                                        }),
 
                                     TextInput::make('stock')
                                         ->required()
@@ -181,7 +190,7 @@ class ProductResource extends Resource
                                     ->schema([
                                         Toggle::make('is_active')
                                             ->label('Product Status')
-                                            ->helperText('Toggle to enable/disable product visibility')
+                                            ->helperText('Aktifkan untuk menampilkan/menyembunyikan produk')
                                             ->default(true)
                                             ->onIcon('heroicon-s-check-circle')
                                             ->offIcon('heroicon-s-x-circle')
@@ -189,7 +198,7 @@ class ProductResource extends Resource
                                             ->offColor('danger'),
                                         Toggle::make('is_approved')
                                             ->label('Approval Status')
-                                            ->helperText('Toggle to approve/disapprove product')
+                                            ->helperText('Setujui atau tolak produk')
                                             ->default(false)
                                             ->onIcon('heroicon-s-hand-thumb-up')
                                             ->offIcon('heroicon-s-hand-thumb-down')
@@ -206,26 +215,40 @@ class ProductResource extends Resource
                                 Grid::make(2)
                                     ->schema([
                                         TextInput::make('product_price')
-                                            ->numeric()
+                                            ->formatStateUsing(fn ($state) => number_format(self::stripCurrency($state), 0, '.', ','))
+                                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                                             ->prefix('Rp')
                                             ->label('Total Publish Price')
                                             ->readOnly()
                                             ->live()
-                                            ->dehydrated(true) // pastikan field ini disimpan
-                                            ->mask(RawJs::make('$money($input)'))
-                                            ->stripCharacters(',')
-                                            ->helperText('Automatically calculated from vendor prices')
-                                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
-                                                $set('price', (int) $get('publish_price') - (int) $get('pengurangan'));
+                                            ->minValue(0)
+                                            ->dehydrated(true)
+                                            ->helperText('Dihitung otomatis dari harga vendor')
+                                            ->afterStateHydrated(function ($component, $state, $record) {
+                                                if ($record) {
+                                                    $total = $record->items->sum(function ($item) {
+                                                        $qty = (int) ($item->quantity ?? 1);
+                                                        $publish = (int) ($item->harga_publish ?? 0);
+                                                        $pricePublic = (int) ($item->price_public ?? ($publish * $qty));
+                                                        return $pricePublic;
+                                                    });
+                                                    $component->state($total);
+                                                }
                                             }),
                                         TextInput::make('vendorTotal')
-                                            ->numeric()
+                                            ->formatStateUsing(fn ($state) => number_format(self::stripCurrency($state), 0, '.', ','))
+                                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                                             ->prefix('Rp')
                                             ->label('Total Vendor Price')
                                             ->readOnly()
-                                            ->mask(RawJs::make('$money($input)'))
-                                            ->stripCharacters(',')
-                                            ->helperText('Sum of all vendor prices'),
+                                            ->minValue(0)
+                                            ->helperText('Jumlah dari semua harga vendor')
+                                            ->afterStateHydrated(function ($component, $state, $record) {
+                                                if ($record) {
+                                                    $total = $record->items->sum('total_price');
+                                                    $component->state((int) $total);
+                                                }
+                                            }),
                                     ]),
                                 self::getVendorRepeater(),
                             ]),
@@ -234,14 +257,15 @@ class ProductResource extends Resource
                             ->label('Pengurangan Harga (Jika Ada)') // Corrected typo
                             ->schema([
                                 TextInput::make('pengurangan')
-                                    ->label('Total Pengurangan')
-                                    ->readOnly() // supaya tidak bisa diketik
-                                    ->default(0)
-                                    ->numeric()
+                                        ->label('Total Pengurangan')
+                                        ->readOnly() 
+                                        ->default(0)
+                                        ->live()
+                                        ->dehydrated()
+                                        ->formatStateUsing(fn ($state) => number_format(is_numeric($state) ? $state : self::stripCurrency($state), 0, '.', ','))
+                                        ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                                     ->prefix('Rp')
-                                    ->mask(RawJs::make('$money($input)'))
-                                    ->stripCharacters(',')
-                                    ->helperText('Automatically calculated from discount prices')
+                                    ->helperText('Dihitung otomatis dari harga diskon')
                                     ->afterStateHydrated(function ($component, $state, $record) {
                                         if ($record) {
                                             $total = $record->pengurangans->sum('amount');
@@ -258,13 +282,14 @@ class ProductResource extends Resource
                                     ->schema([
                                         TextInput::make('penambahan_publish')
                                             ->label('Total Publish Price')
-                                            ->readOnly() // supaya tidak bisa diketik
+                                            ->readOnly() 
                                             ->default(0)
-                                            ->numeric()
+                                            ->live()
+                                            ->dehydrated()
+                                            ->formatStateUsing(fn ($state) => number_format(self::stripCurrency($state), 0, '.', ','))
+                                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                                             ->prefix('Rp')
-                                            ->mask(RawJs::make('$money($input)'))
-                                            ->stripCharacters(',')
-                                            ->helperText('Automatically calculated from additional publish prices')
+                                            ->helperText('Dihitung otomatis dari penambahan harga publish')
                                             ->afterStateHydrated(function ($component, $state, $record) {
                                                 if ($record) {
                                                     $total = $record->penambahanHarga->sum('harga_publish');
@@ -273,13 +298,14 @@ class ProductResource extends Resource
                                             }),
                                         TextInput::make('penambahan_vendor')
                                             ->label('Total Vendor Price')
-                                            ->readOnly() // supaya tidak bisa diketik
+                                            ->readOnly() 
                                             ->default(0)
-                                            ->numeric()
+                                            ->live()
+                                            ->dehydrated()
+                                            ->formatStateUsing(fn ($state) => number_format(self::stripCurrency($state), 0, '.', ','))
+                                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                                             ->prefix('Rp')
-                                            ->mask(RawJs::make('$money($input)'))
-                                            ->stripCharacters(',')
-                                            ->helperText('Automatically calculated from additional vendor prices')
+                                            ->helperText('Dihitung otomatis dari penambahan harga vendor')
                                             ->afterStateHydrated(function ($component, $state, $record) {
                                                 if ($record) {
                                                     $total = $record->penambahanHarga->sum('harga_vendor');
@@ -321,7 +347,7 @@ class ProductResource extends Resource
                             return 'Rp -';
                         }
 
-                        return 'Rp '.number_format((float) $priceValue, 0, ',', '.');
+                        return 'Rp '.number_format((int) $priceValue, 0, '.', ',');
                     }),
 
                 // TextColumn::make('id')
@@ -364,23 +390,26 @@ class ProductResource extends Resource
 
                 TextColumn::make('total_quantity_sold')
                     ->label('Total Sold')
-                    ->numeric()
+                    ->formatStateUsing(fn ($state) => number_format((int) $state, 0, '.', ','))
                     ->sortable()
                     ->alignCenter()
                     ->tooltip('Total quantity of this product sold across all orders.'),
 
                 TextColumn::make('price')
                     ->label('Total Price')
-                    ->numeric()
-                    ->prefix('Rp ')
+                    ->getStateUsing(function (Product $record) {
+                        return $record->product_price 
+                             - $record->pengurangans->sum('amount') 
+                             + $record->penambahanHarga->sum('harga_publish');
+                    })
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                     ->sortable()
                     ->alignEnd()
                     ->badge(),
 
                 TextColumn::make('product_price')
                     ->label('Harga Paket')
-                    ->numeric()
-                    ->prefix('Rp ')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                     ->sortable()
                     ->alignEnd()
                     ->badge(),
@@ -388,8 +417,7 @@ class ProductResource extends Resource
                 TextColumn::make('pengurangan')
                     ->label('Pengurangan')
                     ->getStateUsing(fn ($record) => $record->pengurangans->sum('amount'))
-                    ->prefix('Rp ')
-                    ->numeric()
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                     ->alignEnd()
                     ->sortable()
                     ->badge()
@@ -398,8 +426,7 @@ class ProductResource extends Resource
                 TextColumn::make('penambahan')
                     ->label('Penambahan Publish')
                     ->getStateUsing(fn ($record) => $record->penambahanHarga->sum('harga_publish'))
-                    ->prefix('Rp ')
-                    ->numeric()
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                     ->alignEnd()
                     ->sortable()
                     ->badge()
@@ -737,7 +764,8 @@ class ProductResource extends Resource
                         TextInput::make('harga_publish')
                             ->label('Published Price')
                             ->prefix('Rp')
-                            ->numeric()
+                            ->formatStateUsing(fn ($state) => number_format(self::stripCurrency($state), 0, '.', ','))
+                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                             ->reactive()
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 self::calculatePrices($get, $set);
@@ -758,22 +786,25 @@ class ProductResource extends Resource
                             ->label('Public Price')
                             ->prefix('Rp')
                             ->disabled()
-                            ->numeric()
+                            ->formatStateUsing(fn ($state) => number_format(self::stripCurrency($state), 0, '.', ','))
+                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                             ->reactive()
                             ->dehydrated()
-                            ->helperText('Published price × quantity'),
+                            ->helperText('Harga publish × kuantitas'),
 
                         TextInput::make('harga_vendor')
                             ->label('Vendor Price')
                             ->prefix('Rp')
-                            ->numeric()
+                            ->formatStateUsing(fn ($state) => number_format(self::stripCurrency($state), 0, '.', ','))
+                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                             ->readOnly()
-                            ->mask(RawJs::make('$money($input)'))
-                            ->stripCharacters(',')
                             ->reactive()
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 self::calculatePrices($get, $set);
                             }),
+
+                        Hidden::make('total_price')
+                            ->dehydrated(),
 
                         RichEditor::make('description')
                             ->label('Additional Notes')
@@ -816,34 +847,25 @@ class ProductResource extends Resource
                 // Calculate total product price from vendor items
                 $totalProductPrice = collect($itemsArray)
                     ->sum(function ($item) {
-                        $pricePublicStr = $item['price_public'] ?? '0';
-                        if (! is_string($pricePublicStr) && ! is_numeric($pricePublicStr)) {
-                            $pricePublicStr = '0';
-                        }
-
-                        return (float) preg_replace('/[^0-9.]/', '', (string) $pricePublicStr);
+                        $val = $item['price_public'] ?? 0;
+                        return self::stripCurrency($val);
                     });
 
-                $set('product_price', $totalProductPrice); // Sets 'product_price' field in the same Tab
+                $set('product_price', self::formatCurrency($totalProductPrice)); // Sets 'product_price' field in the same Tab
 
                 // Calculate total vendor price from vendor items' harga_vendor
                 $totalVendorPrice = collect($itemsArray)
                     ->sum(function ($item) {
-                        $hargaVendorStr = $item['harga_vendor'] ?? '0';
-                        // Ensure harga_vendor exists and is a string/numeric before trying to replace
-                        if (! is_string($hargaVendorStr) && ! is_numeric($hargaVendorStr)) {
-                            $hargaVendorStr = '0';
-                        }
-
-                        return (float) preg_replace('/[^0-9.]/', '', (string) $hargaVendorStr);
+                        $val = $item['harga_vendor'] ?? 0;
+                        return self::stripCurrency($val);
                     });
 
-                $set('vendorTotal', $totalVendorPrice); // Sets 'vendorTotal' field in the same Tab
+                $set('vendorTotal', self::formatCurrency($totalVendorPrice)); // Sets 'vendorTotal' field in the same Tab
 
                 // Now, update the final product price.
-                $penguranganVal = (float) preg_replace('/[^0-9.]/', '', $get('../pengurangan') ?? '0'); // Get 'pengurangan' from other Tab
+                $penguranganVal = self::getCleanInt($get, '../pengurangan'); // Get 'pengurangan' from other Tab
                 $finalPrice = $totalProductPrice - $penguranganVal;
-                $set('../price', $finalPrice); // Set 'price' in the "Basic Information" Tab
+                $set('../price', self::formatCurrency($finalPrice)); // Set 'price' in the "Basic Information" Tab
             })
             ->columns(1);
     }
@@ -870,8 +892,11 @@ class ProductResource extends Resource
         $vendor = static::getVendorData($vendorId);
         if ($vendor) {
             $active = $vendor->activePrice();
-            $set('harga_publish', $active?->harga_publish ?? $vendor->harga_publish);
-            $set('harga_vendor', $active?->harga_vendor ?? $vendor->harga_vendor);
+            $h_publish = $active?->harga_publish ?? $vendor->harga_publish;
+            $h_vendor = $active?->harga_vendor ?? $vendor->harga_vendor;
+            
+            $set('harga_publish', self::formatCurrency((int) $h_publish));
+            $set('harga_vendor', self::formatCurrency((int) $h_vendor));
             $set('description', $vendor->description);
         }
     }
@@ -881,8 +906,11 @@ class ProductResource extends Resource
         $vendor = static::getVendorData($vendorId);
         if ($vendor) {
             $active = $vendor->activePrice();
-            $set('harga_publish', $active?->harga_publish ?? $vendor->harga_publish);
-            $set('harga_vendor', $active?->harga_vendor ?? $vendor->harga_vendor);
+            $h_publish = $active?->harga_publish ?? $vendor->harga_publish;
+            $h_vendor = $active?->harga_vendor ?? $vendor->harga_vendor;
+            
+            $set('harga_publish', self::formatCurrency((int) $h_publish));
+            $set('harga_vendor', self::formatCurrency((int) $h_vendor));
             $set('description', $vendor->description);
         }
     }
@@ -890,21 +918,48 @@ class ProductResource extends Resource
     protected static function calculateAdditionPrices(Get $get, Set $set): void
     {
         // Get base values for addition items
-        $harga_publish = (float) (preg_replace('/[^0-9.]/', '', $get('harga_publish') ?? 0));
-        $harga_vendor = (float) (preg_replace('/[^0-9.]/', '', $get('harga_vendor') ?? 0));
+        $harga_publish = self::getCleanInt($get, 'harga_publish');
+        $harga_vendor = self::getCleanInt($get, 'harga_vendor');
 
         // Update the total addition prices
         self::calculateTotalAdditionPrice($get, $set);
     }
 
+    // Helper untuk mengambil nilai integer dari state yang mungkin berupa string berformat
+    protected static function getCleanInt(Get $get, string $path): int
+    {
+        return self::stripCurrency($get($path));
+    }
+
+    // Helper untuk membersihkan format currency (koma dan titik) menjadi integer
+    protected static function stripCurrency($val): int
+    {
+        if (is_string($val)) {
+            $val = str_replace(['.', ','], '', $val);
+        }
+        return (int) ($val ?? 0);
+    }
+
+    // Helper untuk memformat integer ke string ribuan
+    protected static function formatCurrency(int $value): string
+    {
+        return number_format($value, 0, '.', ',');
+    }
+
     protected static function calculatePrices(Get $get, Set $set): void
     {
         // Get base values
-        $harga_publish = (float) (preg_replace('/[^0-9.]/', '', $get('harga_publish') ?? 0));
+        $harga_publish = self::getCleanInt($get, 'harga_publish');
+        $harga_vendor = self::getCleanInt($get, 'harga_vendor');
         $quantity = (int) ($get('quantity') ?? 1);
+        
         // Calculate price_public (harga_publish * quantity)
         $price_public = $harga_publish * $quantity;
-        $set('price_public', $price_public);
+        $set('price_public', self::formatCurrency($price_public));
+
+        // Calculate total_price (harga_vendor * quantity)
+        $total_price = $harga_vendor * $quantity;
+        $set('total_price', $total_price);
 
         // Update the total product price
         self::calculateTotalProductPrice($get, $set);
@@ -922,27 +977,22 @@ class ProductResource extends Resource
         // Calculate total price from all items' price_public values
         $total_price = collect($items)
             ->sum(function ($item) {
-                // Ensure price_public exists and is a string before trying to replace
-                $pricePublicStr = $item['price_public'] ?? '0';
-                if (! is_string($pricePublicStr) && ! is_numeric($pricePublicStr)) {
-                    $pricePublicStr = '0';
-                }
-
-                return (float) preg_replace('/[^0-9.]/', '', (string) $pricePublicStr);
+                $val = $item['price_public'] ?? 0;
+                return self::stripCurrency($val);
             });
 
-        // Set the overall product price and total_price for each item
-        $set('../../product_price', $total_price);
+        // Set the overall product price
+        $set('../../product_price', self::formatCurrency($total_price));
 
-        // Update total_price for each vendor item (ProductVendor.total_price)
-        // This field is intended to store the aggregate product price this item was part of.
-        if (is_array($items)) {
-            foreach (array_keys($items) as $key) {
-                if (is_string($key) || is_int($key)) {
-                    $set("../../items.{$key}.total_price", $total_price);
-                }
-            }
-        }
+        // Calculate total vendor price from all items' harga_vendor values
+        $total_vendor_price = collect($items)
+            ->sum(function ($item) {
+                $val = $item['harga_vendor'] ?? 0;
+                return self::stripCurrency($val);
+            });
+        
+        $set('../../vendorTotal', self::formatCurrency($total_vendor_price));
+
         self::updateFinalProductPrice($get, $set);
     }
 
@@ -958,28 +1008,20 @@ class ProductResource extends Resource
         // Calculate total publish price from all addition items' harga_publish values
         $total_publish_price = collect($additionItems)
             ->sum(function ($item) {
-                $hargaPublishStr = $item['harga_publish'] ?? '0';
-                if (! is_string($hargaPublishStr) && ! is_numeric($hargaPublishStr)) {
-                    $hargaPublishStr = '0';
-                }
-
-                return (float) preg_replace('/[^0-9.]/', '', (string) $hargaPublishStr);
+                $val = $item['harga_publish'] ?? 0;
+                return self::stripCurrency($val);
             });
 
         // Calculate total vendor price from all addition items' harga_vendor values
         $total_vendor_price = collect($additionItems)
             ->sum(function ($item) {
-                $hargaVendorStr = $item['harga_vendor'] ?? '0';
-                if (! is_string($hargaVendorStr) && ! is_numeric($hargaVendorStr)) {
-                    $hargaVendorStr = '0';
-                }
-
-                return (float) preg_replace('/[^0-9.]/', '', (string) $hargaVendorStr);
+                $val = $item['harga_vendor'] ?? 0;
+                return self::stripCurrency($val);
             });
 
         // Set the addition totals
-        $set('../../penambahan_publish', $total_publish_price);
-        $set('../../penambahan_vendor', $total_vendor_price);
+        $set('../../penambahan_publish', self::formatCurrency($total_publish_price));
+        $set('../../penambahan_vendor', self::formatCurrency($total_vendor_price));
 
         self::updateFinalProductPriceWithAdditions($get, $set);
     }
@@ -991,12 +1033,12 @@ class ProductResource extends Resource
     protected static function updateFinalProductPrice(Get $get, Set $set): void
     {
         // Paths are relative to the repeater item context that initiated the chain of updates.
-        $productPriceFromVendors = (float) preg_replace('/[^0-9.]/', '', $get('../../product_price') ?? '0');
-        $totalPenguranganFromDiscounts = (float) preg_replace('/[^0-9.]/', '', $get('../../pengurangan') ?? '0');
-        $totalPenambahanFromAdditions = (float) preg_replace('/[^0-9.]/', '', $get('../../penambahan_publish') ?? '0');
+        $productPriceFromVendors = self::getCleanInt($get, '../../product_price');
+        $totalPenguranganFromDiscounts = self::getCleanInt($get, '../../pengurangan');
+        $totalPenambahanFromAdditions = self::getCleanInt($get, '../../penambahan_publish');
 
         $finalPrice = $productPriceFromVendors - $totalPenguranganFromDiscounts + $totalPenambahanFromAdditions;
-        $set('../../price', $finalPrice); // Sets Product.price (in Basic Information tab)
+        $set('../../price', self::formatCurrency($finalPrice)); // Sets Product.price (in Basic Information tab)
     }
 
     /**
@@ -1005,12 +1047,12 @@ class ProductResource extends Resource
     protected static function updateFinalProductPriceWithAdditions(Get $get, Set $set): void
     {
         // Paths are relative to the repeater item context that initiated the chain of updates.
-        $productPriceFromVendors = (float) preg_replace('/[^0-9.]/', '', $get('../../product_price') ?? '0');
-        $totalPenguranganFromDiscounts = (float) preg_replace('/[^0-9.]/', '', $get('../../pengurangan') ?? '0');
-        $totalPenambahanFromAdditions = (float) preg_replace('/[^0-9.]/', '', $get('../../penambahan_publish') ?? '0');
+        $productPriceFromVendors = self::getCleanInt($get, '../../product_price');
+        $totalPenguranganFromDiscounts = self::getCleanInt($get, '../../pengurangan');
+        $totalPenambahanFromAdditions = self::getCleanInt($get, '../../penambahan_publish');
 
         $finalPrice = $productPriceFromVendors - $totalPenguranganFromDiscounts + $totalPenambahanFromAdditions;
-        $set('../../price', $finalPrice); // Sets Product.price (in Basic Information tab)
+        $set('../../price', self::formatCurrency($finalPrice)); // Sets Product.price (in Basic Information tab)
     }
 
     protected static function getDiscountRepeater()
@@ -1027,12 +1069,11 @@ class ProductResource extends Resource
 
                         TextInput::make('amount')
                             ->label('Discount Value')
-                            ->numeric()
                             ->required()
                             ->prefix('Rp')      // Always 'Rp' as it's a fixed amount
-                            ->mask(RawJs::make('$money($input)')) // Always money mask
-                            ->stripCharacters(',') // Always strip comma
                             ->rules(['min:0'])     // Simple min:0 rule
+                            ->formatStateUsing(fn ($state) => number_format(is_numeric($state) ? $state : self::stripCurrency($state), 0, '.', ','))
+                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                             ->columnSpan(3), // Adjusted column span
 
                         RichEditor::make('notes')
@@ -1053,21 +1094,17 @@ class ProductResource extends Resource
                 $totalPengurangan = collect($state)
                     ->sum(function ($item) {
                         $amountStr = $item['amount'] ?? '0';
-                        if (! is_string($amountStr) && ! is_numeric($amountStr)) {
-                            $amountStr = '0';
-                        }
-
-                        return (float) preg_replace('/[^0-9.]/', '', (string) $amountStr);
+                        return self::stripCurrency($amountStr);
                     });
 
                 // Set the 'pengurangan' field in the current Tab ("Pengurangan Harga")
-                $set('pengurangan', $totalPengurangan);
+                $set('pengurangan', self::formatCurrency($totalPengurangan));
 
                 // Now, calculate and set the final 'price' field (in "Basic Information" Tab)
-                $productPriceVal = (float) preg_replace('/[^0-9.]/', '', $get('../product_price') ?? '0'); // Get 'product_price' from other Tab
-                $penambahanVal = (float) preg_replace('/[^0-9.]/', '', $get('../penambahan') ?? '0'); // Get 'penambahan' from other Tab
+                $productPriceVal = self::getCleanInt($get, '../product_price'); // Get 'product_price' from other Tab
+                $penambahanVal = self::getCleanInt($get, '../penambahan_publish'); // Get 'penambahan_publish' from other Tab
                 $finalPrice = $productPriceVal - $totalPengurangan + $penambahanVal;
-                $set('../price', $finalPrice); // Set 'price' in other Tab
+                $set('../price', self::formatCurrency($finalPrice)); // Set 'price' in other Tab
             })
             ->addActionLabel('Add Discount')
             ->columns(1);
@@ -1107,10 +1144,9 @@ class ProductResource extends Resource
                         TextInput::make('harga_publish')
                             ->label('Published Price')
                             ->prefix('Rp')
-                            ->numeric()
+                            ->formatStateUsing(fn ($state) => number_format(is_numeric($state) ? $state : self::stripCurrency($state), 0, '.', ','))
+                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                             ->reactive()
-                            ->mask(RawJs::make('$money($input)'))
-                            ->stripCharacters(',')
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 self::calculateAdditionPrices($get, $set);
                             }),
@@ -1118,10 +1154,9 @@ class ProductResource extends Resource
                         TextInput::make('harga_vendor')
                             ->label('Vendor Price')
                             ->prefix('Rp')
-                            ->numeric()
+                            ->formatStateUsing(fn ($state) => number_format(is_numeric($state) ? $state : self::stripCurrency($state), 0, '.', ','))
+                            ->dehydrateStateUsing(fn ($state) => self::stripCurrency($state))
                             ->reactive()
-                            ->mask(RawJs::make('$money($input)'))
-                            ->stripCharacters(',')
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 self::calculateAdditionPrices($get, $set);
                             }),
@@ -1161,33 +1196,25 @@ class ProductResource extends Resource
                 // $get is relative to the repeater's parent (the "Penambahan Harga" Tab)
                 $totalPenambahanPublish = collect($state)
                     ->sum(function ($item) {
-                        $amountStr = $item['harga_publish'] ?? '0';
-                        if (! is_string($amountStr) && ! is_numeric($amountStr)) {
-                            $amountStr = '0';
-                        }
-
-                        return (float) preg_replace('/[^0-9.]/', '', (string) $amountStr);
+                        $val = $item['harga_publish'] ?? 0;
+                        return self::stripCurrency($val);
                     });
 
                 $totalPenambahanVendor = collect($state)
                     ->sum(function ($item) {
-                        $amountStr = $item['harga_vendor'] ?? '0';
-                        if (! is_string($amountStr) && ! is_numeric($amountStr)) {
-                            $amountStr = '0';
-                        }
-
-                        return (float) preg_replace('/[^0-9.]/', '', (string) $amountStr);
+                        $val = $item['harga_vendor'] ?? 0;
+                        return self::stripCurrency($val);
                     });
 
                 // Set the 'penambahan_publish' and 'penambahan_vendor' fields in the current Tab ("Penambahan Harga")
-                $set('penambahan_publish', $totalPenambahanPublish);
-                $set('penambahan_vendor', $totalPenambahanVendor);
+                $set('penambahan_publish', self::formatCurrency($totalPenambahanPublish));
+                $set('penambahan_vendor', self::formatCurrency($totalPenambahanVendor));
 
                 // Now, calculate and set the final 'price' field (in "Basic Information" Tab)
-                $productPriceVal = (float) preg_replace('/[^0-9.]/', '', $get('../product_price') ?? '0'); // Get 'product_price' from other Tab
-                $penguranganVal = (float) preg_replace('/[^0-9.]/', '', $get('../pengurangan') ?? '0'); // Get 'pengurangan' from other Tab
+                $productPriceVal = self::getCleanInt($get, '../product_price'); // Get 'product_price' from other Tab
+                $penguranganVal = self::getCleanInt($get, '../pengurangan'); // Get 'pengurangan' from other Tab
                 $finalPrice = $productPriceVal - $penguranganVal + $totalPenambahanPublish;
-                $set('../price', $finalPrice); // Set 'price' in other Tab
+                $set('../price', self::formatCurrency($finalPrice)); // Set 'price' in other Tab
             })
             ->addActionLabel('Add Additional Item')
             ->columns(1);
@@ -1261,13 +1288,8 @@ class ProductResource extends Resource
     protected static function mutateFormDataBeforeSave(array $data): array
     {
         // Helper function to clean currency string values and convert to float
-        $cleanCurrencyValue = function ($value): float {
-            if ($value === null) {
-                return 0.0;
-            }
-
-            // Remove all characters except digits and a period, then cast to float
-            return (float) preg_replace('/[^0-9.]/', '', (string) $value);
+        $cleanCurrencyValue = function ($value): int {
+            return self::stripCurrency($value);
         };
 
         // 1. Recalculate 'product_price' from 'items' (vendor repeater)
@@ -1343,15 +1365,13 @@ class ProductResource extends Resource
                                                     ->label('Total Publish Price')
                                                     ->weight('bold')
                                                     ->color('primary')
-                                                    ->prefix('Rp ')
-                                                    ->numeric()
+                                                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                                     ->helperText('Total Harga Publish Vendor')
                                                     ->placeholder('-'),
                                                 TextEntry::make('pengurangan')
                                                     ->label('Pengurangan Harga')
                                                     ->weight('bold')
-                                                    ->prefix('Rp ')
-                                                    ->numeric()
+                                                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                                     ->helperText('Total Pengurangan')
                                                     ->color('danger')
                                                     ->placeholder('-'),
@@ -1382,18 +1402,16 @@ class ProductResource extends Resource
                                             ->label('Total Publish Price')
                                             ->weight('bold')
                                             ->color('primary') // Warna untuk total harga vendor
-                                            ->prefix('Rp ')
-                                            ->numeric()
+                                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                             ->helperText('Sum of all vendor prices'),
 
                                         TextEntry::make('calculatedPriceVendor')
                                             ->label('Total Vendor Cost')
                                             ->weight('bold')
                                             ->color('warning')
-                                            ->prefix('Rp ')
-                                            ->numeric()
+                                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                             ->helperText('Sum of all vendor prices')
-                                            ->state(function (Product $record): float {
+                                            ->state(function (Product $record): int {
                                                 return $record->items->sum(function ($item) {
                                                     // Access the accessor: $item->harga_vendor * $item->quantity
                                                     return $item->harga_vendor;
@@ -1411,8 +1429,7 @@ class ProductResource extends Resource
                                                     ->label('Published Price')
                                                     ->weight('bold')
                                                     ->color('info')
-                                                    ->prefix('Rp ')
-                                                    ->numeric()
+                                                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                                     ->placeholder('-'),
                                                 TextEntry::make('quantity')
                                                     ->placeholder('-')
@@ -1421,22 +1438,19 @@ class ProductResource extends Resource
                                                     ->label('Calculated Public Price')
                                                     ->weight('bold')
                                                     ->color('primary')
-                                                    ->prefix('Rp ')
-                                                    ->numeric()
+                                                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                                     ->placeholder('-'),
                                                 TextEntry::make('harga_vendor')
                                                     ->label('Vendor Unit Cost')
                                                     ->weight('bold')
                                                     ->color('warning')
-                                                    ->prefix('Rp ')
-                                                    ->numeric()
+                                                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                                     ->placeholder('-'),
-                                                TextEntry::make('calculated_price_vendor')
+                                                TextEntry::make('calculate_price_vendor')
                                                     ->label('Calculated Vendor Cost')
                                                     ->weight('bold')
                                                     ->color('warning')
-                                                    ->prefix('Rp ')
-                                                    ->numeric()
+                                                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                                     ->placeholder('-'), // Will use ProductVendor's accessor
                                                 TextEntry::make('description')
                                                     ->label('Fasilitas')
@@ -1458,10 +1472,8 @@ class ProductResource extends Resource
                                     ->label('Total Pengurangan')
                                     ->color('danger') // Warna untuk total pengurangan
                                     ->weight('bold')
-                                    ->prefix('Rp ')
-                                    ->numeric()
                                     ->placeholder('-')
-                                    ->state(function (Product $record): float {
+                                    ->state(function (Product $record): int {
                                         // Jika 'pengurangan' adalah kolom di tabel Product
                                         // return $record->pengurangan ?? 0;
                                         // Jika 'pengurangan' dihitung dari relasi itemsPengurangan
@@ -1479,9 +1491,7 @@ class ProductResource extends Resource
                                             ->label('Discount Value')
                                             ->color('warning') // Warna untuk nilai diskon
                                             ->weight('bold')
-                                            ->prefix('Rp ')
-                                            ->numeric()
-                                            ->placeholder('-')
+                                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                             ->placeholder('-'),
                                         TextEntry::make('notes')
                                             ->label('Notes')
@@ -1504,10 +1514,8 @@ class ProductResource extends Resource
                                             ->label('Total Penambahan Publish Price')
                                             ->color('success') // Warna untuk total penambahan
                                             ->weight('bold')
-                                            ->prefix('Rp ')
-                                            ->numeric()
                                             ->placeholder('-')
-                                            ->state(function (Product $record): float {
+                                            ->state(function (Product $record): int {
                                                 // Ambil dari kolom penambahan_publish atau hitung dari relasi harga_publish
                                                 return $record->penambahan_publish ?? $record->penambahanHarga()->sum('harga_publish');
                                             })
@@ -1516,10 +1524,8 @@ class ProductResource extends Resource
                                             ->label('Total Penambahan Vendor Price')
                                             ->color('warning') // Warna untuk vendor price
                                             ->weight('bold')
-                                            ->prefix('Rp ')
-                                            ->numeric()
                                             ->placeholder('-')
-                                            ->state(function (Product $record): float {
+                                            ->state(function (Product $record): int {
                                                 // Ambil dari kolom penambahan_vendor atau hitung dari relasi harga_vendor
                                                 return $record->penambahan_vendor ?? $record->penambahanHarga()->sum('harga_vendor');
                                             })
@@ -1537,15 +1543,13 @@ class ProductResource extends Resource
                                             ->label('Publish Price')
                                             ->color('success') // Warna untuk harga publish
                                             ->weight('bold')
-                                            ->prefix('Rp ')
-                                            ->numeric()
+                                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                             ->placeholder('-'),
                                         TextEntry::make('harga_vendor')
                                             ->label('Vendor Price')
                                             ->color('warning') // Warna untuk harga vendor
                                             ->weight('bold')
-                                            ->prefix('Rp ')
-                                            ->numeric()
+                                            ->formatStateUsing(fn ($state) => 'Rp ' . number_format((int) $state, 0, '.', ','))
                                             ->placeholder('-'),
                                         TextEntry::make('description')
                                             ->label('Description')

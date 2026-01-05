@@ -20,6 +20,14 @@ class ProductVendor extends Model
         'harga_vendor', // Harga dari vendor
     ];
 
+    protected $casts = [
+        'harga_publish' => 'integer',
+        'quantity' => 'integer',
+        'price_public' => 'integer',
+        'total_price' => 'integer',
+        'harga_vendor' => 'integer',
+    ];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
