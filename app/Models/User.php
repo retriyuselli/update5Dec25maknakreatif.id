@@ -291,6 +291,11 @@ class User extends Authenticatable implements HasAvatar, FilamentUser
         return $this->belongsTo(Status::class, 'status_id');
     }
 
+    public function statuses(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Status::class, 'status_user');
+    }
+
     public function vendors(): HasMany
     {
         return $this->hasMany(Vendor::class, 'created_by');

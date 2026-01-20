@@ -157,15 +157,17 @@ class UserResource extends Resource
                                                         return Role::create($data)->getKey();
                                                     }),
 
-                                                Select::make('status_id')
+                                                Select::make('statuses')
                                                     ->label('Status Jabatan')
-                                                    ->options(fn () => Status::query()->pluck('status_name', 'id')->all())
+                                                    ->relationship('statuses', 'status_name')
+                                                    ->multiple()
+                                                    ->preload()
                                                     ->required()
                                                     ->searchable()
                                                     ->native(false)
                                                     ->selectablePlaceholder(false)
                                                     ->placeholder('Pilih Status Jabatan')
-                                                    ->helperText('Status jabatan pengguna (Admin, Finance, HRD, dll)'),
+                                                    ->helperText('Status jabatan pengguna (Admin, Finance, HRD, dll). Bisa pilih lebih dari satu.'),
                                             ]),
                                     ]),
 
@@ -483,7 +485,7 @@ class UserResource extends Resource
                         return empty($roles) ? 'Tidak ada role' : 'Roles: '.implode(', ', $roles);
                     }),
 
-                TextColumn::make('employmentStatus.status_name')
+                TextColumn::make('statuses.status_name')
                     ->label('Status Jabatan')
                     ->badge()
                     ->searchable()

@@ -162,6 +162,13 @@ class LeaveBalanceResource extends Resource
                 // Jika bukan super_admin, hanya tampilkan data leave balance milik user yang login
                 if ($user && ! $user->roles->contains('name', 'super_admin')) {
                     $query->where('user_id', $user->id);
+                } else {
+                    // Jika super admin, hanya tampilkan user dengan status 'Karyawan'
+                    $query->whereHas('user', function ($q) {
+                        $q->whereHas('statuses', function ($q2) {
+                            $q2->where('status_name', 'Karyawan');
+                        });
+                    });
                 }
             })
             ->columns([

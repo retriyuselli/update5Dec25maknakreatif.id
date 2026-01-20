@@ -12,4 +12,9 @@ class Status extends Model
     protected $fillable = [
         'status_name',
     ];
+
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'status_user');
+    }
 }
