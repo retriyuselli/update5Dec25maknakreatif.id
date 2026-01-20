@@ -433,6 +433,25 @@
                                 <td colspan="3">{{ $record->reason }}</td>
                             </tr>
                             @endif
+
+                            @if($record->leaveType->name === 'Cuti Pengganti')
+                            <tr>
+                                <th>Tanggal Pengganti</th>
+                                <td>{{ $record->substitution_date ? \Carbon\Carbon::parse($record->substitution_date)->format('d F Y') : '-' }}</td>
+                                <th>Alasan Pengganti</th>
+                                <td>{{ $record->substitution_notes ?? '-' }}</td>
+                            </tr>
+                            @if($record->leaveBalanceHistory)
+                            <tr>
+                                <th>Sumber Top Up</th>
+                                <td colspan="3">
+                                    {{ \Carbon\Carbon::parse($record->leaveBalanceHistory->transaction_date)->format('d F Y') }} - 
+                                    {{ $record->leaveBalanceHistory->reason }} 
+                                    (<strong>+{{ $record->leaveBalanceHistory->amount }} hari</strong>)
+                                </td>
+                            </tr>
+                            @endif
+                            @endif
                         </tbody>
                     </table>
 

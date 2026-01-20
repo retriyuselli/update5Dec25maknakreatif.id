@@ -6,6 +6,8 @@ use App\Filament\Resources\LeaveTypes\LeaveTypeResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
+use Illuminate\Support\Facades\Auth;
+
 class ListLeaveTypes extends ListRecords
 {
     protected static string $resource = LeaveTypeResource::class;
@@ -13,7 +15,8 @@ class ListLeaveTypes extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
         ];
     }
 }

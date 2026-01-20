@@ -16,7 +16,7 @@ class LeaveApprovalController extends Controller
         }
 
         // Load necessary relationships
-        $leaveRequest->load(['user', 'leaveType', 'approver']);
+        $leaveRequest->load(['user', 'leaveType', 'approver', 'leaveBalanceHistory']);
 
         // Get leave balance information
         $leaveBalance = LeaveBalance::where('user_id', $leaveRequest->user_id)

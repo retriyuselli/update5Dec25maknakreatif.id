@@ -38,7 +38,7 @@ class LeaveTypeResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Jenis Cuti';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
+    protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Cuti';
 
     public static function form(Schema $schema): Schema
     {
@@ -56,7 +56,7 @@ class LeaveTypeResource extends Resource
                             ->label('Maksimal Hari Per Tahun')
                             ->required()
                             ->numeric()
-                            ->minValue(1)
+                            ->minValue(0)
                             ->maxValue(365)
                             ->suffix('hari')
                             ->placeholder('12')

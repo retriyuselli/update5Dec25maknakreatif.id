@@ -20,6 +20,9 @@ class LeaveRequest extends Model
         'status',
         'approved_by',
         'approval_notes',
+        'substitution_date',
+        'substitution_notes',
+        'leave_balance_history_id',
     ];
 
     protected $casts = [
@@ -60,28 +63,24 @@ class LeaveRequest extends Model
      */
     public function updateLeaveBalance()
     {
+        $year = $this->start_date ? $this->start_date->year : now()->year;
+
         // Cari atau buat LeaveBalance
         $leaveBalance = LeaveBalance::firstOrCreate(
             [
                 'user_id' => $this->user_id,
                 'leave_type_id' => $this->leave_type_id,
+                'year' => $year,
             ],
             [
                 'allocated_days' => $this->leaveType->max_days_per_year ?? 12,
                 'used_days' => 0,
+                'remaining_days' => 0,
             ]
         );
 
-        // Hitung ulang used_days dari semua approved leave requests
-        $totalUsedDays = self::where('user_id', $this->user_id)
-            ->where('leave_type_id', $this->leave_type_id)
-            ->where('status', 'approved')
-            ->sum('total_days');
-
-        // Update used_days
-        $leaveBalance->update([
-            'used_days' => $totalUsedDays,
-        ]);
+        // Hitung ulang used_days
+        $leaveBalance->calculateUsedDays();
     }
 
     public function user()
@@ -97,6 +96,11 @@ class LeaveRequest extends Model
     public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function leaveBalanceHistory()
+    {
+        return $this->belongsTo(LeaveBalanceHistory::class);
     }
 
     public function replacementEmployee()

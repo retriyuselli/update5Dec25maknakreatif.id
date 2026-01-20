@@ -11,6 +11,7 @@ class LeaveBalance extends Model
         'leave_type_id',
         'year',
         'allocated_days',
+        'carried_over_days',
         'used_days',
         'remaining_days',
     ];
@@ -20,8 +21,8 @@ class LeaveBalance extends Model
         parent::boot();
 
         static::saving(function ($leaveBalance) {
-            // Auto-calculate remaining days
-            $leaveBalance->remaining_days = $leaveBalance->allocated_days - $leaveBalance->used_days;
+            // Recalculate remaining days before saving
+            $leaveBalance->calculateRemainingDays();
         });
 
         static::creating(function ($leaveBalance) {
@@ -42,18 +43,65 @@ class LeaveBalance extends Model
         return $this->belongsTo(LeaveType::class);
     }
 
+    public function histories()
+    {
+        return $this->hasMany(LeaveBalanceHistory::class);
+    }
+
+    /**
+     * Calculate remaining days based on allocation, carry over, and usage.
+     * Does NOT save the model.
+     */
+    public function calculateRemainingDays()
+    {
+        $year = $this->year ?? now()->year;
+        
+        // Logic for Carry Over Expiration (March 31st)
+        $carriedOver = $this->carried_over_days ?? 0;
+        $allocated = $this->allocated_days;
+        
+        // We need to know how many days were used in Jan-Mar of this balance year
+        $usedJanMar = $this->user->leaveRequests()
+            ->where('leave_type_id', $this->leave_type_id)
+            ->where('status', 'approved')
+            ->whereYear('start_date', $year)
+            ->whereMonth('start_date', '<=', 3) // Jan, Feb, Mar
+            ->sum('total_days');
+            
+        // If today > March 31 of this balance year
+        $cutoffDate = \Carbon\Carbon::create($year, 3, 31)->endOfDay();
+        
+        if (now()->gt($cutoffDate)) {
+            // Expired. 
+            // The amount effectively used from carry over is min(carriedOver, usedJanMar).
+            $effectiveCarryOver = min($carriedOver, $usedJanMar);
+        } else {
+            // Not yet expired. Full carry over available.
+            $effectiveCarryOver = $carriedOver;
+        }
+        
+        // Use $this->used_days which should be set before calling this
+        $this->remaining_days = $allocated + $effectiveCarryOver - ($this->used_days ?? 0);
+    }
+
     // Calculate used days from approved leave requests
     public function calculateUsedDays()
     {
-        $usedDays = $this->user->leaveRequests()
+        $year = $this->year ?? now()->year;
+        
+        $totalUsed = $this->user->leaveRequests()
             ->where('leave_type_id', $this->leave_type_id)
             ->where('status', 'approved')
-            ->whereYear('start_date', now()->year)
+            ->whereYear('start_date', $year)
             ->sum('total_days');
 
-        $this->update(['used_days' => $usedDays]);
+        $this->used_days = $totalUsed;
 
-        return $usedDays;
+        $this->calculateRemainingDays();
+        
+        $this->saveQuietly(); // Use saveQuietly to avoid triggering events if any
+        
+        return $totalUsed;
     }
 
     // Get percentage of used days
@@ -93,23 +141,51 @@ class LeaveBalance extends Model
 
         foreach ($users as $user) {
             foreach ($leaveTypes as $leaveType) {
+                // Determine carry over from previous year (Only for Cuti Tahunan)
+                $carryOver = 0;
+                if ($leaveType->name === 'Cuti Tahunan' || stripos($leaveType->name, 'tahunan') !== false || stripos($leaveType->name, 'annual') !== false) {
+                    $previousYear = $year - 1;
+                    $previousBalance = self::where('user_id', $user->id)
+                        ->where('leave_type_id', $leaveType->id)
+                        ->where('year', $previousYear)
+                        ->first();
+                    $carryOver = ($previousBalance && $previousBalance->remaining_days > 0) ? $previousBalance->remaining_days : 0;
+                }
+
                 $leaveBalance = self::firstOrCreate([
                     'user_id' => $user->id,
                     'leave_type_id' => $leaveType->id,
+                    'year' => $year,
                 ], [
                     'allocated_days' => $leaveType->max_days_per_year, // Always use LeaveType value
+                    'carried_over_days' => $carryOver,
                     'used_days' => 0,
-                    'remaining_days' => 0, // Will be calculated in boot method
+                    'remaining_days' => 0, // Will be calculated
                 ]);
 
                 if ($leaveBalance->wasRecentlyCreated) {
                     $created++;
                 } else {
-                    // Update allocated days to match LeaveType
-                    $allocatedDays = $leaveType->max_days_per_year;
-                    if ($leaveBalance->allocated_days != $allocatedDays) {
-                        $leaveBalance->update(['allocated_days' => $allocatedDays]);
-                        $updated++;
+                    // Update allocated days to match LeaveType ONLY if not Cuti Pengganti
+                    if (stripos($leaveType->name, 'pengganti') === false && stripos($leaveType->name, 'replacement') === false) {
+                        $allocatedDays = $leaveType->max_days_per_year;
+                        $needsUpdate = false;
+                        
+                        if ($leaveBalance->allocated_days != $allocatedDays) {
+                            $leaveBalance->allocated_days = $allocatedDays;
+                            $needsUpdate = true;
+                        }
+                        
+                        // Update carry over if it was missing
+                        if ($carryOver > 0 && $leaveBalance->carried_over_days == 0) {
+                            $leaveBalance->carried_over_days = $carryOver;
+                            $needsUpdate = true;
+                        }
+                        
+                        if ($needsUpdate) {
+                            $leaveBalance->save();
+                            $updated++;
+                        }
                     }
                 }
 
@@ -140,6 +216,7 @@ class LeaveBalance extends Model
             $leaveBalance = self::firstOrCreate([
                 'user_id' => $user->id,
                 'leave_type_id' => $leaveType->id,
+                'year' => $year,
             ], [
                 'allocated_days' => $leaveType->max_days_per_year, // Always use LeaveType value
                 'used_days' => 0,
@@ -149,10 +226,12 @@ class LeaveBalance extends Model
             if ($leaveBalance->wasRecentlyCreated) {
                 $created++;
             } else {
-                $allocatedDays = $leaveType->max_days_per_year;
-                if ($leaveBalance->allocated_days != $allocatedDays) {
-                    $leaveBalance->update(['allocated_days' => $allocatedDays]);
-                    $updated++;
+                if (stripos($leaveType->name, 'pengganti') === false && stripos($leaveType->name, 'replacement') === false) {
+                    $allocatedDays = $leaveType->max_days_per_year;
+                    if ($leaveBalance->allocated_days != $allocatedDays) {
+                        $leaveBalance->update(['allocated_days' => $allocatedDays]);
+                        $updated++;
+                    }
                 }
             }
 
@@ -172,9 +251,12 @@ class LeaveBalance extends Model
     public function syncWithLeaveType()
     {
         if ($this->leaveType) {
-            $this->allocated_days = $this->leaveType->max_days_per_year;
-            $this->remaining_days = $this->allocated_days - $this->used_days;
-            $this->save();
+            // Only sync if max_days_per_year > 0
+            if ($this->leaveType->max_days_per_year > 0) {
+                $this->allocated_days = $this->leaveType->max_days_per_year;
+                $this->remaining_days = $this->allocated_days - $this->used_days;
+                $this->save();
+            }
         }
 
         return $this;

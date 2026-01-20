@@ -23,6 +23,9 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use App\Models\LeaveType;
+use App\Models\LeaveBalance;
+use App\Models\LeaveBalanceHistory;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
@@ -46,7 +49,7 @@ class LeaveRequestResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Permohonan Cuti';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
+    protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Cuti';
 
     protected static ?int $navigationSort = 3;
 
@@ -72,7 +75,8 @@ class LeaveRequestResource extends Resource
                                     ->searchable()
                                     ->preload()
                                     ->default(fn () => Auth::id())
-                                    ->columnSpan(1),
+                                    ->columnSpan(1)
+                                    ->live(),
 
                                 Select::make('leave_type_id')
                                     ->label('Jenis Cuti')
@@ -80,7 +84,75 @@ class LeaveRequestResource extends Resource
                                     ->required()
                                     ->searchable()
                                     ->preload()
-                                    ->columnSpan(1),
+                                    ->columnSpan(1)
+                                    ->live(),
+
+                                Select::make('leave_balance_history_id')
+                                    ->label('Pilih Sumber Cuti Pengganti')
+                                    ->visible(fn ($get) => LeaveType::find($get('leave_type_id'))?->name === 'Cuti Pengganti')
+                                    ->options(function ($get, ?LeaveRequest $record) {
+                                        $userId = $get('user_id');
+                                        $leaveTypeId = $get('leave_type_id');
+                                        
+                                        if (!$userId || !$leaveTypeId) {
+                                            return [];
+                                        }
+
+                                        $leaveType = LeaveType::find($leaveTypeId);
+                                        if (!$leaveType || $leaveType->name !== 'Cuti Pengganti') {
+                                            return [];
+                                        }
+
+                                        $balance = LeaveBalance::where('user_id', $userId)
+                                            ->where('leave_type_id', $leaveTypeId)
+                                            ->first();
+
+                                        if (!$balance) {
+                                            return [];
+                                        }
+
+                                        // Get IDs of histories already used in OTHER leave requests
+                                        $usedHistoryIds = LeaveRequest::query()
+                                            ->whereNotNull('leave_balance_history_id')
+                                            ->when($record, function ($query) use ($record) {
+                                                // Exclude current record so we don't hide the currently selected value during edit
+                                                $query->where('id', '!=', $record->id);
+                                            })
+                                            ->pluck('leave_balance_history_id')
+                                            ->toArray();
+
+                                        return $balance->histories()
+                                            ->whereNotIn('id', $usedHistoryIds)
+                                            ->get()
+                                            ->mapWithKeys(function ($history) {
+                                                $date = Carbon::parse($history->transaction_date)->format('d/m/Y');
+                                                return [$history->id => "{$date} - {$history->reason} (+{$history->amount})"];
+                                            });
+                                    })
+                                    ->live()
+                                    ->afterStateUpdated(function ($state, $set) {
+                                        if (!$state) return;
+                                        $history = LeaveBalanceHistory::find($state);
+                                        if ($history) {
+                                            $set('substitution_date', $history->transaction_date);
+                                            $set('substitution_notes', $history->reason);
+                                        }
+                                    })
+                                    ->columnSpan(2),
+
+                                DatePicker::make('substitution_date')
+                                    ->label('Tanggal Pengganti')
+                                    ->readOnly()
+                                    ->dehydrated()
+                                    ->required(fn ($get) => LeaveType::find($get('leave_type_id'))?->name === 'Cuti Pengganti')
+                                    ->visible(fn ($get) => LeaveType::find($get('leave_type_id'))?->name === 'Cuti Pengganti'),
+
+                                TextInput::make('substitution_notes')
+                                    ->label('Alasan Pengganti')
+                                    ->readOnly()
+                                    ->dehydrated()
+                                    ->required(fn ($get) => LeaveType::find($get('leave_type_id'))?->name === 'Cuti Pengganti')
+                                    ->visible(fn ($get) => LeaveType::find($get('leave_type_id'))?->name === 'Cuti Pengganti'),
                             ]),
 
                         Grid::make(3)
@@ -152,14 +224,15 @@ class LeaveRequestResource extends Resource
                                     ->where('id', '!=', Auth::id())
                                     ->pluck('name', 'id');
                             }),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
 
                 Section::make('Informasi Persetujuan')
                     ->description('Status dan detail persetujuan')
-                    // ->visible(function () {
-                    //     $user = Auth::user();
-                    //     return $user ? $user->roles->contains('name', 'super_admin') : false;
-                    // })
+                    ->visible(function () {
+                        $user = Auth::user();
+                        return $user ? $user->roles->contains('name', 'super_admin') : false;
+                    })
                     ->schema([
                         Grid::make(2)
                             ->schema([
@@ -176,7 +249,11 @@ class LeaveRequestResource extends Resource
 
                                 Select::make('approved_by')
                                     ->label('Disetujui Oleh')
-                                    ->relationship('approver', 'name')
+                                    ->relationship('approver', 'name', function (Builder $query) {
+                                        return $query->whereHas('roles', function ($q) {
+                                            $q->where('name', 'super_admin');
+                                        });
+                                    })
                                     ->searchable()
                                     ->preload()
                                     ->visible(fn (callable $get) => in_array($get('status'), ['approved', 'rejected'])),

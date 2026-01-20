@@ -31,6 +31,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
+use Filament\Forms\Components\DatePicker;
+
 class LeaveBalanceResource extends Resource
 {
     protected static ?string $model = LeaveBalance::class;
@@ -43,7 +45,7 @@ class LeaveBalanceResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Saldo Cuti';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'SDM';
+    protected static string|\UnitEnum|null $navigationGroup = 'Manajemen Cuti';
 
     public static function form(Schema $schema): Schema
     {
@@ -90,6 +92,7 @@ class LeaveBalanceResource extends Resource
                             ->label('Hak Cuti (Hari)')
                             ->required()
                             ->numeric()
+                            ->readOnly()
                             ->minValue(0)
                             ->default(function ($get) {
                                 $leaveTypeId = $get('leave_type_id');
@@ -102,6 +105,15 @@ class LeaveBalanceResource extends Resource
                                 return 0;
                             })
                             ->helperText('Otomatis mengikuti max_days_per_year dari jenis cuti. Dapat disesuaikan manual jika diperlukan.'),
+                        
+                        TextInput::make('carried_over_days')
+                            ->label('Cuti Carry Over')
+                            ->numeric()
+                            ->minValue(0)
+                            ->default(0)
+                            ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin'))
+                            ->helperText('Sisa cuti tahun lalu. Berlaku hingga 31 Maret tahun ini.'),
+
                         TextInput::make('used_days')
                             ->label('Cuti Terpakai (Hari)')
                             ->numeric()
@@ -114,8 +126,8 @@ class LeaveBalanceResource extends Resource
                             ->numeric()
                             ->readOnly()
                             ->dehydrated()
-                            ->helperText('Otomatis dihitung: Hak Cuti - Cuti Terpakai'),
-                    ])->columns(3),
+                            ->helperText('Total Sisa = (Hak Cuti + Carry Over Valid) - Terpakai'),
+                    ])->columns(2),
 
                 Section::make('Informasi Tambahan')
                     ->schema([
@@ -166,8 +178,30 @@ class LeaveBalanceResource extends Resource
                     ->sortable(),
                 TextColumn::make('allocated_days')
                     ->label('Hak Cuti')
-                    ->numeric()
-                    ->suffix(' hari')
+                    ->formatStateUsing(function (LeaveBalance $record) {
+                        $allocated = $record->allocated_days;
+                        $carryOver = $record->carried_over_days ?? 0;
+                        
+                        $text = $allocated;
+                        if ($carryOver > 0) {
+                            $text .= " + {$carryOver}";
+                        }
+                        
+                        return $text . ' hari';
+                    })
+                    ->description(function (LeaveBalance $record) {
+                        $parts = [];
+                        if ($record->carried_over_days > 0) {
+                            $parts[] = 'Termasuk sisa thn lalu';
+                        }
+                        
+                        $pending = $record->histories()->where('status', 'pending')->sum('amount');
+                        if ($pending > 0) {
+                            $parts[] = "+ {$pending} hari (Pending)";
+                        }
+                        
+                        return implode(', ', $parts);
+                    })
                     ->alignCenter()
                     ->sortable(),
                 TextColumn::make('used_days')
@@ -250,10 +284,86 @@ class LeaveBalanceResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Auto Generate Saldo Cuti')
                     ->modalDescription('Sistem akan otomatis membuat saldo cuti untuk semua karyawan berdasarkan jenis cuti yang tersedia. Data yang sudah ada akan diperbarui sesuai quota terbaru.')
-                    ->modalSubmitActionLabel('Ya, Generate Otomatis'),
+                    ->modalSubmitActionLabel('Ya, Generate Otomatis')
+                    ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
             ])
             ->recordActions([
                 ActionGroup::make([
+                    Action::make('add_quota')
+                        ->label('Top Up Saldo')
+                        ->icon('heroicon-m-plus-circle')
+                        ->color('success')
+                        ->form([
+                            TextInput::make('days_to_add')
+                                ->label('Jumlah Hari')
+                                ->numeric()
+                                ->minValue(1)
+                                ->default(1)
+                                ->required()
+                                ->helperText('Masukkan jumlah hari (misal: 1 untuk pengganti 1 hari kerja di hari libur)'),
+                            DatePicker::make('date')
+                                ->label('Tanggal')
+                                ->default(now())
+                                ->required(),
+                            TextInput::make('reason')
+                                ->label('Alasan / Keterangan')
+                                ->required()
+                                ->placeholder('Contoh: Masuk kerja di hari Minggu'),
+                        ])
+                        ->action(function (LeaveBalance $record, array $data) {
+                            $isSuperAdmin = Auth::user()->roles->contains('name', 'super_admin');
+                            $status = $isSuperAdmin ? 'approved' : 'pending';
+
+                            if ($status === 'approved') {
+                                $record->allocated_days += $data['days_to_add'];
+                                $record->save();
+                            }
+
+                            // Create History
+                            $record->histories()->create([
+                                'amount' => $data['days_to_add'],
+                                'transaction_date' => $data['date'],
+                                'reason' => $data['reason'],
+                                'created_by' => Auth::id(),
+                                'status' => $status,
+                            ]);
+
+                            $date = \Carbon\Carbon::parse($data['date'])->translatedFormat('d F Y');
+
+                            if ($status === 'approved') {
+                                Notification::make()
+                                    ->title('Saldo Berhasil Ditambahkan')
+                                    ->body("Menambahkan {$data['days_to_add']} hari untuk tanggal {$date}. Total Hak Cuti: {$record->allocated_days} hari.")
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Permintaan Top Up Berhasil')
+                                    ->body("Permintaan top up {$data['days_to_add']} hari untuk tanggal {$date} telah diajukan dan menunggu persetujuan.")
+                                    ->success()
+                                    ->send();
+                            }
+                        })
+                        ->requiresConfirmation()
+                        ->modalHeading('Top Up Saldo Cuti')
+                        ->modalDescription('Fitur ini digunakan untuk menambah saldo cuti secara manual, misalnya untuk Cuti Pengganti.')
+                        ->visible(fn (LeaveBalance $record) => 
+                            (Auth::user()->roles->contains('name', 'super_admin') || Auth::id() === $record->user_id) && 
+                            ($record->leaveType->name === 'Cuti Pengganti' || stripos($record->leaveType->name, 'replacement') !== false)
+                        ),
+                    
+                    Action::make('history')
+                        ->label('Riwayat Top Up')
+                        ->icon('heroicon-m-clock')
+                        ->color('info')
+                        ->modalHeading('Riwayat Top Up Saldo')
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Tutup')
+                        ->modalContent(fn (LeaveBalance $record) => view('filament.resources.leave-balances.history-modal', ['record' => $record]))
+                        ->visible(fn (LeaveBalance $record) => 
+                            (Auth::user()->roles->contains('name', 'super_admin') || Auth::id() === $record->user_id) && 
+                            ($record->leaveType->name === 'Cuti Pengganti' || stripos($record->leaveType->name, 'replacement') !== false)
+                        ),
                     Action::make('recalculate')
                         ->label('Hitung Ulang')
                         ->icon('heroicon-m-calculator')
@@ -270,13 +380,16 @@ class LeaveBalanceResource extends Resource
                         ->requiresConfirmation()
                         ->modalHeading('Hitung Ulang Saldo Cuti')
                         ->modalDescription('Menghitung ulang cuti terpakai berdasarkan pengajuan cuti yang disetujui tahun ini.')
-                        ->modalSubmitActionLabel('Ya, Hitung Ulang'),
+                        ->modalSubmitActionLabel('Ya, Hitung Ulang')
+                        ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
                     EditAction::make()
                         ->label('Edit')
-                        ->icon('heroicon-m-pencil-square'),
+                        ->icon('heroicon-m-pencil-square')
+                        ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
                     DeleteAction::make()
                         ->label('Hapus')
-                        ->icon('heroicon-m-trash'),
+                        ->icon('heroicon-m-trash')
+                        ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
                 ])
                     ->label('Aksi')
                     ->icon('heroicon-m-ellipsis-vertical')
@@ -284,7 +397,7 @@ class LeaveBalanceResource extends Resource
                     ->color('gray')
                     ->button(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('bulk_recalculate')
                         ->label('Hitung Ulang Semua')
@@ -295,7 +408,8 @@ class LeaveBalanceResource extends Resource
                                 $record->calculateUsedDays();
                             }
                         })
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
                     BulkAction::make('bulk_auto_generate')
                         ->label('Auto Generate untuk User Terpilih')
                         ->icon('heroicon-m-sparkles')
@@ -320,8 +434,10 @@ class LeaveBalanceResource extends Resource
                                 ->success()
                                 ->send();
                         })
-                        ->requiresConfirmation(),
-                    DeleteBulkAction::make(),
+                        ->requiresConfirmation()
+                        ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => Auth::user()->roles->contains('name', 'super_admin')),
                 ]),
             ])
             ->defaultSort('user.name', 'asc');
@@ -330,7 +446,7 @@ class LeaveBalanceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\HistoriesRelationManager::class,
         ];
     }
 
