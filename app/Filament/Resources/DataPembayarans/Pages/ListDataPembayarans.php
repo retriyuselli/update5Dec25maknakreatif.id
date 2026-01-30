@@ -16,6 +16,13 @@ class ListDataPembayarans extends ListRecords
     {
         return [
             // Actions\CreateAction::make(),
+            Action::make('downloadPdf')
+                ->label('Download PDF')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(route('data-pembayaran.pdf-report'))
+                ->color('success')
+                ->openUrlInNewTab(),
+
             Action::make('viewHtmlReport')
                 ->label('Laporan Pembayaran')
                 ->icon('heroicon-o-document-text')

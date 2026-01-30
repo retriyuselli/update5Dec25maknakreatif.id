@@ -49,8 +49,6 @@ class DataPembayaranResource extends Resource
 
     protected static ?string $navigationLabel = 'Pendapatan Wedding';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Keuangan';
-
     public static function form(Schema $schema): Schema
     {
         return $schema
