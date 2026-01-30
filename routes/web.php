@@ -3,6 +3,7 @@
 use App\Http\Controllers\BankReconciliationTemplateController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\Front\AuthController;
 use App\Http\Controllers\Front\BiayaFeatureController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\HrisFeatureController;
@@ -200,6 +201,18 @@ Route::get('/data-pribadi', [FrontendDataPribadiController::class, 'index'])
 // Route untuk menyimpan data baru dari form
 Route::post('/data-pribadi', [FrontendDataPribadiController::class, 'store'])
     ->name('data-pribadi.store');
+
+// AUTHENTICATION
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('front.login');
+    Route::post('/login', [AuthController::class, 'login'])->name('front.login.submit');
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('front.register');
+    Route::post('/register', [AuthController::class, 'register'])->name('front.register.submit');
+    
+    // Google Login
+    Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+});
 
 // PROFILE ROUTES
 Route::middleware(\Filament\Http\Middleware\Authenticate::class)->group(function () {
