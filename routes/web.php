@@ -52,9 +52,7 @@ Route::get('/brand/login-image', [BrandController::class, 'loginImage'])->name('
 // });
 
 // Home route with proper method handling
-// Route::get('/', function () {
-//     return redirect()->route('filament.admin.auth.login');
-// })->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // SIMULASI
 // Rute untuk preview HTML simulasi produk
@@ -104,6 +102,26 @@ Route::get('/leave-request/{leaveRequest}/approval-detail', [App\Http\Controller
 Route::get('/document/{record}/stream', [DocumentController::class, 'stream'])
     ->name('document.stream')
     ->middleware(\Filament\Http\Middleware\Authenticate::class);
+
+// FRONTEND FEATURES
+Route::get('/features/invoice', [FrontInvoiceController::class, 'index'])->name('front.invoice');
+Route::get('/features/biaya', [BiayaFeatureController::class, 'index'])->name('front.biaya_feature');
+Route::get('/features/laporan', [LaporanFeatureController::class, 'index'])->name('front.laporan_feature');
+Route::get('/features/aset', [AsetFeatureController::class, 'index'])->name('front.aset_feature');
+Route::get('/features/hris', [HrisFeatureController::class, 'index'])->name('front.hris_feature');
+Route::get('/features/payroll', [PayrollFeatureController::class, 'index'])->name('front.payroll_feature');
+
+// PRICING
+Route::view('/harga', 'front.harga')->name('harga');
+
+// REGISTRATION (PENDAFTARAN)
+Route::view('/pendaftaran', 'front.pendaftaran')->name('pendaftaran');
+
+// BLOG
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/blog/search', [BlogController::class, 'search'])->name('blog.search');
+Route::get('/blog/category/{category}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.detail');
 
 // INVOICE
 Route::get('/invoice/{order}', [InvoiceOrderController::class, 'show'])
@@ -190,6 +208,24 @@ Route::get('/data-pribadi', [FrontendDataPribadiController::class, 'index'])
 // Route untuk menyimpan data baru dari form
 Route::post('/data-pribadi', [FrontendDataPribadiController::class, 'store'])
     ->name('data-pribadi.store');
+
+// PROFILE ROUTES
+Route::middleware(\Filament\Http\Middleware\Authenticate::class)->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/dashboard', function () {
+        return redirect()->route('filament.admin.pages.dashboard');
+    })->name('dashboard');
+    
+    // Logout
+    Route::post('/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
+    })->name('logout');
+});
 
 // Route untuk Prospect (Original)
 Route::get('/prospect', [ProspectController::class, 'create'])
