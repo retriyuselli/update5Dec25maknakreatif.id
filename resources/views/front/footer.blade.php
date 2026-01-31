@@ -29,7 +29,7 @@
                 <ul class="space-y-2 text-sm text-gray-800">
                     <li><a href="#" class="hover:text-white transition-colors">Bantuan</a></li>
                     <li><a href="#" class="hover:text-white transition-colors">Dokumentasi</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors">Kontak</a></li>
+                    <li><a href="{{ route('kontak') }}" class="hover:text-white transition-colors">Kontak</a></li>
                     <li><a href="#" class="hover:text-white transition-colors">Status System</a></li>
                 </ul>
             </div>

@@ -110,6 +110,9 @@ Route::view('/harga', 'front.harga')->name('harga');
 // REGISTRATION (PENDAFTARAN)
 Route::view('/pendaftaran', 'front.pendaftaran')->name('pendaftaran');
 
+// CONTACT
+Route::view('/kontak', 'front.kontak')->name('kontak');
+
 // BLOG
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog/search', [BlogController::class, 'search'])->name('blog.search');

@@ -26,7 +26,8 @@ class ListDataPembayarans extends ListRecords
             Action::make('viewHtmlReport')
                 ->label('Laporan Pembayaran')
                 ->icon('heroicon-o-document-text')
-                ->url(route('data-pembayaran.html-report'), true) // 'true' untuk membuka di tab baru
+                ->url(route('data-pembayaran.html-report'))
+                ->openUrlInNewTab()
                 ->color('info'),
         ];
     }
