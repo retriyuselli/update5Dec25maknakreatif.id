@@ -7,11 +7,20 @@
 
 /* Force include common positioning classes */
 .right-0 {
-    right: 0px;
+    right: 0px !important;
 }
 .top-0 {
-    top: 0px;
+    top: 0px !important;
 }
 .absolute {
-    position: absolute;
+    position: absolute !important;
+}
+.relative {
+    position: relative !important;
+}
+.flex {
+    display: flex !important;
+}
+.items-center {
+    align-items: center !important;
 }
