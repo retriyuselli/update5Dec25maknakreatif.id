@@ -2,7 +2,16 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
-@source '../../../../vendor/filament/**/*';
-@source '../../../../vendor/filament/forms/**/*';
-@source '../../../../vendor/filament/support/**/*';
-@source '../../../../vendor/filament/tables/**/*';
+@source '../../../../vendor/filament/**/*.blade.php';
+@source '../../../../vendor/awcodes/filament-table-repeater/resources/**/*.blade.php';
+
+/* Force include common positioning classes */
+.right-0 {
+    right: 0px;
+}
+.top-0 {
+    top: 0px;
+}
+.absolute {
+    position: absolute;
+}
