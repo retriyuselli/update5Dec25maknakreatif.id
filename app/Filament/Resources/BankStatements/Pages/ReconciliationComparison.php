@@ -25,7 +25,7 @@ class ReconciliationComparison extends Page
     public function mount(mixed $record): void
     {
         // \Illuminate\Support\Facades\Log::info('ReconciliationComparison mount started', ['type' => gettype($record)]);
-        
+
         try {
             if ($record instanceof BankStatement) {
                 $recordModel = $record;
@@ -37,7 +37,7 @@ class ReconciliationComparison extends Page
                 /** @var BankStatement|null $recordModel */
                 $recordModel = BankStatement::with('paymentMethod', 'reconciliationItems')->find($record);
             }
-            
+
             if (!$recordModel) {
                 // \Illuminate\Support\Facades\Log::error('ReconciliationComparison: Record not found', ['id' => $record]);
                 throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
@@ -53,7 +53,7 @@ class ReconciliationComparison extends Page
                 ->body($this->errorReason)
                 ->danger()
                 ->send();
-            
+
             $this->dataLoaded = false;
             return;
         }
