@@ -343,7 +343,7 @@ class ReconciliationService
             ->pluck('id');
 
         // Get all BankReconciliationItems for these statements
-        $bankItems = BankReconciliationItem::whereIn('bank_reconciliation_id', $bankStatements)
+        $bankItems = BankReconciliationItem::whereIn('bank_statement_id', $bankStatements)
             ->when($startDate, fn ($q) => $q->where('date', '>=', $startDate))
             ->when($endDate, fn ($q) => $q->where('date', '<=', $endDate))
             ->orderBy('date')

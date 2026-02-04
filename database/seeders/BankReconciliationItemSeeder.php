@@ -29,7 +29,7 @@ class BankReconciliationItemSeeder extends Seeder
             foreach ($rows as $row) {
                 $date = Carbon::parse($row['date']);
 
-                $exists = BankReconciliationItem::where('bank_reconciliation_id', $statement->id)
+                $exists = BankReconciliationItem::where('bank_statement_id', $statement->id)
                     ->whereDate('date', $date->toDateString())
                     ->where('description', $row['desc'])
                     ->first();
@@ -39,7 +39,7 @@ class BankReconciliationItemSeeder extends Seeder
                 }
 
                 BankReconciliationItem::create([
-                    'bank_reconciliation_id' => $statement->id,
+                    'bank_statement_id' => $statement->id,
                     'date' => $date,
                     'description' => $row['desc'],
                     'debit' => $row['debit'],

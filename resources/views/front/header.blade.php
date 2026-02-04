@@ -176,10 +176,8 @@
                                 class="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-md text-sm font-medium transition duration-300">
                                 Login
                             </a> --}}
-                            <a href="{{ route('pendaftaran') }}"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-md hover:shadow-lg">
-                                Coba Gratis
-                            </a>
+
+
                         </div>
                     @endauth
 
@@ -261,8 +259,8 @@
                                 <hr class="my-2">
                                 <a href="{{ route('front.login') }}"
                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Login</a>
-                                <a href="{{ route('pendaftaran') }}"
-                                    class="block px-4 py-2 text-blue-600 hover:bg-blue-50 font-medium">Coba Gratis</a>
+
+
                             @endguest
                         </div>
                     </div>

@@ -71,7 +71,7 @@ class BankStatement extends Model
 
     public function bankReconciliationItems(): HasMany
     {
-        return $this->hasMany(BankReconciliationItem::class, 'bank_reconciliation_id', 'id');
+        return $this->hasMany(BankReconciliationItem::class, 'bank_statement_id', 'id');
     }
 
     // Alias for better readability

@@ -23,14 +23,6 @@
 
                         <!-- CTA Buttons -->
                         <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                            <a href="{{ route('pendaftaran') }}"
-                                class="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 transition-colors">
-                                Mulai Gratis
-                                <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
-                            </a>
                             <a href="#demo"
                                 class="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                                 Lihat Demo
@@ -822,7 +814,7 @@
                     Bergabung dengan 200+ wedding organizer yang sudah merasakan manfaatnya.
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ route('pendaftaran') }}"
+                    <a href="#"
                         class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-blue-600 bg-white border border-transparent rounded-lg hover:bg-gray-50 transition-colors">
                         Mulai Gratis Sekarang
                     </a>

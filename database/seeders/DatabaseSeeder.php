@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // 1. Master Data (tidak ada dependency atau dependency minimal)
             StatusSeeder::class,           // Status untuk user, dll.
-            IndustrySeeder::class,         // Industri untuk prospek, dll.
+            // IndustrySeeder::class,         // Industri untuk prospek, dll.
             CategorySeeder::class,         // Kategori untuk produk dan vendor.
             PaymentMethodSeeder::class,    // Metode pembayaran untuk transaksi.
             RoleSeeder::class,             // Peran dan izin pengguna (Spatie).
@@ -49,14 +49,14 @@ class DatabaseSeeder extends Seeder
 
             // 5. Data Bisnis (tergantung pada User, Industry, Product)
             ProspectSeeder::class,         // Calon klien.
-            ProspectAppSeeder::class,      // Aplikasi dari calon klien.
             SimulasiProdukSeeder::class,   // Simulasi penawaran produk.
 
             // 6. Data Operasional (tergantung pada Prospect, User, Product, Vendor)
             OrderSeeder::class,            // Order/proyek wedding.
             NotaDinasSeeder::class,        // Nota dinas untuk pengeluaran.
             NotaDinasDetailSeeder::class,  // Detail nota dinas untuk pengeluaran.
-            InternalMessageSeeder::class,  // Pesan internal antar user.
+            // InternalMessageSeeder::class,  // Pesan internal antar user.
+
 
             // 7. Data Finansial (tergantung pada PaymentMethod, Order, NotaDinas)
             BankStatementSeeder::class,    // Laporan bank (opsional).

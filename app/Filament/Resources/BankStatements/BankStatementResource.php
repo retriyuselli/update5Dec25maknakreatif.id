@@ -261,13 +261,12 @@ class BankStatementResource extends Resource
                                             ->content(function (callable $get, $livewire) {
                                                 $record = $livewire->record ?? null;
                                                 if ($record && $record->file_path) {
-                                                    $filePath = storage_path('app/public/'.$record->file_path);
-                                                    if (file_exists($filePath)) {
-                                                        $fileSize = filesize($filePath);
+                                                    if (Storage::disk('public')->exists($record->file_path)) {
+                                                        $fileSize = Storage::disk('public')->size($record->file_path);
                                                         $formattedSize = $fileSize > 1024 * 1024
                                                             ? round($fileSize / (1024 * 1024), 2).' MB'
                                                             : round($fileSize / 1024, 2).' KB';
-                
+
                                                         return new HtmlString(
                                                             '<div class="space-y-2">'.
                                                             '<div><strong>Ukuran:</strong> '.$formattedSize.'</div>'.
@@ -277,7 +276,7 @@ class BankStatementResource extends Resource
                                                         );
                                                     }
                                                 }
-                
+
                                                 return 'Belum ada file yang diupload';
                                             })
                                             ->visible(fn ($record) => $record && filled($record->file_path))
@@ -688,7 +687,7 @@ class BankStatementResource extends Resource
                             $record->reconciliationItems()->count() > 0
                         )
                         ->tooltip('Bandingkan transaksi aplikasi dengan mutasi bank')
-                        ->url(fn (BankStatement $record): string => route('bank-statements.reconciliation-alt', $record))
+                        ->url(fn (BankStatement $record): string => BankStatementResource::getUrl('reconciliation', ['record' => $record]))
                         ->openUrlInNewTab(false),
                     Action::make('download')
                         ->label('Unduh File')

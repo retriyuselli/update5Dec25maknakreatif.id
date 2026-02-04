@@ -14,6 +14,8 @@ use App\Http\Controllers\Front\AsetFeatureController;
 use App\Http\Controllers\FrontendDataPribadiController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\InvoiceOrderController;
+use App\Http\Controllers\NotaDinasPdfController;
+use App\Http\Controllers\PayrollSlipController;
 use App\Http\Controllers\ProductDisplayController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\ProspectController;
@@ -107,9 +109,6 @@ Route::get('/features/payroll', [PayrollFeatureController::class, 'index'])->nam
 // PRICING
 Route::view('/harga', 'front.harga')->name('harga');
 
-// REGISTRATION (PENDAFTARAN)
-Route::view('/pendaftaran', 'front.pendaftaran')->name('pendaftaran');
-
 // CONTACT
 Route::view('/kontak', 'front.kontak')->name('kontak');
 
@@ -190,6 +189,11 @@ Route::get('/laporan/expense/pdf', [ReportController::class, 'generateExpensePdf
 // Route untuk Laporan Net Cash Flow PDF Stream
 Route::get('/laporan/net-cash-flow/pdf/stream', [ReportController::class, 'streamNetCashFlowPdf'])
     ->name('reports.net-cash-flow.pdf.stream')
+    ->middleware(\Filament\Http\Middleware\Authenticate::class);
+
+// NOTA DINAS ROUTES
+Route::get('/nota-dinas/{notaDinas}/preview-web', [NotaDinasPdfController::class, 'previewWeb'])
+    ->name('nota-dinas.preview-web')
     ->middleware(\Filament\Http\Middleware\Authenticate::class);
 
 // RUTE DATA PRIBADI

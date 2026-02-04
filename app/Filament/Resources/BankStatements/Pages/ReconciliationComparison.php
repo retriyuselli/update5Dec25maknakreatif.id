@@ -18,31 +18,89 @@ class ReconciliationComparison extends Page
 
     protected static ?string $title = 'Rekonsiliasi Perbandingan';
 
-    public BankStatement $record;
+    public ?BankStatement $record = null;
+    public bool $dataLoaded = true;
+    public ?string $errorReason = null;
 
-    public function mount(int|string $record): void
+    public function mount(mixed $record): void
     {
-        $this->record = BankStatement::with('paymentMethod', 'reconciliationItems')->findOrFail($record);
+        // \Illuminate\Support\Facades\Log::info('ReconciliationComparison mount started', ['type' => gettype($record)]);
+        
+        try {
+            if ($record instanceof BankStatement) {
+                $recordModel = $record;
+                // Ensure relationships are loaded
+                if (!$recordModel->relationLoaded('paymentMethod') || !$recordModel->relationLoaded('reconciliationItems')) {
+                    $recordModel->load(['paymentMethod', 'reconciliationItems']);
+                }
+            } else {
+                /** @var BankStatement|null $recordModel */
+                $recordModel = BankStatement::with('paymentMethod', 'reconciliationItems')->find($record);
+            }
+            
+            if (!$recordModel) {
+                // \Illuminate\Support\Facades\Log::error('ReconciliationComparison: Record not found', ['id' => $record]);
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+            }
+
+            $this->record = $recordModel;
+            // \Illuminate\Support\Facades\Log::info('ReconciliationComparison: Record found', ['id' => $recordModel->id]);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            $this->errorReason = 'Bank statement tidak ditemukan.';
+            Notification::make()
+                ->title('Error')
+                ->body($this->errorReason)
+                ->danger()
+                ->send();
+            
+            $this->dataLoaded = false;
+            return;
+        }
 
         // Verify that the record has payment method and reconciliation items
         if (! $this->record->payment_method_id || ! $this->record->paymentMethod) {
-            abort(404, 'Bank statement tidak memiliki payment method yang valid.');
+            // \Illuminate\Support\Facades\Log::error('ReconciliationComparison: Invalid Payment Method', ['id' => $this->record->id, 'pm_id' => $this->record->payment_method_id]);
+            $this->errorReason = 'Bank statement tidak memiliki payment method yang valid.';
+            Notification::make()
+                ->title('Error')
+                ->body($this->errorReason)
+                ->danger()
+                ->send();
+
+            $this->dataLoaded = false;
+            return;
         }
 
-        if ($this->record->reconciliationItems()->count() === 0) {
-            abort(404, 'Bank statement tidak memiliki data reconciliation items.');
+        if ($this->record->reconciliationItems->count() === 0) {
+            // \Illuminate\Support\Facades\Log::error('ReconciliationComparison: No items', ['id' => $this->record->id]);
+            $this->errorReason = 'Bank statement tidak memiliki data reconciliation items (0 items).';
+            Notification::make()
+                ->title('Error')
+                ->body($this->errorReason)
+                ->danger()
+                ->send();
+
+            $this->dataLoaded = false;
+            return;
         }
-    }
 
-    public function getReconciliationData(): array
-    {
-        $reconciliationService = new ReconciliationService;
+        // Run reconciliation to ensure DB is up to date
+        if ($this->dataLoaded) {
+            try {
+                $reconciliationService = new ReconciliationService;
+                $reconciliationService->reconcile(
+                    $this->record->payment_method_id,
+                    $this->record->period_start->format('Y-m-d'),
+                    $this->record->period_end->format('Y-m-d')
+                );
+            } catch (Exception $e) {
+                // Log error but continue, widgets will handle empty states
+                // \Illuminate\Support\Facades\Log::error('Reconciliation failed in mount', ['error' => $e->getMessage()]);
+            }
+        }
 
-        return $reconciliationService->reconcile(
-            $this->record->payment_method_id,
-            $this->record->period_start->format('Y-m-d'),
-            $this->record->period_end->format('Y-m-d')
-        );
+        // \Illuminate\Support\Facades\Log::info('ReconciliationComparison: Mount successful');
     }
 
     public function autoMatch(): void
@@ -92,11 +150,95 @@ class ReconciliationComparison extends Page
         }
     }
 
+    public function markAsMatched(string $sourceId, string $sourceTable, string $bankItemId, float $confidence): void
+    {
+        try {
+            $modelClass = match ($sourceTable) {
+                'data_pembayarans' => \App\Models\DataPembayaran::class,
+                'pendapatan_lains' => \App\Models\PendapatanLain::class,
+                'expenses' => \App\Models\Expense::class,
+                'expense_ops' => \App\Models\ExpenseOps::class,
+                'pengeluaran_lains' => \App\Models\PengeluaranLain::class,
+                default => null,
+            };
+
+            if (! $modelClass) {
+                throw new Exception("Unknown source table: $sourceTable");
+            }
+
+            $record = $modelClass::find($sourceId);
+            if (! $record) {
+                throw new Exception("Record not found");
+            }
+
+            $record->update([
+                'reconciliation_status' => 'matched',
+                'matched_bank_item_id' => $bankItemId,
+                'match_confidence' => $confidence,
+                'reconciliation_notes' => 'Manual match via UI',
+            ]);
+
+            Notification::make()
+                ->title('Berhasil di-match')
+                ->success()
+                ->send();
+
+        } catch (Exception $e) {
+            Notification::make()
+                ->title('Error')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
+    }
+
+    public function unmarkAsMatched(string $sourceId, string $sourceTable, string $bankItemId): void
+    {
+        try {
+            $modelClass = match ($sourceTable) {
+                'data_pembayarans' => \App\Models\DataPembayaran::class,
+                'pendapatan_lains' => \App\Models\PendapatanLain::class,
+                'expenses' => \App\Models\Expense::class,
+                'expense_ops' => \App\Models\ExpenseOps::class,
+                'pengeluaran_lains' => \App\Models\PengeluaranLain::class,
+                default => null,
+            };
+
+            if (! $modelClass) {
+                throw new Exception("Unknown source table: $sourceTable");
+            }
+
+            $record = $modelClass::find($sourceId);
+            if (! $record) {
+                throw new Exception("Record not found");
+            }
+
+            $record->update([
+                'reconciliation_status' => 'unmatched',
+                'matched_bank_item_id' => null,
+                'match_confidence' => null,
+                'reconciliation_notes' => null,
+            ]);
+
+            Notification::make()
+                ->title('Match dibatalkan')
+                ->success()
+                ->send();
+
+        } catch (Exception $e) {
+            Notification::make()
+                ->title('Error')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
+    }
+
     public function getBreadcrumbs(): array
     {
         return [
-            url()->route('filament.admin.resources.bank-statements.index') => 'Bank Statements',
-            url()->route('filament.admin.resources.bank-statements.view', ['record' => $this->record]) => 'Bank Statement #'.$this->record->id,
+            BankStatementResource::getUrl('index') => 'Bank Statements',
+            BankStatementResource::getUrl('view', ['record' => $this->record]) => 'Bank Statement #'.$this->record->id,
             '#' => 'Rekonsiliasi Perbandingan',
         ];
     }
@@ -114,14 +256,13 @@ class ReconciliationComparison extends Page
                 ->label('Export Excel')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
-                ->url(function () {
-                    return url('/admin/reconciliation/export?'.http_build_query([
-                        'payment_method_id' => $this->record->payment_method_id,
-                        'start_date' => $this->record->period_start->format('Y-m-d'),
-                        'end_date' => $this->record->period_end->format('Y-m-d'),
-                    ]));
-                })
-                ->openUrlInNewTab(),
+                ->action(function () {
+                    Notification::make()
+                        ->title('Fitur Segera Hadir')
+                        ->body('Export data rekonsiliasi sedang dalam pengembangan.')
+                        ->info()
+                        ->send();
+                }),
 
             Action::make('auto_match')
                 ->label('Auto Match (85%+)')
@@ -138,7 +279,7 @@ class ReconciliationComparison extends Page
 
     public function getTitle(): string
     {
-        return 'Rekonsiliasi Perbandingan - '.
+        return ''.
                ($this->record->paymentMethod ?
                 $this->record->paymentMethod->bank_name.' '.$this->record->paymentMethod->no_rekening :
                 'Bank Statement #'.$this->record->id);

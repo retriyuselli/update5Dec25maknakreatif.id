@@ -67,7 +67,7 @@ class BankReconciliationImport implements ToCollection, WithHeadingRow, WithVali
 
                 // Create item
                 BankReconciliationItem::create([
-                    'bank_reconciliation_id' => $this->bankReconciliation->id,
+                    'bank_statement_id' => $this->bankReconciliation->id,
                     'date' => $date,
                     'description' => $description,
                     'debit' => $debit,
@@ -86,22 +86,14 @@ class BankReconciliationImport implements ToCollection, WithHeadingRow, WithVali
             $rowNumber++;
         }
 
-        // Update bank reconciliation totals - works for both BankReconciliation and BankStatement
+        // Update bank reconciliation totals
         $updateData = [
             'total_records' => $this->importedCount,
             'processed_at' => now(),
+            'total_debit_reconciliation' => $totalDebit,
+            'total_credit_reconciliation' => $totalCredit,
+            'reconciliation_status' => empty($this->errors) ? 'completed' : 'failed',
         ];
-
-        // Check if this is a BankStatement or BankReconciliation model
-        if ($this->bankReconciliation instanceof BankStatement) {
-            $updateData['total_debit_reconciliation'] = $totalDebit;
-            $updateData['total_credit_reconciliation'] = $totalCredit;
-            $updateData['reconciliation_status'] = empty($this->errors) ? 'completed' : 'failed';
-        } else {
-            $updateData['total_debit'] = $totalDebit;
-            $updateData['total_credit'] = $totalCredit;
-            $updateData['status'] = empty($this->errors) ? 'completed' : 'failed';
-        }
 
         $this->bankReconciliation->update($updateData);
     }
